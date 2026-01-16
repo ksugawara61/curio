@@ -2,17 +2,9 @@
   "scripts": {
     "clean": "npkill -D -x",
     "postinstall": "lefthook install",
-    "codegen": "turbo codegen --force",
-    "codegen:check": "pnpm codegen && pnpm --filter mobile codegen:check && git add mobile/src && if git diff --cached --quiet mobile/src; then echo 'Schema files are in sync.'; git reset mobile/src/libs/graphql/schema.graphql; else echo 'Schema files are out of sync. Please commit the changes after running pnpm schema:sync.'; git reset mobile/src; exit 1; fi",
-    "lint": "biome ci . && turbo lint",
-    "lint:text": "textlint \"**/*.md\"",
-    "fmt": "biome check . --write && turbo fmt",
-    "typecheck": "turbo typecheck",
-    "test": "turbo test",
-    "test:changed": "turbo test:changed",
-    "start": "turbo start",
-    "web": "turbo web",
-    "build": "turbo build"
+    "lint": "ultracite check",
+    "fmt": "ultracite fix",
+    "typecheck": "turbo typecheck"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
@@ -21,7 +13,8 @@
     "npkill": "catalog:",
     "textlint": "catalog:",
     "textlint-rule-preset-ja-technical-writing": "catalog:",
-    "turbo": "catalog:"
+    "turbo": "catalog:",
+    "ultracite": "catalog:"
   },
   "packageManager": "pnpm@10.17.0+sha256.bd9ec5417641391e0acb3912b2912bd5b0385407a82da94744a7407b567fdb4f"
 }

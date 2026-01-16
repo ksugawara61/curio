@@ -11,7 +11,7 @@ catalog:
   '@types/node': ^25.0.7
   '@types/react': ^18.3.27
   '@types/react-dom': ^18.3.7
-  '@vitejs/plugin-react': ^4.7.0
+  '@vitejs/plugin-react': ^5.1.2
   lefthook: 2.0.15
   npkill: 0.12.2
   react: ^18.3.1
@@ -21,7 +21,7 @@ catalog:
   turbo: 2.7.4
   typescript: ^5.9.3
   ultracite: ^7.0.11
-  vite: ^5.4.21
+  vite: ^7.3.1
   vitest: ^4.0.17
   jsdom: ^26.0.0
 

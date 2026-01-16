@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Curio",
+  "version": "1.0.0",
+  "description": "Hello World Chrome Extension",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": []
+}

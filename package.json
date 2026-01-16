@@ -4,7 +4,8 @@
     "postinstall": "lefthook install",
     "lint": "ultracite check",
     "fmt": "ultracite fix",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "test": "turbo test"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",

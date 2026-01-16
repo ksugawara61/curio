@@ -6,5 +6,8 @@
   "action": {
     "default_popup": "index.html"
   },
-  "permissions": []
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "permissions": ["sidePanel"]
 }

@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { SidePanel } from "./sidepanel";
-import "./style.css";
+import { Popup } from "./Popup";
+import "../style.css";
 
 // biome-ignore lint/style/noNonNullAssertion: root element is guaranteed to exist
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <SidePanel />
+    <Popup />
   </React.StrictMode>
 );

@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "description": "Hello World Chrome Extension",
   "action": {
-    "default_popup": "index.html"
+    "default_popup": "popup/index.html"
   },
   "side_panel": {
-    "default_path": "sidepanel.html"
+    "default_path": "sidepanel/index.html"
   },
   "permissions": ["sidePanel"]
 }

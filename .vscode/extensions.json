@@ -2,6 +2,7 @@
   "recommendations": [
     "biomejs.biome",
     "davidanson.vscode-markdownlint",
-    "apollographql.vscode-apollo"
+    "apollographql.vscode-apollo",
+    "vitest.explorer"
   ]
 }

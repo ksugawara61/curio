@@ -20,7 +20,8 @@
         "noNonNullAssertion": "error"
       },
       "suspicious": {
-        "noExplicitAny": "error"
+        "noExplicitAny": "error",
+        "noReactSpecificProps": "off"
       }
     }
   },

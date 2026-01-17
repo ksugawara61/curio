@@ -15,8 +15,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {},
+export const Default = {
   render: () => (
     <VStack>
       <div className="bg-blue-200 p-4">Item 1</div>
@@ -26,8 +25,7 @@ export const Default: Story = {
   ),
 };
 
-export const WithSpacing: Story = {
-  args: {},
+export const WithSpacing = {
   render: () => (
     <div className="flex flex-col gap-8">
       <div>
@@ -74,8 +72,7 @@ export const WithSpacing: Story = {
   ),
 };
 
-export const AlignStart: Story = {
-  args: {},
+export const AlignStart = {
   render: () => (
     <VStack align="start" className="bg-gray-100 p-4" spacing={4}>
       <div className="bg-purple-200 p-4">Short</div>
@@ -85,8 +82,7 @@ export const AlignStart: Story = {
   ),
 };
 
-export const AlignCenter: Story = {
-  args: {},
+export const AlignCenter = {
   render: () => (
     <VStack align="center" className="bg-gray-100 p-4" spacing={4}>
       <div className="bg-purple-200 p-4">Short</div>
@@ -96,8 +92,7 @@ export const AlignCenter: Story = {
   ),
 };
 
-export const AlignEnd: Story = {
-  args: {},
+export const AlignEnd = {
   render: () => (
     <VStack align="end" className="bg-gray-100 p-4" spacing={4}>
       <div className="bg-purple-200 p-4">Short</div>
@@ -107,8 +102,7 @@ export const AlignEnd: Story = {
   ),
 };
 
-export const JustifyCenter: Story = {
-  args: {},
+export const JustifyCenter = {
   render: () => (
     <VStack
       className="bg-gray-100 p-4"
@@ -123,8 +117,7 @@ export const JustifyCenter: Story = {
   ),
 };
 
-export const JustifyBetween: Story = {
-  args: {},
+export const JustifyBetween = {
   render: () => (
     <VStack
       className="bg-gray-100 p-4"
@@ -139,8 +132,7 @@ export const JustifyBetween: Story = {
   ),
 };
 
-export const WithPadding: Story = {
-  args: {},
+export const WithPadding = {
   render: () => (
     <VStack className="bg-gray-100" p={6} spacing={4}>
       <div className="bg-pink-200 p-4">Item 1</div>
@@ -150,8 +142,7 @@ export const WithPadding: Story = {
   ),
 };
 
-export const WithButtons: Story = {
-  args: {},
+export const WithButtons = {
   render: () => (
     <VStack align="start" p={6} spacing={4}>
       <Button variant="primary">Primary Button</Button>
@@ -161,8 +152,7 @@ export const WithButtons: Story = {
   ),
 };
 
-export const WithTypography: Story = {
-  args: {},
+export const WithTypography = {
   render: () => (
     <VStack p={6} spacing={4}>
       <Typography as="h1" size="2xl">

@@ -67,8 +67,7 @@ export const Heading6: Story = {
   },
 };
 
-export const Sizes: Story = {
-  args: {},
+export const Sizes = {
   render: () => (
     <div className="flex flex-col gap-4">
       <Typography size="sm">
@@ -108,8 +107,7 @@ export const Div: Story = {
   },
 };
 
-export const AllHeadings: Story = {
-  args: {},
+export const AllHeadings = {
   render: () => (
     <div className="flex flex-col gap-4">
       <Typography as="h1" size="2xl">

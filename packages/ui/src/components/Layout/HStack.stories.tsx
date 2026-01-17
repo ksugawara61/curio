@@ -15,8 +15,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {},
+export const Default = {
   render: () => (
     <HStack>
       <div className="bg-blue-200 p-4">Item 1</div>
@@ -26,8 +25,7 @@ export const Default: Story = {
   ),
 };
 
-export const WithSpacing: Story = {
-  args: {},
+export const WithSpacing = {
   render: () => (
     <div className="flex flex-col gap-8">
       <div>
@@ -74,8 +72,7 @@ export const WithSpacing: Story = {
   ),
 };
 
-export const AlignStart: Story = {
-  args: {},
+export const AlignStart = {
   render: () => (
     <HStack align="start" className="bg-gray-100 p-4" spacing={4}>
       <div className="bg-purple-200 p-4" style={{ height: "60px" }}>
@@ -91,8 +88,7 @@ export const AlignStart: Story = {
   ),
 };
 
-export const AlignCenter: Story = {
-  args: {},
+export const AlignCenter = {
   render: () => (
     <HStack align="center" className="bg-gray-100 p-4" spacing={4}>
       <div className="bg-purple-200 p-4" style={{ height: "60px" }}>
@@ -108,8 +104,7 @@ export const AlignCenter: Story = {
   ),
 };
 
-export const AlignEnd: Story = {
-  args: {},
+export const AlignEnd = {
   render: () => (
     <HStack align="end" className="bg-gray-100 p-4" spacing={4}>
       <div className="bg-purple-200 p-4" style={{ height: "60px" }}>
@@ -125,8 +120,7 @@ export const AlignEnd: Story = {
   ),
 };
 
-export const JustifyCenter: Story = {
-  args: {},
+export const JustifyCenter = {
   render: () => (
     <HStack className="bg-gray-100 p-4" justify="center" spacing={4}>
       <div className="bg-orange-200 p-4">Item 1</div>
@@ -136,8 +130,7 @@ export const JustifyCenter: Story = {
   ),
 };
 
-export const JustifyBetween: Story = {
-  args: {},
+export const JustifyBetween = {
   render: () => (
     <HStack className="bg-gray-100 p-4" justify="between" spacing={4}>
       <div className="bg-orange-200 p-4">Item 1</div>
@@ -147,8 +140,7 @@ export const JustifyBetween: Story = {
   ),
 };
 
-export const JustifyEvenly: Story = {
-  args: {},
+export const JustifyEvenly = {
   render: () => (
     <HStack className="bg-gray-100 p-4" justify="evenly" spacing={4}>
       <div className="bg-orange-200 p-4">Item 1</div>
@@ -158,8 +150,7 @@ export const JustifyEvenly: Story = {
   ),
 };
 
-export const WithPadding: Story = {
-  args: {},
+export const WithPadding = {
   render: () => (
     <HStack className="bg-gray-100" p={6} spacing={4}>
       <div className="bg-pink-200 p-4">Item 1</div>
@@ -169,8 +160,7 @@ export const WithPadding: Story = {
   ),
 };
 
-export const WithButtons: Story = {
-  args: {},
+export const WithButtons = {
   render: () => (
     <HStack p={6} spacing={4}>
       <Button variant="primary">Primary</Button>
@@ -180,8 +170,7 @@ export const WithButtons: Story = {
   ),
 };
 
-export const ButtonGroup: Story = {
-  args: {},
+export const ButtonGroup = {
   render: () => (
     <HStack align="center" spacing={2}>
       <Button variant="primary">Save</Button>
@@ -191,8 +180,7 @@ export const ButtonGroup: Story = {
   ),
 };
 
-export const WithTypography: Story = {
-  args: {},
+export const WithTypography = {
   render: () => (
     <HStack align="center" p={6} spacing={4}>
       <Typography as="span" size="lg">

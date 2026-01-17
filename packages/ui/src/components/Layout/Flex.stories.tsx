@@ -15,8 +15,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {},
+export const Default = {
   render: () => (
     <Flex>
       <div className="bg-blue-200 p-4">Item 1</div>
@@ -26,8 +25,7 @@ export const Default: Story = {
   ),
 };
 
-export const DirectionRow: Story = {
-  args: {},
+export const DirectionRow = {
   render: () => (
     <Flex className="bg-gray-100 p-4" direction="row" spacing={4}>
       <div className="bg-green-200 p-4">Item 1</div>
@@ -37,8 +35,7 @@ export const DirectionRow: Story = {
   ),
 };
 
-export const DirectionColumn: Story = {
-  args: {},
+export const DirectionColumn = {
   render: () => (
     <Flex className="bg-gray-100 p-4" direction="col" spacing={4}>
       <div className="bg-green-200 p-4">Item 1</div>
@@ -48,8 +45,7 @@ export const DirectionColumn: Story = {
   ),
 };
 
-export const DirectionRowReverse: Story = {
-  args: {},
+export const DirectionRowReverse = {
   render: () => (
     <Flex className="bg-gray-100 p-4" direction="row-reverse" spacing={4}>
       <div className="bg-green-200 p-4">Item 1</div>
@@ -59,8 +55,7 @@ export const DirectionRowReverse: Story = {
   ),
 };
 
-export const DirectionColReverse: Story = {
-  args: {},
+export const DirectionColReverse = {
   render: () => (
     <Flex className="bg-gray-100 p-4" direction="col-reverse" spacing={4}>
       <div className="bg-green-200 p-4">Item 1</div>
@@ -70,8 +65,7 @@ export const DirectionColReverse: Story = {
   ),
 };
 
-export const WrapEnabled: Story = {
-  args: {},
+export const WrapEnabled = {
   render: () => (
     <Flex
       className="bg-gray-100 p-4"
@@ -90,8 +84,7 @@ export const WrapEnabled: Story = {
   ),
 };
 
-export const WrapReverse: Story = {
-  args: {},
+export const WrapReverse = {
   render: () => (
     <Flex
       className="bg-gray-100 p-4"
@@ -110,8 +103,7 @@ export const WrapReverse: Story = {
   ),
 };
 
-export const AlignCenter: Story = {
-  args: {},
+export const AlignCenter = {
   render: () => (
     <Flex
       align="center"
@@ -132,8 +124,7 @@ export const AlignCenter: Story = {
   ),
 };
 
-export const JustifyCenter: Story = {
-  args: {},
+export const JustifyCenter = {
   render: () => (
     <Flex
       className="bg-gray-100 p-4"
@@ -148,8 +139,7 @@ export const JustifyCenter: Story = {
   ),
 };
 
-export const JustifyBetween: Story = {
-  args: {},
+export const JustifyBetween = {
   render: () => (
     <Flex
       className="bg-gray-100 p-4"
@@ -164,8 +154,7 @@ export const JustifyBetween: Story = {
   ),
 };
 
-export const JustifyEvenly: Story = {
-  args: {},
+export const JustifyEvenly = {
   render: () => (
     <Flex
       className="bg-gray-100 p-4"
@@ -180,8 +169,7 @@ export const JustifyEvenly: Story = {
   ),
 };
 
-export const CenterBoth: Story = {
-  args: {},
+export const CenterBoth = {
   render: () => (
     <Flex
       align="center"
@@ -195,8 +183,7 @@ export const CenterBoth: Story = {
   ),
 };
 
-export const WithPadding: Story = {
-  args: {},
+export const WithPadding = {
   render: () => (
     <Flex className="bg-gray-100" direction="row" p={8} spacing={4}>
       <div className="bg-yellow-200 p-4">Item 1</div>
@@ -206,8 +193,7 @@ export const WithPadding: Story = {
   ),
 };
 
-export const WithButtons: Story = {
-  args: {},
+export const WithButtons = {
   render: () => (
     <Flex direction="row" justify="center" p={6} spacing={4}>
       <Button variant="primary">Save</Button>
@@ -217,8 +203,7 @@ export const WithButtons: Story = {
   ),
 };
 
-export const ResponsiveLayout: Story = {
-  args: {},
+export const ResponsiveLayout = {
   render: () => (
     <Flex className="bg-gray-100" direction="row" p={6} spacing={4} wrap="wrap">
       <div className="min-w-[200px] flex-1 bg-indigo-200 p-4">Column 1</div>
@@ -228,8 +213,7 @@ export const ResponsiveLayout: Story = {
   ),
 };
 
-export const CardLayout: Story = {
-  args: {},
+export const CardLayout = {
   render: () => (
     <Flex className="bg-gray-100" direction="col" p={6} spacing={6}>
       <Typography as="h2" size="xl">
@@ -247,8 +231,7 @@ export const CardLayout: Story = {
   ),
 };
 
-export const SpacingVariations: Story = {
-  args: {},
+export const SpacingVariations = {
   render: () => (
     <div className="flex flex-col gap-8">
       <div>

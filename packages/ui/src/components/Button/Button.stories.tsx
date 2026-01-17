@@ -61,8 +61,7 @@ export const Link: Story = {
   },
 };
 
-export const Sizes: Story = {
-  args: {},
+export const Sizes = {
   render: () => (
     <div className="flex flex-col gap-4">
       <Button size="xs" variant="primary">
@@ -92,8 +91,7 @@ export const Block: Story = {
   },
 };
 
-export const Disabled: Story = {
-  args: {},
+export const Disabled = {
   render: () => (
     <div className="flex gap-4">
       <Button disabled variant="primary">
@@ -106,8 +104,7 @@ export const Disabled: Story = {
   ),
 };
 
-export const AllVariants: Story = {
-  args: {},
+export const AllVariants = {
   render: () => (
     <div className="flex flex-col gap-4">
       <Button>Default</Button>

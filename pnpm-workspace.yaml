@@ -19,7 +19,7 @@ catalog:
   '@types/react-dom': ^18.3.7
   '@vitejs/plugin-react': ^5.1.2
   daisyui: ^5.0.43
-  jsdom: ^26.0.0
+  jsdom: ^27.4.0
   lefthook: 2.0.15
   npkill: 0.12.2
   react: ^18.3.1

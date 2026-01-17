@@ -8,7 +8,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "storybook": "storybook dev -p 6006"
+    "storybook": "storybook dev -p 6006",
+    "vrt": "playwright test",
+    "vrt:update": "playwright test --update-snapshots"
   },
   "dependencies": {
     "@curio/ui": "workspace:*",
@@ -17,6 +19,7 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@playwright/test": "^1.49.1",
     "@storybook/addon-links": "catalog:",
     "@storybook/addon-themes": "catalog:",
     "@storybook/react": "catalog:",
@@ -31,6 +34,7 @@
     "@vitejs/plugin-react": "catalog:",
     "daisyui": "catalog:",
     "jsdom": "catalog:",
+    "pixelmatch": "^6.0.0",
     "storybook": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",

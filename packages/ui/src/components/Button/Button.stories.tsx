@@ -1,80 +1,119 @@
-import type { Story } from "@ladle/react";
-import type { ButtonProps } from "./Button";
+import type { Meta, StoryObj } from "@storybook/react";
 import { Button } from "./Button";
 
-export const Default: Story<ButtonProps> = () => (
-  <Button>Default Button</Button>
-);
+const meta = {
+  title: "Components/Button",
+  component: Button,
+  parameters: {
+    layout: "centered",
+  },
+  tags: ["autodocs"],
+} satisfies Meta<typeof Button>;
 
-export const Primary: Story<ButtonProps> = () => (
-  <Button variant="primary">Primary Button</Button>
-);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Secondary: Story<ButtonProps> = () => (
-  <Button variant="secondary">Secondary Button</Button>
-);
+export const Default: Story = {
+  args: {
+    children: "Default Button",
+  },
+};
 
-export const Accent: Story<ButtonProps> = () => (
-  <Button variant="accent">Accent Button</Button>
-);
+export const Primary: Story = {
+  args: {
+    variant: "primary",
+    children: "Primary Button",
+  },
+};
 
-export const Neutral: Story<ButtonProps> = () => (
-  <Button variant="neutral">Neutral Button</Button>
-);
+export const Secondary: Story = {
+  args: {
+    variant: "secondary",
+    children: "Secondary Button",
+  },
+};
 
-export const Ghost: Story<ButtonProps> = () => (
-  <Button variant="ghost">Ghost Button</Button>
-);
+export const Accent: Story = {
+  args: {
+    variant: "accent",
+    children: "Accent Button",
+  },
+};
 
-export const Link: Story<ButtonProps> = () => (
-  <Button variant="link">Link Button</Button>
-);
+export const Neutral: Story = {
+  args: {
+    variant: "neutral",
+    children: "Neutral Button",
+  },
+};
 
-export const Sizes: Story<ButtonProps> = () => (
-  <div className="flex flex-col gap-4">
-    <Button size="xs" variant="primary">
-      Extra Small
-    </Button>
-    <Button size="sm" variant="primary">
-      Small
-    </Button>
-    <Button size="md" variant="primary">
-      Medium
-    </Button>
-    <Button size="lg" variant="primary">
-      Large
-    </Button>
-    <Button size="xl" variant="primary">
-      Extra Large
-    </Button>
-  </div>
-);
+export const Ghost: Story = {
+  args: {
+    variant: "ghost",
+    children: "Ghost Button",
+  },
+};
 
-export const Block: Story<ButtonProps> = () => (
-  <Button block variant="primary">
-    Full Width Button
-  </Button>
-);
+export const Link: Story = {
+  args: {
+    variant: "link",
+    children: "Link Button",
+  },
+};
 
-export const Disabled: Story<ButtonProps> = () => (
-  <div className="flex gap-4">
-    <Button disabled variant="primary">
-      Disabled Primary
-    </Button>
-    <Button disabled variant="secondary">
-      Disabled Secondary
-    </Button>
-  </div>
-);
+export const Sizes = {
+  render: () => (
+    <div className="flex flex-col gap-4">
+      <Button size="xs" variant="primary">
+        Extra Small
+      </Button>
+      <Button size="sm" variant="primary">
+        Small
+      </Button>
+      <Button size="md" variant="primary">
+        Medium
+      </Button>
+      <Button size="lg" variant="primary">
+        Large
+      </Button>
+      <Button size="xl" variant="primary">
+        Extra Large
+      </Button>
+    </div>
+  ),
+};
 
-export const AllVariants: Story<ButtonProps> = () => (
-  <div className="flex flex-col gap-4">
-    <Button>Default</Button>
-    <Button variant="primary">Primary</Button>
-    <Button variant="secondary">Secondary</Button>
-    <Button variant="accent">Accent</Button>
-    <Button variant="neutral">Neutral</Button>
-    <Button variant="ghost">Ghost</Button>
-    <Button variant="link">Link</Button>
-  </div>
-);
+export const Block: Story = {
+  args: {
+    block: true,
+    variant: "primary",
+    children: "Full Width Button",
+  },
+};
+
+export const Disabled = {
+  render: () => (
+    <div className="flex gap-4">
+      <Button disabled variant="primary">
+        Disabled Primary
+      </Button>
+      <Button disabled variant="secondary">
+        Disabled Secondary
+      </Button>
+    </div>
+  ),
+};
+
+export const AllVariants = {
+  render: () => (
+    <div className="flex flex-col gap-4">
+      <Button>Default</Button>
+      <Button variant="primary">Primary</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="accent">Accent</Button>
+      <Button variant="neutral">Neutral</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="link">Link</Button>
+    </div>
+  ),
+};

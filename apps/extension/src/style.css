@@ -1,8 +1,80 @@
 @import "tailwindcss";
-@plugin "daisyui" {
-  themes:
-    light --default,
-    dark --prefersdark,
-    cupcake;
-}
 @plugin "@tailwindcss/typography";
+@plugin "daisyui";
+@plugin "daisyui/theme" {
+  name: "rosepine-dawn";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light";
+  --color-base-100: #fffaf3;
+  --color-base-200: #fffaf3;
+  --color-base-300: #f2e9e1;
+  --color-base-content: #575279;
+  --color-primary: #907aa9;
+  --color-primary-content: #221339;
+  --color-secondary: #d7827e;
+  --color-secondary-content: #5d161b;
+  --color-accent: #907aa9;
+  --color-accent-content: #221339;
+  --color-neutral: #faf4ed;
+  --color-neutral-content: #575279;
+  --color-info: #286983;
+  --color-info-content: #abe6ff;
+  --color-success: #56949f;
+  --color-success-content: #002831;
+  --color-warning: #ea9d34;
+  --color-warning-content: #6a3300;
+  --color-error: #b4637a;
+  --color-error-content: #2d0000;
+  --color-muted: #9893a5;
+  --color-subtle: #797593;
+  --radius-selector: 0.5rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+@plugin "daisyui/theme" {
+  name: "rosepine-moon";
+  default: false;
+  prefersdark: true;
+  color-scheme: "dark";
+  --color-base-100: #232136;
+  --color-base-200: #2a273f;
+  --color-base-300: #393552;
+  --color-base-content: #e0def4;
+  --color-primary: #c4a7e7;
+  --color-primary-content: #503970;
+  --color-secondary: #ea9a97;
+  --color-secondary-content: #702d2f;
+  --color-accent: #c4a7e7;
+  --color-accent-content: #503970;
+  --color-neutral: #2a273f;
+  --color-neutral-content: #e0def4;
+  --color-info: #3e8fb0;
+  --color-info-content: #00213b;
+  --color-success: #9ccfd8;
+  --color-success-content: #265961;
+  --color-warning: #f6c177;
+  --color-warning-content: #744e03;
+  --color-error: #eb6f92;
+  --color-error-content: #660025;
+  --color-muted: #6e6a86;
+  --color-subtle: #908caa;
+  --radius-selector: 0.5rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+@theme {
+  --color-muted: var(--color-muted);
+  --color-subtle: var(--color-subtle);
+}

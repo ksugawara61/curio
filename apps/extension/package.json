@@ -8,8 +8,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "ladle": "ladle serve",
-    "ladle:build": "ladle build"
+    "storybook": "storybook dev -p 6006"
   },
   "dependencies": {
     "@curio/ui": "workspace:*",
@@ -18,7 +17,10 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@ladle/react": "catalog:",
+    "@storybook/addon-links": "catalog:",
+    "@storybook/addon-themes": "catalog:",
+    "@storybook/react": "catalog:",
+    "@storybook/react-vite": "catalog:",
     "@tailwindcss/typography": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@testing-library/jest-dom": "catalog:",
@@ -29,6 +31,7 @@
     "@vitejs/plugin-react": "catalog:",
     "daisyui": "catalog:",
     "jsdom": "catalog:",
+    "storybook": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",

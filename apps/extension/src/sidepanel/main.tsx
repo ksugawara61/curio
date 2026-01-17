@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { SidePanel } from "./SidePanel";
+import { SidePanel } from "./side-panel";
 import "../style.css";
 
 // biome-ignore lint/style/noNonNullAssertion: root element is guaranteed to exist

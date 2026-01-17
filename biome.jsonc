@@ -17,7 +17,8 @@
         "useNumberNamespace": "error",
         "noInferrableTypes": "error",
         "noUselessElse": "error",
-        "noNonNullAssertion": "error"
+        "noNonNullAssertion": "error",
+        "useFilenamingConvention": "off"
       },
       "suspicious": {
         "noExplicitAny": "error",

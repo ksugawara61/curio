@@ -1,4 +1,4 @@
-import { copyFileSync, mkdirSync } from "node:fs";
+import { copyFileSync, mkdirSync, renameSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
@@ -19,6 +19,25 @@ export default defineConfig({
           resolve(__dirname, "public/manifest.json"),
           resolve(__dirname, "dist/manifest.json")
         );
+
+        // HTMLファイルを正しい場所に移動
+        mkdirSync(resolve(__dirname, "dist/popup"), { recursive: true });
+        mkdirSync(resolve(__dirname, "dist/sidepanel"), { recursive: true });
+
+        renameSync(
+          resolve(__dirname, "dist/src/popup/index.html"),
+          resolve(__dirname, "dist/popup/index.html")
+        );
+        renameSync(
+          resolve(__dirname, "dist/src/sidepanel/index.html"),
+          resolve(__dirname, "dist/sidepanel/index.html")
+        );
+
+        // 空のsrcディレクトリを削除
+        rmSync(resolve(__dirname, "dist/src"), {
+          recursive: true,
+          force: true,
+        });
       },
     },
   ],
@@ -26,7 +45,8 @@ export default defineConfig({
     outDir: "dist",
     rollupOptions: {
       input: {
-        popup: resolve(__dirname, "index.html"),
+        popup: resolve(__dirname, "src/popup/index.html"),
+        sidepanel: resolve(__dirname, "src/sidepanel/index.html"),
       },
     },
   },

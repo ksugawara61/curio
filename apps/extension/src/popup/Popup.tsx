@@ -1,14 +1,13 @@
-import { Typography, VStack } from "@curio/ui";
 import type { FC } from "react";
 
 export const Popup: FC = () => {
   return (
-    <VStack className="rounded-lg bg-green-500 shadow-md" p={4}>
-      <Typography as="h1">Hello World Popup!</Typography>
-      <Typography size="lg">Welcome to Curio Extension!</Typography>
+    <div className="rounded-lg bg-green-500 p-4 shadow-md">
+      <h1 className="prose-h1:prose-base">Hello World Popup!</h1>
+      <div className="prose-lg">Welcome to Curio Extension!</div>
       <button className="btn btn-lg" type="submit">
         Xlarge2
       </button>
-    </VStack>
+    </div>
   );
 };

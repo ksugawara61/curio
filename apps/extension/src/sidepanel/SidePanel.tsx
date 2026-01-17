@@ -1,26 +1,23 @@
-import { Button, Typography, VStack } from "@curio/ui";
 import type { FC } from "react";
 
 export const SidePanel: FC = () => {
   return (
-    <VStack className="min-h-screen bg-base-200" p={6}>
-      <VStack className="rounded-lg bg-base-100 shadow-xl" p={6} spacing={4}>
-        <Typography as="h1" className="font-bold text-2xl">
-          Curio Side Panel2
-        </Typography>
-        <Typography>Welcome to Curio Side Panel!</Typography>
-        <VStack spacing={2}>
-          <Button block variant="primary">
+    <div className="min-h-screen bg-base-200 p-4">
+      <div className="rounded-lg bg-base-100 p-6 shadow-xl">
+        <div className="font-bold text-2xl">Curio Side Panel2</div>
+        <div>Welcome to Curio Side Panel!</div>
+        <div className="flex flex-col gap-2">
+          <button className="btn btn-primary" type="submit">
             Primary Action
-          </Button>
-          <Button block variant="secondary">
+          </button>
+          <button className="btn btn-secondary" type="submit">
             Secondary Action
-          </Button>
+          </button>
           <button className="btn btn-xl" type="submit">
             Xlarge
           </button>
-        </VStack>
-      </VStack>
-    </VStack>
+        </div>
+      </div>
+    </div>
   );
 };

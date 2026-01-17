@@ -6,7 +6,7 @@ export const SidePanel: FC = () => {
     <VStack className="min-h-screen bg-base-200" p={6}>
       <VStack className="rounded-lg bg-base-100 shadow-xl" p={6} spacing={4}>
         <Typography as="h1" className="font-bold text-2xl">
-          Curio Side Panel
+          Curio Side Panel2
         </Typography>
         <Typography>Welcome to Curio Side Panel!</Typography>
         <VStack spacing={2}>
@@ -16,6 +16,9 @@ export const SidePanel: FC = () => {
           <Button block variant="secondary">
             Secondary Action
           </Button>
+          <button className="btn btn-xl" type="submit">
+            Xlarge
+          </button>
         </VStack>
       </VStack>
     </VStack>

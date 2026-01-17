@@ -6,11 +6,6 @@ const config: StorybookConfig = {
     name: "@storybook/react-vite",
     options: {},
   },
-  // viteFinal(config) {
-  //   return mergeConfig(config, {
-  //     plugins: [tailwindcss()],
-  //   });
-  // },
 };
 
 export default config;

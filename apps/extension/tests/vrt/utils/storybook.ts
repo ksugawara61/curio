@@ -38,14 +38,14 @@ export async function getStories(baseURL: string): Promise<StoryEntry[]> {
  * VRT テスト対象のストーリーをフィルタリング
  */
 export function filterTestableStories(stories: StoryEntry[]): StoryEntry[] {
-  return stories.filter(story => {
+  return stories.filter((story) => {
     // parameters.playwright.skip が true の場合はスキップ
     if (story.parameters?.playwright?.skip === true) {
       return false;
     }
 
     // docs タグが付いているストーリーはスキップ
-    if (story.tags?.includes('docs')) {
+    if (story.tags?.includes("docs")) {
       return false;
     }
 

@@ -1,7 +1,11 @@
-import { test, expect } from '@playwright/test';
-import { getStories, filterTestableStories, getStoryUrl } from './utils/storybook';
+import { expect, test } from "@playwright/test";
+import {
+  filterTestableStories,
+  getStories,
+  getStoryUrl,
+} from "./utils/storybook";
 
-const STORYBOOK_URL = 'http://localhost:6006';
+const STORYBOOK_URL = "http://localhost:6006";
 
 // ストーリー一覧を取得してテストを動的に生成
 let stories: Awaited<ReturnType<typeof getStories>> = [];
@@ -11,21 +15,26 @@ test.beforeAll(async () => {
   const allStories = await getStories(STORYBOOK_URL);
   stories = filterTestableStories(allStories);
 
-  console.log(`Found ${allStories.length} stories, ${stories.length} testable stories`);
+  console.log(
+    `Found ${allStories.length} stories, ${stories.length} testable stories`
+  );
 });
 
 // 各ストーリーに対して VRT テストを実行
-test.describe('Visual Regression Tests', () => {
+test.describe("Visual Regression Tests", () => {
   for (const viewport of [
-    { name: 'desktop', width: 1280, height: 720 },
-    { name: 'mobile', width: 375, height: 667 },
+    { name: "desktop", width: 1280, height: 720 },
+    { name: "mobile", width: 375, height: 667 },
   ]) {
     test.describe(`${viewport.name} viewport`, () => {
       test.beforeEach(async ({ page }) => {
-        await page.setViewportSize({ width: viewport.width, height: viewport.height });
+        await page.setViewportSize({
+          width: viewport.width,
+          height: viewport.height,
+        });
       });
 
-      test('should match screenshots for all stories', async ({ page }) => {
+      test("should match screenshots for all stories", async ({ page }) => {
         // ストーリーが取得できない場合はスキップ
         if (stories.length === 0) {
           test.skip();
@@ -38,7 +47,7 @@ test.describe('Visual Regression Tests', () => {
           await page.goto(storyUrl);
 
           // ストーリーの読み込みを待つ
-          await page.waitForLoadState('networkidle');
+          await page.waitForLoadState("networkidle");
 
           // 少し待ってアニメーションなどが完了するのを待つ
           await page.waitForTimeout(500);

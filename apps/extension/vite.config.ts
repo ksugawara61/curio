@@ -53,5 +53,10 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./src/libs/test/setup.ts"],
+    exclude: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/tests/vrt/**", // Playwright VRT tests
+    ],
   },
 });

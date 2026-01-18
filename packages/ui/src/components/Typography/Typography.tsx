@@ -64,14 +64,14 @@ const SIZE_CLASSES: Record<TypographySize, string> = {
  * <Typography as="div" size="lg" className="custom-class">Custom div</Typography>
  * ```
  */
-export function Typography<T extends ElementType = "p">({
+export const Typography = <T extends ElementType = "p">({
   as,
   size = "base",
   children,
   className = "",
   ...props
 }: TypographyProps<T> &
-  Omit<ComponentPropsWithoutRef<T>, keyof TypographyProps<T>>) {
+  Omit<ComponentPropsWithoutRef<T>, keyof TypographyProps<T>>) => {
   const Component = as || "p";
   const sizeClass = SIZE_CLASSES[size];
   const classes = [sizeClass, className].filter(Boolean).join(" ");
@@ -81,4 +81,4 @@ export function Typography<T extends ElementType = "p">({
       {children}
     </Component>
   );
-}
+};

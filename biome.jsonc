@@ -48,6 +48,16 @@
       "assist": {
         "enabled": false
       }
+    },
+    {
+      "includes": ["packages/ui/**/*"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noSolidDestructuredProps": "off"
+          }
+        }
+      }
     }
   ]
 }

@@ -75,7 +75,7 @@ const JUSTIFY_CLASSES: Record<JustifyContent, string> = {
  * </VStack>
  * ```
  */
-export function VStack({
+export const VStack = ({
   spacing,
   align = "stretch",
   justify = "start",
@@ -96,7 +96,7 @@ export function VStack({
   px,
   py,
   ...props
-}: VStackProps) {
+}: VStackProps) => {
   const spacingProps = { m, mt, mr, mb, ml, mx, my, p, pt, pr, pb, pl, px, py };
 
   const classes = [
@@ -116,4 +116,4 @@ export function VStack({
       {children}
     </div>
   );
-}
+};

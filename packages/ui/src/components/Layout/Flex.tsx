@@ -102,7 +102,7 @@ const JUSTIFY_CLASSES: Record<JustifyContent, string> = {
  * </Flex>
  * ```
  */
-export function Flex({
+export const Flex = ({
   direction = "row",
   wrap = "nowrap",
   spacing,
@@ -125,7 +125,7 @@ export function Flex({
   px,
   py,
   ...props
-}: FlexProps) {
+}: FlexProps) => {
   const spacingProps = { m, mt, mr, mb, ml, mx, my, p, pt, pr, pb, pl, px, py };
 
   const classes = [
@@ -146,4 +146,4 @@ export function Flex({
       {children}
     </div>
   );
-}
+};

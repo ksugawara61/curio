@@ -24,7 +24,7 @@ export interface StorybookIndex {
 /**
  * Storybook の index.json からストーリー一覧を取得
  */
-export async function getStories(baseURL: string): Promise<StoryEntry[]> {
+export const getStories = async (baseURL: string): Promise<StoryEntry[]> => {
   const response = await fetch(`${baseURL}/index.json`);
   if (!response.ok) {
     throw new Error(`Failed to fetch stories: ${response.statusText}`);
@@ -32,12 +32,12 @@ export async function getStories(baseURL: string): Promise<StoryEntry[]> {
 
   const index: StorybookIndex = await response.json();
   return Object.values(index.entries);
-}
+};
 
 /**
  * VRT テスト対象のストーリーをフィルタリング
  */
-export function filterTestableStories(stories: StoryEntry[]): StoryEntry[] {
+export const filterTestableStories = (stories: StoryEntry[]): StoryEntry[] => {
   return stories.filter((story) => {
     // parameters.playwright.skip が true の場合はスキップ
     if (story.parameters?.playwright?.skip === true) {
@@ -51,11 +51,11 @@ export function filterTestableStories(stories: StoryEntry[]): StoryEntry[] {
 
     return true;
   });
-}
+};
 
 /**
  * ストーリーの URL を生成
  */
-export function getStoryUrl(baseURL: string, storyId: string): string {
+export const getStoryUrl = (baseURL: string, storyId: string): string => {
   return `${baseURL}/iframe.html?id=${storyId}&viewMode=story`;
-}
+};

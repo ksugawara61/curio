@@ -39,7 +39,7 @@ export interface SpacingProps {
 /**
  * Get Tailwind classes from spacing props
  */
-export function getSpacingClasses(props: SpacingProps): string[] {
+export const getSpacingClasses = (props: SpacingProps): string[] => {
   const classes: string[] = [];
 
   // Margin
@@ -89,4 +89,4 @@ export function getSpacingClasses(props: SpacingProps): string[] {
   }
 
   return classes;
-}
+};

@@ -40,12 +40,12 @@ export type SpacingToken =
 /**
  * Convert spacing token to Tailwind class
  */
-export function getSpacingClass(
+export const getSpacingClass = (
   prefix: string,
   value: SpacingToken | undefined
-): string {
+): string => {
   if (value === undefined) {
     return "";
   }
   return `${prefix}-${value.toString().replace(".", "\\.")}`;
-}
+};

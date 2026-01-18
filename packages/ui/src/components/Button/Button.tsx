@@ -77,7 +77,7 @@ const SIZE_CLASSES: Record<ButtonSize, string> = {
  * <Button variant="primary" block>Full Width Button</Button>
  * ```
  */
-export function Button({
+export const Button = ({
   variant,
   size = "md",
   block = false,
@@ -85,7 +85,7 @@ export function Button({
   className = "",
   type = "button",
   ...props
-}: ButtonProps) {
+}: ButtonProps) => {
   const classes = [
     "btn",
     variant ? VARIANT_CLASSES[variant] : "",
@@ -101,4 +101,4 @@ export function Button({
       {children}
     </button>
   );
-}
+};

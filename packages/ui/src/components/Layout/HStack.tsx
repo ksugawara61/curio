@@ -75,7 +75,7 @@ const JUSTIFY_CLASSES: Record<JustifyContent, string> = {
  * </HStack>
  * ```
  */
-export function HStack({
+export const HStack = ({
   spacing,
   align = "stretch",
   justify = "start",
@@ -96,7 +96,7 @@ export function HStack({
   px,
   py,
   ...props
-}: HStackProps) {
+}: HStackProps) => {
   const spacingProps = { m, mt, mr, mb, ml, mx, my, p, pt, pr, pb, pl, px, py };
 
   const classes = [
@@ -116,4 +116,4 @@ export function HStack({
       {children}
     </div>
   );
-}
+};

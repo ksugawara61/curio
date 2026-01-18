@@ -1,89 +1,49 @@
-import {
-  GraphQLBoolean,
-  GraphQLInputObjectType,
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLSchema,
-  GraphQLString,
-} from "graphql";
 import { todoStore } from "./store.js";
 
-const TodoType = new GraphQLObjectType({
-  name: "Todo",
-  fields: {
-    id: { type: new GraphQLNonNull(GraphQLString) },
-    title: { type: new GraphQLNonNull(GraphQLString) },
-    completed: { type: new GraphQLNonNull(GraphQLBoolean) },
-    createdAt: { type: new GraphQLNonNull(GraphQLString) },
-  },
-});
+export const typeDefs = `#graphql
+  type Todo {
+    id: ID!
+    title: String!
+    completed: Boolean!
+    createdAt: String!
+  }
 
-const CreateTodoInputType = new GraphQLInputObjectType({
-  name: "CreateTodoInput",
-  fields: {
-    title: { type: new GraphQLNonNull(GraphQLString) },
-  },
-});
+  input CreateTodoInput {
+    title: String!
+  }
 
-const UpdateTodoInputType = new GraphQLInputObjectType({
-  name: "UpdateTodoInput",
-  fields: {
-    id: { type: new GraphQLNonNull(GraphQLString) },
-    title: { type: GraphQLString },
-    completed: { type: GraphQLBoolean },
-  },
-});
+  input UpdateTodoInput {
+    id: ID!
+    title: String
+    completed: Boolean
+  }
 
-const QueryType = new GraphQLObjectType({
-  name: "Query",
-  fields: {
-    todos: {
-      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(TodoType))),
-      resolve: () => todoStore.getAll(),
-    },
-    todo: {
-      type: TodoType,
-      args: {
-        id: { type: new GraphQLNonNull(GraphQLString) },
-      },
-      resolve: (_parent, args: { id: string }) => todoStore.getById(args.id),
-    },
-  },
-});
+  type Query {
+    todos: [Todo!]!
+    todo(id: ID!): Todo
+  }
 
-const MutationType = new GraphQLObjectType({
-  name: "Mutation",
-  fields: {
-    createTodo: {
-      type: new GraphQLNonNull(TodoType),
-      args: {
-        input: { type: new GraphQLNonNull(CreateTodoInputType) },
-      },
-      resolve: (_parent, args: { input: { title: string } }) =>
-        todoStore.create(args.input),
-    },
-    updateTodo: {
-      type: TodoType,
-      args: {
-        input: { type: new GraphQLNonNull(UpdateTodoInputType) },
-      },
-      resolve: (
-        _parent,
-        args: { input: { id: string; title?: string; completed?: boolean } }
-      ) => todoStore.update(args.input),
-    },
-    deleteTodo: {
-      type: new GraphQLNonNull(GraphQLBoolean),
-      args: {
-        id: { type: new GraphQLNonNull(GraphQLString) },
-      },
-      resolve: (_parent, args: { id: string }) => todoStore.delete(args.id),
-    },
-  },
-});
+  type Mutation {
+    createTodo(input: CreateTodoInput!): Todo!
+    updateTodo(input: UpdateTodoInput!): Todo
+    deleteTodo(id: ID!): Boolean!
+  }
+`;
 
-export const schema = new GraphQLSchema({
-  query: QueryType,
-  mutation: MutationType,
-});
+export const resolvers = {
+  Query: {
+    todos: () => todoStore.getAll(),
+    todo: (_parent: unknown, args: { id: string }) =>
+      todoStore.getById(args.id),
+  },
+  Mutation: {
+    createTodo: (_parent: unknown, args: { input: { title: string } }) =>
+      todoStore.create(args.input),
+    updateTodo: (
+      _parent: unknown,
+      args: { input: { id: string; title?: string; completed?: boolean } }
+    ) => todoStore.update(args.input),
+    deleteTodo: (_parent: unknown, args: { id: string }) =>
+      todoStore.delete(args.id),
+  },
+};

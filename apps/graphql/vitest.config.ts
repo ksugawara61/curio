@@ -5,4 +5,7 @@ export default defineConfig({
     globals: true,
     environment: "node",
   },
+  resolve: {
+    dedupe: ["graphql"],
+  },
 });

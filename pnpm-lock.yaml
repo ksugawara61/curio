@@ -31,6 +31,9 @@ catalogs:
       specifier: ^7.0.11
       version: 7.0.11
 
+overrides:
+  graphql: ^16.9.0
+
 importers:
 
   .:

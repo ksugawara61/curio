@@ -70,6 +70,9 @@ catalogs:
       specifier: ^4.0.17
       version: 4.0.17
 
+overrides:
+  graphql: ^16.9.0
+
 importers:
 
   .:

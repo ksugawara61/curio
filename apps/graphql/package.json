@@ -11,11 +11,14 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@apollo/server": "catalog:",
+    "body-parser": "catalog:",
+    "cors": "catalog:",
     "express": "catalog:",
-    "graphql": "catalog:",
-    "graphql-http": "catalog:"
+    "graphql": "catalog:"
   },
   "devDependencies": {
+    "@types/cors": "catalog:",
     "@types/express": "catalog:",
     "@types/node": "catalog:",
     "tsx": "catalog:",

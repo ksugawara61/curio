@@ -4,7 +4,7 @@ import { getSpacingClass } from "../../tokens/spacing";
 /**
  * Spacing props interface for margin and padding
  */
-export interface SpacingProps {
+export type SpacingProps = {
   /** Margin - all sides */
   m?: SpacingToken;
   /** Margin top */
@@ -34,7 +34,7 @@ export interface SpacingProps {
   px?: SpacingToken;
   /** Padding vertical (top and bottom) */
   py?: SpacingToken;
-}
+};
 
 /**
  * Get Tailwind classes from spacing props

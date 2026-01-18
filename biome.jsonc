@@ -18,7 +18,13 @@
         "noInferrableTypes": "error",
         "noUselessElse": "error",
         "noNonNullAssertion": "error",
-        "useFilenamingConvention": "off"
+        "useFilenamingConvention": "off",
+        "useConsistentTypeDefinitions": {
+          "level": "error",
+          "options": {
+            "style": "type"
+          }
+        }
       },
       "suspicious": {
         "noExplicitAny": "error",

@@ -2,7 +2,7 @@
  * Storybook のストーリー情報を取得するユーティリティ
  */
 
-export interface StoryEntry {
+export type StoryEntry = {
   id: string;
   title: string;
   name: string;
@@ -14,12 +14,12 @@ export interface StoryEntry {
     };
     [key: string]: unknown;
   };
-}
+};
 
-export interface StorybookIndex {
+export type StorybookIndex = {
   v: number;
   entries: Record<string, StoryEntry>;
-}
+};
 
 /**
  * Storybook の index.json からストーリー一覧を取得

@@ -19,7 +19,7 @@ export type TypographyVariant =
   | "span"
   | "div";
 
-export interface TypographyProps<T extends ElementType = "p"> {
+export type TypographyProps<T extends ElementType = "p"> = {
   /**
    * The HTML element to render
    * @default "p"
@@ -41,7 +41,7 @@ export interface TypographyProps<T extends ElementType = "p"> {
    * Additional CSS classes
    */
   className?: string;
-}
+};
 
 const SIZE_CLASSES: Record<TypographySize, string> = {
   sm: "prose-sm",

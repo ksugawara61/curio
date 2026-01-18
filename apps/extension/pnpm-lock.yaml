@@ -37,7 +37,7 @@ catalogs:
       specifier: ^0.0.254
       version: 0.0.254
     '@types/node':
-      specifier: ^25.0.7
+      specifier: 25.0.8
       version: 25.0.8
     '@types/react':
       specifier: ^18.3.27
@@ -83,9 +83,6 @@ importers:
       '@curio/ui':
         specifier: workspace:*
         version: link:../../packages/ui
-      '@types/node':
-        specifier: 'catalog:'
-        version: 25.0.8
       react:
         specifier: 'catalog:'
         version: 18.3.1
@@ -123,6 +120,9 @@ importers:
       '@types/chrome':
         specifier: 'catalog:'
         version: 0.0.254
+      '@types/node':
+        specifier: 'catalog:'
+        version: 25.0.8
       '@types/react':
         specifier: 'catalog:'
         version: 18.3.27

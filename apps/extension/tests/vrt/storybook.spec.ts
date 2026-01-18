@@ -58,7 +58,7 @@ test.describe("Visual Regression Tests", () => {
           // ストーリー名をファイル名として使用
           const snapshotName = `${story.id}-${viewport.name}.png`;
 
-          await expect(screenshot).toMatchSnapshot(snapshotName, {
+          expect(screenshot).toMatchSnapshot(snapshotName, {
             maxDiffPixels: 100, // 許容する差分ピクセル数
           });
 

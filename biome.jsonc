@@ -18,7 +18,8 @@
         "noInferrableTypes": "error",
         "noUselessElse": "error",
         "noNonNullAssertion": "error",
-        "useFilenamingConvention": "off"
+        "useFilenamingConvention": "off",
+        "useShorthandFunctionType": "error"
       },
       "suspicious": {
         "noExplicitAny": "error",
@@ -26,6 +27,9 @@
       },
       "performance": {
         "noBarrelFile": "off"
+      },
+      "complexity": {
+        "useArrowFunction": "error"
       }
     }
   },

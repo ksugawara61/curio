@@ -34,7 +34,6 @@
     "@vitejs/plugin-react": "catalog:",
     "daisyui": "catalog:",
     "jsdom": "catalog:",
-    "pixelmatch": "catalog:",
     "storybook": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",

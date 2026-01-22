@@ -16,7 +16,7 @@ catalog:
   '@textlint-ja/textlint-rule-preset-ai-writing': 1.6.1
   '@types/chrome': ^0.0.254
   '@types/node': 25.0.8
-  '@types/react': ^18.3.27
+  '@types/react': ^19.2.8
   '@types/react-dom': ^18.3.7
   '@vitejs/plugin-react': ^5.1.2
   daisyui: ^5.0.43

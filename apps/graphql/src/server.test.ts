@@ -1,10 +1,7 @@
 import type { GraphQLFormattedError } from "graphql";
 import { describe, expect, it } from "vitest";
+import type { Query } from "./generated/graphql";
 import { server } from "./server";
-
-type HelloQueryResponse = {
-  hello: string | null;
-};
 
 type SingleResultBody<TData> = {
   kind: "single";
@@ -22,13 +19,13 @@ const isSingleResult = <TData>(
 
 describe("GraphQL Resolver Tests", () => {
   it("should return 'world' for hello query", async () => {
-    const { body } = await server.executeOperation<HelloQueryResponse>({
+    const { body } = await server.executeOperation<Query>({
       query: `query {
         hello
       }`,
     });
 
-    if (!isSingleResult<HelloQueryResponse>(body)) {
+    if (!isSingleResult<Query>(body)) {
       throw new Error("Expected single result");
     }
     expect(body.singleResult.errors).toBeUndefined();

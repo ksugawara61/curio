@@ -1,0 +1,28 @@
+{
+  "name": "@curio/graphql",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.17.0",
+  "dependencies": {
+    "@apollo/server": "catalog:",
+    "@as-integrations/express5": "catalog:",
+    "cors": "catalog:",
+    "express": "catalog:",
+    "graphql": "catalog:"
+  },
+  "devDependencies": {
+    "@types/cors": "catalog:",
+    "@types/express": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
+  }
+}

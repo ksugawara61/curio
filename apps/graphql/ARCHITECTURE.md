@@ -13,8 +13,8 @@ apps/graphql/src/
 ├── application/               # Application 層（ユースケース）
 │   ├── queries/              # クエリのユースケース
 │   │   └── hello/
-│   │       ├── hello.usecase.ts
-│   │       └── hello.usecase.test.ts
+│   │       ├── hello.ts
+│   │       └── hello.test.ts
 │   └── mutations/            # ミューテーションのユースケース
 ├── infrastructure/            # Infrastructure 層
 │   ├── database/             # データベースアクセス
@@ -48,17 +48,17 @@ GraphQL スキーマ定義と自動生成ファイルを管理します。
 
 ```typescript
 // Input type
-export type HelloUseCaseInput = Record<string, never>;
+export type HelloInput = Record<string, never>;
 
 // Output type
-export type HelloUseCaseOutput = {
+export type HelloOutput = {
   message: string;
 };
 
 // UseCase implementation
-export const helloUseCase = (
-  _input: HelloUseCaseInput
-): HelloUseCaseOutput => {
+export const hello = (
+  _input: HelloInput
+): HelloOutput => {
   return {
     message: "world",
   };
@@ -66,7 +66,7 @@ export const helloUseCase = (
 ```
 
 **テストの書き方：**
-- コロケーション: `*.usecase.test.ts` として同じディレクトリに配置
+- コロケーション: `*.test.ts` として同じディレクトリに配置
 - Application 層のみをテスト対象とする
 - ユニットテストで各ユースケースの動作を検証
 
@@ -105,13 +105,13 @@ npm run codegen
 `src/application/queries/` または `src/application/mutations/` に usecase を実装します。
 
 ```typescript
-// src/application/queries/hello/hello.usecase.ts
-export type HelloUseCaseInput = Record<string, never>;
-export type HelloUseCaseOutput = { message: string };
+// src/application/queries/hello/hello.ts
+export type HelloInput = Record<string, never>;
+export type HelloOutput = { message: string };
 
-export const helloUseCase = (
-  _input: HelloUseCaseInput
-): HelloUseCaseOutput => {
+export const hello = (
+  _input: HelloInput
+): HelloOutput => {
   return { message: "world" };
 };
 ```
@@ -121,13 +121,13 @@ export const helloUseCase = (
 同じディレクトリにテストファイルを作成します。
 
 ```typescript
-// src/application/queries/hello/hello.usecase.test.ts
+// src/application/queries/hello/hello.test.ts
 import { describe, expect, it } from "vitest";
-import { helloUseCase } from "./hello.usecase";
+import { hello } from "./hello";
 
-describe("helloUseCase", () => {
+describe("hello", () => {
   it("should return world message", () => {
-    const result = helloUseCase({});
+    const result = hello({});
     expect(result.message).toBe("world");
   });
 });
@@ -138,14 +138,11 @@ describe("helloUseCase", () => {
 `src/server.ts` で usecase を呼び出すように resolver を実装します。
 
 ```typescript
-import { helloUseCase } from "./application/queries/hello/hello.usecase";
+import { hello } from "./application/queries/hello/hello";
 
 const resolvers: Resolvers = {
   Query: {
-    hello: () => {
-      const result = helloUseCase({});
-      return result.message;
-    },
+    hello: () => hello({}).message,
   },
 };
 ```
@@ -156,7 +153,7 @@ const resolvers: Resolvers = {
 
 - **対象**: すべての usecase
 - **方法**: ユニットテスト
-- **配置**: コロケーション（`*.usecase.test.ts`）
+- **配置**: コロケーション（`*.test.ts`）
 - **ツール**: Vitest
 
 ### Infrastructure 層のテスト
@@ -169,15 +166,16 @@ const resolvers: Resolvers = {
 
 ### ファイル命名規則
 
-- UseCase: `*.usecase.ts`
-- UseCase Test: `*.usecase.test.ts`
+- UseCase: `{機能名}.ts` (例: `hello.ts`)
+- UseCase Test: `{機能名}.test.ts` (例: `hello.test.ts`)
 - Repository: `*.repository.ts`
 - Client: `*.client.ts`
 
 ### 型命名規則
 
-- Input: `{UseCaseName}Input`
-- Output: `{UseCaseName}Output`
+- Input: `{機能名}Input` (例: `HelloInput`)
+- Output: `{機能名}Output` (例: `HelloOutput`)
+- 関数名: Resolver名と同じ名前を使用 (例: `hello`)
 
 ### ディレクトリ構造
 

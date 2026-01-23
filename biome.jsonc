@@ -1,7 +1,36 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "extends": ["ultracite/core", "ultracite/solid"],
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "files": {
+    "includes": [
+      "biome.jsonc",
+      "turbo.json",
+      "**/package.json",
+      "**/.mcp.json",
+      "**/.textlintrc.json",
+      "**/eslint.config.mjs",
+      "**/.storybook/**",
+      "**/apps/*/src/**",
+      "**/packages/*/src/**",
+      "**/scripts/**",
+      "!**/*.css",
+      "!package.json",
+      "!**/src/**/generated/*",
+      "!**/src/**/*.generated.ts",
+      "!**/src/libs/openapi/schemas",
+      "!**/android",
+      "!**/ios",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/coverage",
+      "!**/tmp",
+      "!**/pnpm-lock.yaml",
+      "!**/*.local.json",
+      "!**/.pylon",
+      "!**/src/**/gql-tada/graphql-*.d.ts"
+    ]
+  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -37,19 +66,5 @@
   },
   "formatter": {
     "indentStyle": "space"
-  },
-  "overrides": [
-    {
-      "includes": ["packages/analyzer/bindings/**/*"],
-      "linter": {
-        "enabled": false
-      },
-      "formatter": {
-        "enabled": false
-      },
-      "assist": {
-        "enabled": false
-      }
-    }
-  ]
+  }
 }

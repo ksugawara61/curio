@@ -8,7 +8,7 @@ describe("Flex", () => {
       <Flex>
         <div>Child 1</div>
         <div>Child 2</div>
-      </Flex>
+      </Flex>,
     );
     expect(screen.getByText("Child 1")).toBeInTheDocument();
     expect(screen.getByText("Child 2")).toBeInTheDocument();
@@ -18,7 +18,7 @@ describe("Flex", () => {
     const { container } = render(
       <Flex>
         <div>Content</div>
-      </Flex>
+      </Flex>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("flex");
@@ -28,7 +28,7 @@ describe("Flex", () => {
     const { container, rerender } = render(
       <Flex direction="row">
         <div>Content</div>
-      </Flex>
+      </Flex>,
     );
     let element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("flex-row");
@@ -36,7 +36,7 @@ describe("Flex", () => {
     rerender(
       <Flex direction="col">
         <div>Content</div>
-      </Flex>
+      </Flex>,
     );
     element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("flex-col");
@@ -44,7 +44,7 @@ describe("Flex", () => {
     rerender(
       <Flex direction="row-reverse">
         <div>Content</div>
-      </Flex>
+      </Flex>,
     );
     element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("flex-row-reverse");
@@ -54,7 +54,7 @@ describe("Flex", () => {
     const { container } = render(
       <Flex wrap="wrap">
         <div>Content</div>
-      </Flex>
+      </Flex>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("flex-wrap");
@@ -64,7 +64,7 @@ describe("Flex", () => {
     const { container } = render(
       <Flex spacing={4}>
         <div>Content</div>
-      </Flex>
+      </Flex>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("gap-4");
@@ -74,7 +74,7 @@ describe("Flex", () => {
     const { container } = render(
       <Flex align="center">
         <div>Content</div>
-      </Flex>
+      </Flex>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("items-center");
@@ -84,7 +84,7 @@ describe("Flex", () => {
     const { container } = render(
       <Flex justify="between">
         <div>Content</div>
-      </Flex>
+      </Flex>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("justify-between");
@@ -94,7 +94,7 @@ describe("Flex", () => {
     const { container } = render(
       <Flex m={2} my={8} p={4} px={6}>
         <div>Content</div>
-      </Flex>
+      </Flex>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("p-4");
@@ -107,7 +107,7 @@ describe("Flex", () => {
     const { container } = render(
       <Flex className="custom-class">
         <div>Content</div>
-      </Flex>
+      </Flex>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("flex");
@@ -125,7 +125,7 @@ describe("Flex", () => {
         wrap="wrap"
       >
         <div>Content</div>
-      </Flex>
+      </Flex>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("flex");

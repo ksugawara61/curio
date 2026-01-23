@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename);
 
 const typeDefs = fs.readFileSync(
   path.join(__dirname, "schema/schema.graphql"),
-  "utf-8"
+  "utf-8",
 );
 
 // A map of functions which return data for the schema.

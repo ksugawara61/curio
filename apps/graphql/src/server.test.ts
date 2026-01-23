@@ -12,7 +12,7 @@ type SingleResultBody<TData> = {
 };
 
 const isSingleResult = <TData>(
-  body: Awaited<ReturnType<typeof server.executeOperation<TData>>>["body"]
+  body: Awaited<ReturnType<typeof server.executeOperation<TData>>>["body"],
 ): body is SingleResultBody<TData> => {
   return body.kind === "single";
 };

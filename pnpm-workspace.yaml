@@ -5,7 +5,7 @@ packages:
 catalog:
   '@apollo/server': ^5.2.0
   '@as-integrations/express5': ^1.1.2
-  '@biomejs/biome': 2.3.12
+  '@biomejs/biome': 2.3.11
   '@playwright/test': ^1.57.0
   '@storybook/addon-links': 10.1.11
   '@storybook/addon-themes': ^10.1.11
@@ -49,9 +49,6 @@ catalogMode: strict
 hoistWorkspacePackages: false
 
 minimumReleaseAge: 4320
-
-minimumReleaseAgeExclude:
-  - '@biomejs/biome'
 
 nodeLinker: hoisted
 

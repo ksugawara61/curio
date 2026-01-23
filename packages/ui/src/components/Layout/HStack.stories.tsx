@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta } from "@storybook/react";
 import { Button } from "../Button/Button";
 import { Typography } from "../Typography/Typography";
 import { HStack } from "./HStack";
@@ -13,7 +13,6 @@ const meta = {
 } satisfies Meta<typeof HStack>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
 
 export const Default = {
   render: () => (

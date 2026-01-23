@@ -1,21 +1,20 @@
 {
-  "scripts": {
-    "clean": "npkill -D -x",
-    "postinstall": "lefthook install",
-    "lint": "ultracite check",
-    "fmt": "ultracite fix",
-    "typecheck": "turbo typecheck",
-    "test": "turbo test"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "catalog:",
-    "@textlint-ja/textlint-rule-preset-ai-writing": "catalog:",
-    "lefthook": "catalog:",
-    "npkill": "catalog:",
-    "textlint": "catalog:",
-    "textlint-rule-preset-ja-technical-writing": "catalog:",
-    "turbo": "catalog:",
-    "ultracite": "catalog:"
-  },
-  "packageManager": "pnpm@10.17.0+sha256.bd9ec5417641391e0acb3912b2912bd5b0385407a82da94744a7407b567fdb4f"
+	"scripts": {
+		"clean": "npkill -D -x",
+		"postinstall": "lefthook install",
+		"lint": "biome ci .",
+		"fmt": "biome check . --write",
+		"typecheck": "turbo typecheck",
+		"test": "turbo test"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "catalog:",
+		"@textlint-ja/textlint-rule-preset-ai-writing": "catalog:",
+		"lefthook": "catalog:",
+		"npkill": "catalog:",
+		"textlint": "catalog:",
+		"textlint-rule-preset-ja-technical-writing": "catalog:",
+		"turbo": "catalog:"
+	},
+	"packageManager": "pnpm@10.17.0+sha256.bd9ec5417641391e0acb3912b2912bd5b0385407a82da94744a7407b567fdb4f"
 }

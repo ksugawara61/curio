@@ -8,7 +8,7 @@ describe("VStack", () => {
       <VStack>
         <div>Child 1</div>
         <div>Child 2</div>
-      </VStack>
+      </VStack>,
     );
     expect(screen.getByText("Child 1")).toBeInTheDocument();
     expect(screen.getByText("Child 2")).toBeInTheDocument();
@@ -18,7 +18,7 @@ describe("VStack", () => {
     const { container } = render(
       <VStack>
         <div>Content</div>
-      </VStack>
+      </VStack>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("flex");
@@ -29,7 +29,7 @@ describe("VStack", () => {
     const { container } = render(
       <VStack spacing={4}>
         <div>Content</div>
-      </VStack>
+      </VStack>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("gap-4");
@@ -39,7 +39,7 @@ describe("VStack", () => {
     const { container, rerender } = render(
       <VStack align="center">
         <div>Content</div>
-      </VStack>
+      </VStack>,
     );
     let element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("items-center");
@@ -47,7 +47,7 @@ describe("VStack", () => {
     rerender(
       <VStack align="start">
         <div>Content</div>
-      </VStack>
+      </VStack>,
     );
     element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("items-start");
@@ -57,7 +57,7 @@ describe("VStack", () => {
     const { container } = render(
       <VStack justify="between">
         <div>Content</div>
-      </VStack>
+      </VStack>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("justify-between");
@@ -67,7 +67,7 @@ describe("VStack", () => {
     const { container } = render(
       <VStack p={4} pb={6} pt={2}>
         <div>Content</div>
-      </VStack>
+      </VStack>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("p-4");
@@ -79,7 +79,7 @@ describe("VStack", () => {
     const { container } = render(
       <VStack m={4} mx={8}>
         <div>Content</div>
-      </VStack>
+      </VStack>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("m-4");
@@ -90,7 +90,7 @@ describe("VStack", () => {
     const { container } = render(
       <VStack className="custom-class">
         <div>Content</div>
-      </VStack>
+      </VStack>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("flex");
@@ -101,7 +101,7 @@ describe("VStack", () => {
     const { container } = render(
       <VStack data-testid="vstack" id="my-stack">
         <div>Content</div>
-      </VStack>
+      </VStack>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveAttribute("data-testid", "vstack");

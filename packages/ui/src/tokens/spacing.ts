@@ -42,7 +42,7 @@ export type SpacingToken =
  */
 export function getSpacingClass(
   prefix: string,
-  value: SpacingToken | undefined
+  value: SpacingToken | undefined,
 ): string {
   if (value === undefined) {
     return "";

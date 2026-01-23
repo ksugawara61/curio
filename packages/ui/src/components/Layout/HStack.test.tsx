@@ -8,7 +8,7 @@ describe("HStack", () => {
       <HStack>
         <div>Child 1</div>
         <div>Child 2</div>
-      </HStack>
+      </HStack>,
     );
     expect(screen.getByText("Child 1")).toBeInTheDocument();
     expect(screen.getByText("Child 2")).toBeInTheDocument();
@@ -18,7 +18,7 @@ describe("HStack", () => {
     const { container } = render(
       <HStack>
         <div>Content</div>
-      </HStack>
+      </HStack>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("flex");
@@ -29,7 +29,7 @@ describe("HStack", () => {
     const { container } = render(
       <HStack spacing={4}>
         <div>Content</div>
-      </HStack>
+      </HStack>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("gap-4");
@@ -39,7 +39,7 @@ describe("HStack", () => {
     const { container } = render(
       <HStack align="center">
         <div>Content</div>
-      </HStack>
+      </HStack>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("items-center");
@@ -49,7 +49,7 @@ describe("HStack", () => {
     const { container } = render(
       <HStack justify="between">
         <div>Content</div>
-      </HStack>
+      </HStack>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("justify-between");
@@ -59,7 +59,7 @@ describe("HStack", () => {
     const { container } = render(
       <HStack m={2} p={4}>
         <div>Content</div>
-      </HStack>
+      </HStack>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("p-4");
@@ -70,7 +70,7 @@ describe("HStack", () => {
     const { container } = render(
       <HStack className="custom-class">
         <div>Content</div>
-      </HStack>
+      </HStack>,
     );
     const element = container.firstChild as HTMLElement;
     expect(element).toHaveClass("flex");

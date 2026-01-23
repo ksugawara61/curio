@@ -5,20 +5,21 @@ import { fileURLToPath } from "node:url";
 import { ApolloServer } from "@apollo/server";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import express from "express";
-import type { Resolvers } from "./generated/graphql";
+import { hello } from "./application/queries/hello/hello";
+import type { Resolvers } from "./schema/generated/graphql";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const typeDefs = fs.readFileSync(
-  path.join(__dirname, "schema.graphql"),
-  "utf-8"
+  path.join(__dirname, "schema/schema.graphql"),
+  "utf-8",
 );
 
 // A map of functions which return data for the schema.
 const resolvers: Resolvers = {
   Query: {
-    hello: () => "world",
+    hello: () => hello({}).message,
   },
 };
 

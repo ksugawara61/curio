@@ -1,6 +1,6 @@
 import type { GraphQLFormattedError } from "graphql";
 import { describe, expect, it } from "vitest";
-import type { Query } from "./generated/graphql";
+import type { Query } from "./schema/generated/graphql";
 import { server } from "./server";
 
 type SingleResultBody<TData> = {
@@ -12,7 +12,7 @@ type SingleResultBody<TData> = {
 };
 
 const isSingleResult = <TData>(
-  body: Awaited<ReturnType<typeof server.executeOperation<TData>>>["body"]
+  body: Awaited<ReturnType<typeof server.executeOperation<TData>>>["body"],
 ): body is SingleResultBody<TData> => {
   return body.kind === "single";
 };

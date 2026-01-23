@@ -1,13 +1,13 @@
 import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
-  schema: "./src/schema.graphql", // または schema.ts
+  schema: "./src/schema/schema.graphql",
   generates: {
-    "./src/generated/graphql.ts": {
+    "./src/schema/generated/graphql.ts": {
       plugins: ["typescript", "typescript-resolvers"],
       config: {
         useIndexSignature: true,
-        contextType: "../context#DataSourceContext",
+        contextType: "../../context#DataSourceContext",
       },
     },
   },

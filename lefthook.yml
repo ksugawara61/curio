@@ -24,4 +24,4 @@ pre-commit:
   commands:
     lint:
       glob: "**/*.{js,ts,jsx,tsx,json}"
-      run: pnpm ultracite check --no-error-on-unmatched-pattern true {staged_files}
+      run: pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --write {staged_files}

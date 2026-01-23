@@ -1,17 +1,13 @@
 import { describe, expect, it } from "vitest";
-import {
-  type HelloUseCaseInput,
-  type HelloUseCaseOutput,
-  helloUseCase,
-} from "./hello.usecase";
+import { type HelloInput, type HelloOutput, hello } from "./hello";
 
-describe("helloUseCase", () => {
+describe("hello", () => {
   it("should return world message", () => {
     // Arrange
-    const input: HelloUseCaseInput = {};
+    const input: HelloInput = {};
 
     // Act
-    const result: HelloUseCaseOutput = helloUseCase(input);
+    const result: HelloOutput = hello(input);
 
     // Assert
     expect(result).toEqual({
@@ -21,10 +17,10 @@ describe("helloUseCase", () => {
 
   it("should return string message", () => {
     // Arrange
-    const input: HelloUseCaseInput = {};
+    const input: HelloInput = {};
 
     // Act
-    const result = helloUseCase(input);
+    const result = hello(input);
 
     // Assert
     expect(typeof result.message).toBe("string");
@@ -32,10 +28,10 @@ describe("helloUseCase", () => {
 
   it("should not be empty message", () => {
     // Arrange
-    const input: HelloUseCaseInput = {};
+    const input: HelloInput = {};
 
     // Act
-    const result = helloUseCase(input);
+    const result = hello(input);
 
     // Assert
     expect(result.message).not.toBe("");

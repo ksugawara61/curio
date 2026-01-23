@@ -1,24 +1,22 @@
 /**
- * Hello Query UseCase
+ * Hello Query
  * Application層：resolverに対応するビジネスロジックを実装
  */
 
 // Input type (引数がないクエリのため空オブジェクト)
-export type HelloUseCaseInput = Record<string, never>;
+export type HelloInput = Record<string, never>;
 
 // Output type
-export type HelloUseCaseOutput = {
+export type HelloOutput = {
   message: string;
 };
 
 /**
- * Hello クエリのユースケース
+ * Hello クエリ
  * @param _input - 入力パラメータ（このクエリでは使用しない）
  * @returns Hello メッセージ
  */
-export const helloUseCase = (
-  _input: HelloUseCaseInput
-): HelloUseCaseOutput => {
+export const hello = (_input: HelloInput): HelloOutput => {
   return {
     message: "world",
   };

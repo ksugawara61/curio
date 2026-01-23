@@ -28,8 +28,8 @@ catalogs:
       specifier: 2.7.5
       version: 2.7.5
     ultracite:
-      specifier: ^7.0.11
-      version: 7.0.11
+      specifier: ^7.0.12
+      version: 7.0.12
 
 importers:
 
@@ -58,7 +58,7 @@ importers:
         version: 2.7.5
       ultracite:
         specifier: 'catalog:'
-        version: 7.0.11(typescript@5.9.3)
+        version: 7.0.12(typescript@5.9.3)
 
 packages:
 
@@ -1287,8 +1287,8 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
 
-  nypm@0.6.3:
-    resolution: {integrity: sha512-DflyHQia17hxCPpzBmsVrGyvGG6T56NPG4Gb6eG1rL8PaUg24Tn14iXLRNRjqBP6/TTlya24Ruws0egArAfcCA==}
+  nypm@0.6.4:
+    resolution: {integrity: sha512-1TvCKjZyyklN+JJj2TS3P4uSQEInrM/HkkuSXsEzm1ApPgBffOn8gFguNnZf07r/1X6vlryfIqMUkJKQMzlZiw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -1836,8 +1836,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  ultracite@7.0.11:
-    resolution: {integrity: sha512-YeuJTf/Tu12l7K0qvl1G525NfrPUay6UFVt6TrTL8QfXcFZBI+Tzr0Dg14Hxcb964pRQF5PjBaUk3bJCNQHu+g==}
+  ultracite@7.0.12:
+    resolution: {integrity: sha512-xLvDQrrgd8Xr5YXzsM3E3CMto0nZFNlCqUYB5/qB4SVGXdsXmd6TGFYfd/Xzwc+ma+KOPYo2Cuby31SO9X7npw==}
     hasBin: true
     peerDependencies:
       oxlint: ^1.0.0
@@ -3418,7 +3418,7 @@ snapshots:
       open-file-explorer: 1.0.2
       rxjs: 7.8.2
 
-  nypm@0.6.3:
+  nypm@0.6.4:
     dependencies:
       citty: 0.2.0
       pathe: 2.0.3
@@ -4199,14 +4199,14 @@ snapshots:
 
   typescript@5.9.3: {}
 
-  ultracite@7.0.11(typescript@5.9.3):
+  ultracite@7.0.12(typescript@5.9.3):
     dependencies:
       '@clack/prompts': 0.11.0
       '@trpc/server': 11.8.1(typescript@5.9.3)
       deepmerge: 4.3.1
       glob: 13.0.0
       jsonc-parser: 3.3.1
-      nypm: 0.6.3
+      nypm: 0.6.4
       trpc-cli: 0.12.2(@trpc/server@11.8.1(typescript@5.9.3))(zod@4.3.5)
       zod: 4.3.5
     transitivePeerDependencies:

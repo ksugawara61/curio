@@ -1,33 +1,8 @@
-import http from "node:http";
-import { ApolloServer } from "@apollo/server";
-import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { expressMiddleware } from "@as-integrations/express5";
 import cors from "cors";
 import express from "express";
+import { app, httpServer, server } from "./server";
 
-// The GraphQL schema
-const typeDefs = `#graphql
-  type Query {
-    hello: String
-  }
-`;
-
-// A map of functions which return data for the schema.
-const resolvers = {
-  Query: {
-    hello: () => "world",
-  },
-};
-
-const app = express();
-const httpServer = http.createServer(app);
-
-// Set up Apollo Server
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-});
 await server.start();
 
 app.use(cors(), express.json(), expressMiddleware(server));

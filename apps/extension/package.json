@@ -10,20 +10,15 @@
     "test:watch": "vitest",
     "storybook": "storybook dev -p 6006",
     "vrt": " playwright install chromium && playwright test",
-    "vrt:update": "playwright install chromium && playwright test --update-snapshots",
-    "codegen": "gql.tada generate-output --output src/graphql/graphql-env.d.ts"
+    "vrt:update": "playwright install chromium && playwright test --update-snapshots"
   },
   "dependencies": {
-    "@apollo/client": "catalog:",
+    "@curio/graphql-client": "workspace:*",
     "@curio/ui": "workspace:*",
-    "gql.tada": "catalog:",
-    "graphql": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@0no-co/graphqlsp": "catalog:",
-    "@gql.tada/cli-utils": "catalog:",
     "@playwright/test": "catalog:",
     "@storybook/addon-links": "catalog:",
     "@storybook/addon-themes": "catalog:",

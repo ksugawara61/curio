@@ -1,0 +1,39 @@
+{
+  "name": "@curio/graphql-client",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "codegen": "gql.tada generate-output --output src/graphql/graphql-env.d.ts"
+  },
+  "dependencies": {
+    "@apollo/client": "catalog:",
+    "gql.tada": "catalog:",
+    "graphql": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@0no-co/graphqlsp": "catalog:",
+    "@gql.tada/cli-utils": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vite-plugin-dts": "catalog:"
+  }
+}

@@ -1,4 +1,4 @@
-import { graphql } from "../graphql";
+import { graphql } from "../graphql/graphql";
 
 export const GET_ARTICLES = graphql(`
   query GetArticles($limit: Float, $offset: Float) {

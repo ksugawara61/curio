@@ -1,4 +1,4 @@
-import { ApolloProvider } from "@apollo/client/react";
+import { ApolloProvider } from "@curio/graphql-client";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { apolloClient } from "../lib/apollo-client";

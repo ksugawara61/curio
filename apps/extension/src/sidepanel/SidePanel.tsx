@@ -1,6 +1,5 @@
-import { useQuery } from "@apollo/client/react";
+import { GET_ARTICLES, useQuery } from "@curio/graphql-client";
 import type { FC } from "react";
-import { GET_ARTICLES } from "../graphql/queries/articles";
 
 export const SidePanel: FC = () => {
   const { data, loading, error } = useQuery(GET_ARTICLES, {

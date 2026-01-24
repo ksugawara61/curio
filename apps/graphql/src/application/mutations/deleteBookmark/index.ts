@@ -1,9 +1,14 @@
 import { ServiceError } from "@getcronit/pylon";
-import * as bookmarkRepository from "../../../infrastructure/persistence/BookmarkRepository";
+import { createDb } from "../../../libs/drizzle/client";
+import { BookmarkRepository } from "../../../infrastructure/persistence/bookmarks";
 
 export const deleteBookmark = async (id: string): Promise<boolean> => {
+  const db = createDb();
   try {
-    await bookmarkRepository.deleteBookmark(id);
+    await db.transaction(async (tx) => {
+      const repository = new BookmarkRepository(tx);
+      await repository.deleteBookmark(id);
+    });
     return true;
   } catch (error) {
     if (

@@ -1,21 +1,27 @@
 import { describe, expect, it } from "vitest";
-import * as bookmarkRepository from "../../../infrastructure/persistence/BookmarkRepository";
+import { createDb } from "../../../libs/drizzle/client";
+import { BookmarkRepository } from "../../../infrastructure/persistence/bookmarks";
 import { deleteBookmark } from ".";
 
 describe("deleteBookmark", () => {
   describe("正常系", () => {
     it("should delete a bookmark successfully", async () => {
-      const bookmark = await bookmarkRepository.create({
-        title: "Test Bookmark",
-        url: "https://example.com",
-        description: "A test bookmark",
+      const db = createDb();
+      const bookmark = await db.transaction(async (tx) => {
+        const repository = new BookmarkRepository(tx);
+        return await repository.create({
+          title: "Test Bookmark",
+          url: "https://example.com",
+          description: "A test bookmark",
+        });
       });
 
       const result = await deleteBookmark(bookmark.id);
 
       expect(result).toBe(true);
 
-      const deletedBookmark = await bookmarkRepository.findById(bookmark.id);
+      const repository = new BookmarkRepository();
+      const deletedBookmark = await repository.findById(bookmark.id);
       expect(deletedBookmark).toBeNull();
     });
   });

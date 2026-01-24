@@ -1,12 +1,17 @@
 import { ServiceError } from "@getcronit/pylon";
+import { createDb } from "../../../libs/drizzle/client";
 import type { CreateTagInput, Tag } from "../../../infrastructure/domain/Tag";
-import * as tagRepository from "../../../infrastructure/persistence/TagRepository";
+import { TagRepository } from "../../../infrastructure/persistence/tags";
 
 export type { CreateTagInput };
 
 export const createTag = async (input: CreateTagInput): Promise<Tag> => {
+  const db = createDb();
   try {
-    return await tagRepository.create(input);
+    return await db.transaction(async (tx) => {
+      const repository = new TagRepository(tx);
+      return await repository.create(input);
+    });
   } catch (error) {
     throw new ServiceError(
       `Failed to create tag: ${error instanceof Error ? error.message : "Unknown error"}`,

@@ -1,9 +1,10 @@
 import { ServiceError } from "@getcronit/pylon";
+import { createDb } from "../../../libs/drizzle/client";
 import type {
   Bookmark,
   UpdateBookmarkInput,
 } from "../../../infrastructure/domain/Bookmark";
-import * as bookmarkRepository from "../../../infrastructure/persistence/BookmarkRepository";
+import { BookmarkRepository } from "../../../infrastructure/persistence/bookmarks";
 
 export type { UpdateBookmarkInput };
 
@@ -11,8 +12,12 @@ export const updateBookmark = async (
   id: string,
   input: UpdateBookmarkInput,
 ): Promise<Bookmark> => {
+  const db = createDb();
   try {
-    return await bookmarkRepository.update(id, input);
+    return await db.transaction(async (tx) => {
+      const repository = new BookmarkRepository(tx);
+      return await repository.update(id, input);
+    });
   } catch (error) {
     if (
       error instanceof Error &&

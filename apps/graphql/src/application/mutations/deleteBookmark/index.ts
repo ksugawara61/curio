@@ -1,18 +1,10 @@
 import { ServiceError } from "@getcronit/pylon";
-import type {
-  Bookmark,
-  UpdateBookmarkInput,
-} from "../../infrastructure/domain/Bookmark";
 import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRepository";
 
-export type { UpdateBookmarkInput };
-
-export const updateBookmarkUseCase = async (
-  id: string,
-  input: UpdateBookmarkInput,
-): Promise<Bookmark> => {
+export const deleteBookmark = async (id: string): Promise<boolean> => {
   try {
-    return await bookmarkRepository.update(id, input);
+    await bookmarkRepository.deleteBookmark(id);
+    return true;
   } catch (error) {
     if (
       error instanceof Error &&
@@ -24,7 +16,7 @@ export const updateBookmarkUseCase = async (
       });
     }
     throw new ServiceError(
-      `Failed to update bookmark: ${error instanceof Error ? error.message : "Unknown error"}`,
+      `Failed to delete bookmark: ${error instanceof Error ? error.message : "Unknown error"}`,
       {
         statusCode: 500,
         code: "INTERNAL_ERROR",

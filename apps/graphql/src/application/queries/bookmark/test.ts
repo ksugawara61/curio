@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRepository";
-import { fetchBookmarkByIdUseCase } from "./FetchBookmarkByIdUseCase";
+import { bookmark } from ".";
 
-describe("FetchBookmarkByIdUseCase", () => {
+describe("bookmark", () => {
   describe("正常系", () => {
     it("should return bookmark when found", async () => {
       const bookmark = await bookmarkRepository.create({
@@ -11,7 +11,7 @@ describe("FetchBookmarkByIdUseCase", () => {
         description: "A test bookmark",
       });
 
-      const result = await fetchBookmarkByIdUseCase(bookmark.id);
+      const result = await bookmark(bookmark.id);
 
       expect(result).not.toBeNull();
       expect(result?.id).toBe(bookmark.id);
@@ -23,7 +23,7 @@ describe("FetchBookmarkByIdUseCase", () => {
     it("should return null when bookmark not found", async () => {
       const nonExistentId = "non-existent-id";
 
-      const result = await fetchBookmarkByIdUseCase(nonExistentId);
+      const result = await bookmark(nonExistentId);
 
       expect(result).toBeNull();
     });

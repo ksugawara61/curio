@@ -2,7 +2,7 @@ import { ServiceError } from "@getcronit/pylon";
 import type { Tag } from "../../infrastructure/domain/Tag";
 import * as tagRepository from "../../infrastructure/persistence/TagRepository";
 
-export const fetchTagsUseCase = async (): Promise<Tag[]> => {
+export const tags = async (): Promise<Tag[]> => {
   try {
     return await tagRepository.findAll();
   } catch (error) {

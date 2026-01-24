@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { createBookmarkUseCase } from "./CreateBookmarkUseCase";
+import { createBookmark } from ".";
 
-describe("CreateBookmarkUseCase", () => {
+describe("createBookmark", () => {
   describe("正常系", () => {
     it("should create a bookmark successfully", async () => {
       const input = {
@@ -10,7 +10,7 @@ describe("CreateBookmarkUseCase", () => {
         description: "A test bookmark",
       };
 
-      const result = await createBookmarkUseCase(input);
+      const result = await createBookmark(input);
 
       expect(result).toHaveProperty("id");
       expect(result.title).toBe(input.title);
@@ -26,7 +26,7 @@ describe("CreateBookmarkUseCase", () => {
         url: "https://example.com",
       };
 
-      const result = await createBookmarkUseCase(input);
+      const result = await createBookmark(input);
 
       expect(result).toHaveProperty("id");
       expect(result.title).toBe(input.title);

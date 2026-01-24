@@ -7,7 +7,7 @@ import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRe
 
 export type { CreateBookmarkInput };
 
-export const createBookmarkUseCase = async (
+export const createBookmark = async (
   input: CreateBookmarkInput,
 ): Promise<Bookmark> => {
   try {

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import * as tagRepository from "../../infrastructure/persistence/TagRepository";
-import { fetchTagsUseCase } from "./FetchTagsUseCase";
+import { tags } from ".";
 
-describe("FetchTagsUseCase", () => {
+describe("tags", () => {
   describe("正常系", () => {
     it("should return array of tags", async () => {
       await Promise.all([
@@ -11,7 +11,7 @@ describe("FetchTagsUseCase", () => {
         tagRepository.create({ name: "Database" }),
       ]);
 
-      const result = await fetchTagsUseCase();
+      const result = await tags();
 
       expect(result).toHaveLength(3);
       expect(result[0]).toHaveProperty("id");
@@ -25,7 +25,7 @@ describe("FetchTagsUseCase", () => {
     });
 
     it("should return empty array when no tags exist", async () => {
-      const result = await fetchTagsUseCase();
+      const result = await tags();
 
       expect(result).toEqual([]);
       expect(result).toHaveLength(0);

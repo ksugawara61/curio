@@ -1,13 +1,11 @@
-import { expressMiddleware } from "@as-integrations/express5";
-import cors from "cors";
-import express from "express";
-import { app, httpServer, server } from "./server";
+import { app } from "@getcronit/pylon";
 
-await server.start();
+import { server } from "./server";
 
-app.use(cors(), express.json(), expressMiddleware(server));
+// to opt-out pylon telemetry data
+// ref: https://pylon.cronit.io/docs/telemetry
+process.env.PYLON_TELEMETRY_DISABLED = "1";
 
-await new Promise<void>((resolve) =>
-  httpServer.listen({ port: 4000 }, resolve),
-);
-console.log("🚀 Server ready at http://localhost:4000");
+export const graphql = server;
+
+export default app;

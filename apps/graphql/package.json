@@ -1,30 +1,40 @@
 {
   "name": "@curio/graphql",
+  "private": true,
   "version": "1.0.0",
   "type": "module",
+  "description": "Generated with `npm create pylon`",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc && cp src/schema.graphql dist/",
-    "start": "node dist/index.js",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "dev": "PYLON_TELEMETRY_DISABLED=1 pylon dev -c \"wrangler dev --port 3000\" --client --client-port 3000 --client-path src/generated/gqty/index.ts",
+    "build": "PYLON_TELEMETRY_DISABLED=1 pylon build",
+    "deploy": "pnpm build && wrangler deploy",
+    "test": "vitest",
+    "test:changed": "vitest --changed main",
+    "db:local": "turso dev -f .dev/dev.db",
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "generate:openapi": "openapi-typescript openapi/qiita.yaml -o src/generated/openapi/schema.d.ts",
+    "typecheck": "tsc --noEmit"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.17.0",
   "dependencies": {
-    "@apollo/server": "catalog:",
-    "@as-integrations/express5": "catalog:",
-    "cors": "catalog:",
-    "express": "catalog:",
-    "graphql": "catalog:"
+    "@getcronit/pylon": "catalog:",
+    "@libsql/client": "catalog:",
+    "@paralleldrive/cuid2": "catalog:",
+    "drizzle-orm": "catalog:",
+    "openapi-fetch": "catalog:"
   },
   "devDependencies": {
-    "@types/cors": "catalog:",
-    "@types/express": "catalog:",
-    "tsx": "catalog:",
+    "@cloudflare/workers-types": "catalog:",
+    "@getcronit/pylon-dev": "catalog:",
+    "@vitest/ui": "catalog:",
+    "drizzle-kit": "catalog:",
+    "msw": "catalog:",
+    "openapi-msw": "catalog:",
+    "openapi-typescript": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "wrangler": "catalog:"
   }
 }

@@ -1,7 +1,7 @@
 import {
   createMockQuery,
   GET_ARTICLES,
-  renderWithProviders,
+  render,
   screen,
   waitFor,
 } from "@curio/graphql-client";
@@ -22,7 +22,7 @@ describe("SidePanel", () => {
       }),
     );
 
-    renderWithProviders(<SidePanel />);
+    render(<SidePanel />);
 
     // Check for loading spinner by class name
     const loadingSpinner = document.querySelector(
@@ -67,7 +67,7 @@ describe("SidePanel", () => {
       }),
     );
 
-    renderWithProviders(<SidePanel />);
+    render(<SidePanel />);
 
     await waitFor(() => {
       expect(screen.getByText("Test Article 1")).toBeInTheDocument();
@@ -94,7 +94,7 @@ describe("SidePanel", () => {
       }),
     );
 
-    renderWithProviders(<SidePanel />);
+    render(<SidePanel />);
 
     await waitFor(() => {
       expect(screen.getByText(/Error:/)).toBeInTheDocument();
@@ -127,7 +127,7 @@ describe("SidePanel", () => {
       }),
     );
 
-    renderWithProviders(<SidePanel />);
+    render(<SidePanel />);
 
     await waitFor(() => {
       const link = screen.getByRole("link", { name: "Test Article" });
@@ -161,7 +161,7 @@ describe("SidePanel", () => {
       }),
     );
 
-    renderWithProviders(<SidePanel />);
+    render(<SidePanel />);
 
     await waitFor(() => {
       // Date formatting depends on locale, so just check that a date is displayed

@@ -1,5 +1,9 @@
 import { ApolloProvider } from "@apollo/client/react";
-import { type RenderOptions, render } from "@testing-library/react";
+import {
+  type RenderOptions,
+  type RenderResult,
+  render as rtlRender,
+} from "@testing-library/react";
 import type { ReactElement } from "react";
 import { createGraphQLClient } from "./apollo-client";
 
@@ -22,7 +26,7 @@ export function TestProvider({ children, client }: TestProviderProps) {
   return <ApolloProvider client={testClient}>{children}</ApolloProvider>;
 }
 
-export type RenderWithProvidersOptions = {
+export type CustomRenderOptions = {
   client?: ReturnType<typeof createGraphQLClient>;
 } & Omit<RenderOptions, "wrapper">;
 
@@ -30,13 +34,13 @@ export type RenderWithProvidersOptions = {
  * Testing Library の render 関数のラッパー
  * 自動的に TestProvider でラップする
  */
-export function renderWithProviders(
+export function render(
   ui: ReactElement,
-  options?: RenderWithProvidersOptions,
-) {
+  options?: CustomRenderOptions,
+): RenderResult {
   const { client, ...renderOptions } = options ?? {};
 
-  return render(ui, {
+  return rtlRender(ui, {
     wrapper: ({ children }) => (
       <TestProvider client={client}>{children}</TestProvider>
     ),
@@ -44,6 +48,6 @@ export function renderWithProviders(
   });
 }
 
-export type { RenderResult } from "@testing-library/react";
 // Re-export commonly used utilities from @testing-library/react
 export { fireEvent, screen, waitFor, within } from "@testing-library/react";
+export type { RenderResult };

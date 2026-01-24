@@ -17,14 +17,11 @@ export { graphql, readFragment } from "./graphql/graphql";
 export { createMockMutation, createMockQuery } from "./msw-utils";
 // Queries
 export { GET_ARTICLES } from "./queries/articles";
-export type {
-  RenderWithProvidersOptions,
-  TestProviderProps,
-} from "./test-utils";
+export type { CustomRenderOptions, TestProviderProps } from "./test-utils";
 // Test utilities
 export {
   fireEvent,
-  renderWithProviders,
+  render,
   screen,
   TestProvider,
   waitFor,

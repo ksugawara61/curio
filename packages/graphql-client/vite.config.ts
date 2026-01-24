@@ -18,7 +18,15 @@ export default defineConfig({
       formats: ["es"],
     },
     rollupOptions: {
-      external: ["react", "@apollo/client", "graphql", "gql.tada"],
+      external: [
+        "react",
+        "@apollo/client",
+        "@apollo/client/react",
+        "@testing-library/react",
+        "msw",
+        "graphql",
+        "gql.tada",
+      ],
     },
   },
 });

@@ -13,6 +13,7 @@
     "vrt:update": "playwright install chromium && playwright test --update-snapshots"
   },
   "dependencies": {
+    "@apollo/client": "catalog:",
     "@curio/graphql-client": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:"
@@ -34,6 +35,7 @@
     "@vitejs/plugin-react": "catalog:",
     "daisyui": "catalog:",
     "jsdom": "catalog:",
+    "msw": "catalog:",
     "storybook": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",

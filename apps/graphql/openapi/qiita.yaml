@@ -1,0 +1,526 @@
+openapi: 3.0.3
+info:
+  title: Qiita API
+  description: API for Qiita and Qiita Team
+  version: 2.0.0
+
+servers:
+  - url: https://qiita.com/api/v2
+    description: Qiita API Server
+
+security:
+  - bearerAuth: []
+
+paths:
+  /items:
+    get:
+      summary: List items
+      description: Get a list of items (articles) in descending order of creation date
+      operationId: listItems
+      security: []
+      parameters:
+        - name: page
+          in: query
+          description: Page number (1-100)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 1
+        - name: per_page
+          in: query
+          description: Number of items per page (1-100)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: query
+          in: query
+          description: Search query string
+          required: false
+          schema:
+            type: string
+            example: "qiita user:Qiita"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /items/{item_id}:
+    get:
+      summary: Get item
+      description: Get a specific item by ID
+      operationId: getItem
+      security: []
+      parameters:
+        - name: item_id
+          in: path
+          description: Item ID
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9a-f]{20}$'
+            example: 'c686397e4a0f4f11683d'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: 'access_token'
+      description: 'Bearer token for authentication'
+
+  schemas:
+    Item:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique item ID
+          pattern: '^[0-9a-f]{20}$'
+          example: 'c686397e4a0f4f11683d'
+        title:
+          type: string
+          description: Item title
+          example: 'Example title'
+        body:
+          type: string
+          description: Item content in Markdown format
+          example: '# Example'
+        rendered_body:
+          type: string
+          description: Item content in HTML format
+          example: '<h1>Example</h1>'
+        url:
+          type: string
+          description: Item URL
+          example: 'https://qiita.com/Qiita/items/c686397e4a0f4f11683d'
+        private:
+          type: boolean
+          description: Whether the item is private (limited sharing)
+          example: false
+        coediting:
+          type: boolean
+          description: Whether the item is in co-editing mode (Qiita Team only)
+          example: false
+        slide:
+          type: boolean
+          description: Whether slide mode is enabled
+          example: false
+        tags:
+          type: array
+          description: List of tags attached to the item
+          items:
+            $ref: '#/components/schemas/Tag'
+        user:
+          $ref: '#/components/schemas/User'
+        group:
+          $ref: '#/components/schemas/Group'
+        team_membership:
+          $ref: '#/components/schemas/TeamMembership'
+        organization_url_name:
+          type: string
+          nullable: true
+          description: Organization URL name
+          example: 'qiita-inc'
+        created_at:
+          type: string
+          format: date-time
+          description: Creation date and time
+          example: '2000-01-01T00:00:00+00:00'
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update date and time
+          example: '2000-01-01T00:00:00+00:00'
+        comments_count:
+          type: integer
+          description: Number of comments on this item
+          example: 100
+        likes_count:
+          type: integer
+          description: Number of likes on this item (Qiita only)
+          example: 100
+        reactions_count:
+          type: integer
+          description: Number of emoji reactions on this item (Qiita Team only)
+          example: 100
+        stocks_count:
+          type: integer
+          description: Number of stocks for this item
+          example: 100
+        page_views_count:
+          type: integer
+          nullable: true
+          description: Number of page views
+          example: 100
+      required:
+        - id
+        - title
+        - body
+        - rendered_body
+        - url
+        - private
+        - coediting
+        - slide
+        - tags
+        - user
+        - group
+        - team_membership
+        - organization_url_name
+        - created_at
+        - updated_at
+        - comments_count
+        - likes_count
+        - reactions_count
+        - stocks_count
+        - page_views_count
+
+    CreateItemRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Item title
+          example: 'Example title'
+        body:
+          type: string
+          description: Item content in Markdown format
+          example: '# Example'
+        tags:
+          type: array
+          description: List of tags to attach to the item
+          items:
+            $ref: '#/components/schemas/TagRequest'
+        private:
+          type: boolean
+          description: Whether the item is private (limited sharing, Qiita only)
+          example: false
+          default: false
+        coediting:
+          type: boolean
+          description: Whether the item is in co-editing mode (Qiita Team only)
+          example: false
+          default: false
+        group_url_name:
+          type: string
+          nullable: true
+          description: Group URL name to publish the item (null for public, Qiita Team only)
+          example: 'dev'
+        organization_url_name:
+          type: string
+          nullable: true
+          description: Organization URL name
+          example: 'qiita-inc'
+        slide:
+          type: boolean
+          description: Whether slide mode is enabled
+          example: false
+          default: false
+        tweet:
+          type: boolean
+          description: Whether to post to Twitter (only valid if Twitter integration is enabled)
+          example: false
+          default: false
+      required:
+        - title
+        - body
+        - tags
+
+    UpdateItemRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Item title
+          example: 'Example title'
+        body:
+          type: string
+          description: Item content in Markdown format
+          example: '# Example'
+        tags:
+          type: array
+          description: List of tags to attach to the item
+          items:
+            $ref: '#/components/schemas/TagRequest'
+        private:
+          type: boolean
+          description: Whether the item is private (limited sharing, Qiita only)
+          example: false
+        coediting:
+          type: boolean
+          description: Whether the item is in co-editing mode (Qiita Team only)
+          example: false
+        group_url_name:
+          type: string
+          nullable: true
+          description: Group URL name to publish the item (null for public, Qiita Team only)
+          example: 'dev'
+        organization_url_name:
+          type: string
+          nullable: true
+          description: Organization URL name
+          example: 'qiita-inc'
+        slide:
+          type: boolean
+          description: Whether slide mode is enabled
+          example: false
+      required:
+        - title
+        - body
+
+    Tag:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Tag name
+          example: 'Ruby'
+        versions:
+          type: array
+          description: List of versions
+          items:
+            type: string
+          example: ['0.0.1']
+      required:
+        - name
+
+    TagRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Tag name
+          example: 'Ruby'
+        versions:
+          type: array
+          description: List of versions
+          items:
+            type: string
+          example: ['0.0.1']
+      required:
+        - name
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User ID
+          example: 'qiita'
+        name:
+          type: string
+          nullable: true
+          description: Display name
+          example: 'Qiita キータ'
+        description:
+          type: string
+          nullable: true
+          description: Self-introduction
+          example: 'Hello, world.'
+        profile_image_url:
+          type: string
+          description: Profile image URL
+          example: 'https://s3-ap-northeast-1.amazonaws.com/qiita-image-store/0/88/ccf90b557a406157dbb9d2d7e543dae384dbb561/large.png?1575443439'
+        website_url:
+          type: string
+          nullable: true
+          description: Website URL
+          example: 'https://qiita.com'
+        organization:
+          type: string
+          nullable: true
+          description: Organization
+          example: 'Qiita Inc.'
+        location:
+          type: string
+          nullable: true
+          description: Location
+          example: 'Tokyo, Japan'
+        github_login_name:
+          type: string
+          nullable: true
+          description: GitHub ID
+          example: 'qiitan'
+        twitter_screen_name:
+          type: string
+          nullable: true
+          description: Twitter screen name
+          example: 'qiita'
+        facebook_id:
+          type: string
+          nullable: true
+          description: Facebook ID
+          example: 'qiita'
+        linkedin_id:
+          type: string
+          nullable: true
+          description: LinkedIn ID
+          example: 'qiita'
+        permanent_id:
+          type: integer
+          description: Permanent user ID
+          example: 1
+        items_count:
+          type: integer
+          description: Number of items published on qiita.com
+          example: 300
+        followees_count:
+          type: integer
+          description: Number of users this user is following
+          example: 100
+        followers_count:
+          type: integer
+          description: Number of users following this user
+          example: 200
+        team_only:
+          type: boolean
+          description: Whether Qiita Team only mode is enabled
+          example: false
+      required:
+        - id
+        - name
+        - description
+        - profile_image_url
+        - website_url
+        - organization
+        - location
+        - github_login_name
+        - twitter_screen_name
+        - facebook_id
+        - linkedin_id
+        - permanent_id
+        - items_count
+        - followees_count
+        - followers_count
+        - team_only
+
+    Group:
+      type: object
+      nullable: true
+      properties:
+        url_name:
+          type: string
+          description: Unique group name on the team
+          example: 'dev'
+        name:
+          type: string
+          description: Display name of the group
+          example: 'Dev'
+        description:
+          type: string
+          description: Group description
+          example: 'This group is for developers.'
+        private:
+          type: boolean
+          description: Whether the group is private
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          description: Creation date and time
+          example: '2000-01-01T00:00:00+00:00'
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update date and time
+          example: '2000-01-01T00:00:00+00:00'
+      required:
+        - url_name
+        - name
+        - description
+        - private
+        - created_at
+        - updated_at
+
+    TeamMembership:
+      type: object
+      nullable: true
+      properties:
+        name:
+          type: string
+          description: User name registered in the team
+          example: 'Qiita キータ'
+      required:
+        - name
+
+    Error:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error type
+          example: 'forbidden'
+        message:
+          type: string
+          description: Error message
+          example: 'Forbidden'
+      required:
+        - type
+        - message
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    UnprocessableEntity:
+      description: Unprocessable Entity
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

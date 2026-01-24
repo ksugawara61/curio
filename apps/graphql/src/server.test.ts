@@ -1,34 +1,40 @@
-import type { GraphQLFormattedError } from "graphql";
 import { describe, expect, it } from "vitest";
-import type { Query } from "./schema/generated/graphql";
+import { ArticleMocks } from "./application/articles/FetchArticlesUseCase.mocks";
+import { mockServer } from "./libs/test/mockServer";
 import { server } from "./server";
 
-type SingleResultBody<TData> = {
-  kind: "single";
-  singleResult: {
-    data?: TData | null;
-    errors?: readonly GraphQLFormattedError[];
-  };
-};
+describe("GraphQL Resolvers", () => {
+  describe("Query", () => {
+    describe("articles", () => {
+      it("should return an array of articles", async () => {
+        mockServer.use(...ArticleMocks.Success);
+        const offset = 0;
+        const limit = 20;
+        const result = await server.Query.articles(offset, limit);
 
-const isSingleResult = <TData>(
-  body: Awaited<ReturnType<typeof server.executeOperation<TData>>>["body"],
-): body is SingleResultBody<TData> => {
-  return body.kind === "single";
-};
-
-describe("GraphQL Resolver Tests", () => {
-  it("should return 'world' for hello query", async () => {
-    const { body } = await server.executeOperation<Query>({
-      query: `query {
-        hello
-      }`,
+        expect(result.length).toBeGreaterThan(0);
+        for (const article of result) {
+          expect(article).toHaveProperty("id");
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("body");
+          expect(article).toHaveProperty("url");
+          expect(article).toHaveProperty("user");
+          expect(article).toHaveProperty("tags");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("updated_at");
+        }
+      });
     });
+  });
 
-    if (!isSingleResult<Query>(body)) {
-      throw new Error("Expected single result");
-    }
-    expect(body.singleResult.errors).toBeUndefined();
-    expect(body.singleResult.data?.hello).toBe("world");
+  describe("Mutation", () => {
+    it("should have bookmark mutations", () => {
+      expect(server.Mutation).toHaveProperty("createBookmark");
+      expect(server.Mutation).toHaveProperty("updateBookmark");
+      expect(server.Mutation).toHaveProperty("deleteBookmark");
+      expect(typeof server.Mutation.createBookmark).toBe("function");
+      expect(typeof server.Mutation.updateBookmark).toBe("function");
+      expect(typeof server.Mutation.deleteBookmark).toBe("function");
+    });
   });
 });

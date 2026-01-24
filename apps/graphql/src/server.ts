@@ -1,33 +1,24 @@
-import fs from "node:fs";
-import http from "node:http";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { ApolloServer } from "@apollo/server";
-import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import express from "express";
-import { hello } from "./application/queries/hello/hello";
-import type { Resolvers } from "./schema/generated/graphql";
+import { fetchArticlesUseCase } from "./application/articles/FetchArticlesUseCase";
+import { createBookmarkUseCase } from "./application/bookmarks/CreateBookmarkUseCase";
+import { deleteBookmarkUseCase } from "./application/bookmarks/DeleteBookmarkUseCase";
+import { fetchBookmarkByIdUseCase } from "./application/bookmarks/FetchBookmarkByIdUseCase";
+import { fetchBookmarksUseCase } from "./application/bookmarks/FetchBookmarksUseCase";
+import { updateBookmarkUseCase } from "./application/bookmarks/UpdateBookmarkUseCase";
+import { createTagUseCase } from "./application/tags/CreateTagUseCase";
+import { fetchTagsUseCase } from "./application/tags/FetchTagsUseCase";
+import { withAuth } from "./middleware/auth";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const typeDefs = fs.readFileSync(
-  path.join(__dirname, "schema/schema.graphql"),
-  "utf-8",
-);
-
-// A map of functions which return data for the schema.
-const resolvers: Resolvers = {
+export const server = {
   Query: {
-    hello: () => hello({}).message,
+    articles: withAuth(fetchArticlesUseCase),
+    bookmarks: withAuth(fetchBookmarksUseCase),
+    bookmark: withAuth(fetchBookmarkByIdUseCase),
+    tags: withAuth(fetchTagsUseCase),
+  },
+  Mutation: {
+    createBookmark: withAuth(createBookmarkUseCase),
+    updateBookmark: withAuth(updateBookmarkUseCase),
+    deleteBookmark: withAuth(deleteBookmarkUseCase),
+    createTag: withAuth(createTagUseCase),
   },
 };
-
-export const app = express();
-export const httpServer = http.createServer(app);
-
-export const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-});

@@ -25,3 +25,6 @@ pre-commit:
     lint:
       glob: "**/*.{js,ts,jsx,tsx,json}"
       run: pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --write {staged_files}
+    lint-graphql:
+      glob: "apps/extension/src/**/*.{ts,tsx}"
+      run: pnpm --filter @curio/extension lint --fix {staged_files}

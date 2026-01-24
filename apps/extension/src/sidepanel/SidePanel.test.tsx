@@ -1,29 +1,16 @@
 import {
-  ApolloProvider,
-  createGraphQLClient,
   createMockQuery,
   GET_ARTICLES,
+  renderWithProviders,
+  screen,
+  waitFor,
 } from "@curio/graphql-client";
-import { render, screen, waitFor } from "@testing-library/react";
 import { HttpResponse } from "msw";
-import { beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { server } from "../test/msw/server";
 import { SidePanel } from "./SidePanel";
 
-// Apollo Client for testing
-const createTestClient = () => {
-  return createGraphQLClient({
-    uri: "http://localhost:4000/graphql",
-  });
-};
-
 describe("SidePanel", () => {
-  let client: ReturnType<typeof createGraphQLClient>;
-
-  beforeEach(() => {
-    client = createTestClient();
-  });
-
   it("displays loading state initially", () => {
     server.use(
       createMockQuery(GET_ARTICLES, async () => {
@@ -35,11 +22,7 @@ describe("SidePanel", () => {
       }),
     );
 
-    render(
-      <ApolloProvider client={client}>
-        <SidePanel />
-      </ApolloProvider>,
-    );
+    renderWithProviders(<SidePanel />);
 
     // Check for loading spinner by class name
     const loadingSpinner = document.querySelector(
@@ -84,11 +67,7 @@ describe("SidePanel", () => {
       }),
     );
 
-    render(
-      <ApolloProvider client={client}>
-        <SidePanel />
-      </ApolloProvider>,
-    );
+    renderWithProviders(<SidePanel />);
 
     await waitFor(() => {
       expect(screen.getByText("Test Article 1")).toBeInTheDocument();
@@ -115,11 +94,7 @@ describe("SidePanel", () => {
       }),
     );
 
-    render(
-      <ApolloProvider client={client}>
-        <SidePanel />
-      </ApolloProvider>,
-    );
+    renderWithProviders(<SidePanel />);
 
     await waitFor(() => {
       expect(screen.getByText(/Error:/)).toBeInTheDocument();
@@ -152,11 +127,7 @@ describe("SidePanel", () => {
       }),
     );
 
-    render(
-      <ApolloProvider client={client}>
-        <SidePanel />
-      </ApolloProvider>,
-    );
+    renderWithProviders(<SidePanel />);
 
     await waitFor(() => {
       const link = screen.getByRole("link", { name: "Test Article" });
@@ -190,11 +161,7 @@ describe("SidePanel", () => {
       }),
     );
 
-    render(
-      <ApolloProvider client={client}>
-        <SidePanel />
-      </ApolloProvider>,
-    );
+    renderWithProviders(<SidePanel />);
 
     await waitFor(() => {
       // Date formatting depends on locale, so just check that a date is displayed

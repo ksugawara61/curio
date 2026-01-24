@@ -1,19 +1,18 @@
 // Apollo Client
-export { createGraphQLClient } from "./apollo-client";
-export type { GraphQLClientConfig } from "./apollo-client";
 
 // Apollo Client Hooks
 export {
-  useQuery,
+  ApolloProvider,
   useLazyQuery,
   useMutation,
+  useQuery,
   useSubscription,
-  ApolloProvider,
 } from "@apollo/client/react";
-
+export type { GraphQLClientConfig } from "./apollo-client";
+export { createGraphQLClient } from "./apollo-client";
+export type { FragmentOf, ResultOf, VariablesOf } from "./graphql/graphql";
 // gql.tada
 export { graphql, readFragment } from "./graphql/graphql";
-export type { FragmentOf, ResultOf, VariablesOf } from "./graphql/graphql";
 
 // Queries
 export { GET_ARTICLES } from "./queries/articles";

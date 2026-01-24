@@ -1,10 +1,10 @@
 import { ServiceError } from "@getcronit/pylon";
-import { createDb } from "../../../libs/drizzle/client";
 import type {
   Bookmark,
   CreateBookmarkInput,
 } from "../../../infrastructure/domain/Bookmark";
 import { BookmarkRepository } from "../../../infrastructure/persistence/bookmarks";
+import { createDb } from "../../../libs/drizzle/client";
 
 export type { CreateBookmarkInput };
 

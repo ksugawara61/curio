@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { createDb } from "../../../libs/drizzle/client";
 import { BookmarkRepository } from "../../../infrastructure/persistence/bookmarks";
+import { createDb } from "../../../libs/drizzle/client";
 import { updateBookmark } from ".";
 
 describe("updateBookmark", () => {

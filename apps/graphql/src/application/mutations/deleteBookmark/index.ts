@@ -1,6 +1,6 @@
 import { ServiceError } from "@getcronit/pylon";
-import { createDb } from "../../../libs/drizzle/client";
 import { BookmarkRepository } from "../../../infrastructure/persistence/bookmarks";
+import { createDb } from "../../../libs/drizzle/client";
 
 export const deleteBookmark = async (id: string): Promise<boolean> => {
   const db = createDb();

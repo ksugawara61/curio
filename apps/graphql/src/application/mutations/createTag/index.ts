@@ -1,7 +1,7 @@
 import { ServiceError } from "@getcronit/pylon";
-import { createDb } from "../../../libs/drizzle/client";
 import type { CreateTagInput, Tag } from "../../../infrastructure/domain/Tag";
 import { TagRepository } from "../../../infrastructure/persistence/tags";
+import { createDb } from "../../../libs/drizzle/client";
 
 export type { CreateTagInput };
 

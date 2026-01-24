@@ -203,7 +203,9 @@ export class BookmarkRepository {
       );
 
       // Remove existing relationships
-      await this.db.delete(bookmarkTags).where(eq(bookmarkTags.bookmark_id, id));
+      await this.db
+        .delete(bookmarkTags)
+        .where(eq(bookmarkTags.bookmark_id, id));
 
       // Insert new relationships
       if (tagEntities.length > 0) {

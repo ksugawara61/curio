@@ -149,7 +149,7 @@ describe("BookmarkRepository", () => {
           return await repository.update("non-existent-id", {
             title: "Updated Title",
           });
-        })
+        }),
       ).rejects.toThrow();
     });
 
@@ -207,7 +207,7 @@ describe("BookmarkRepository", () => {
         db.transaction(async (tx) => {
           const repository = new BookmarkRepository(tx);
           await repository.deleteBookmark("non-existent-id");
-        })
+        }),
       ).rejects.toThrow();
     });
   });

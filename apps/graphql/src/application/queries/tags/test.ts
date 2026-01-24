@@ -1,26 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { createDb } from "../../../libs/drizzle/client";
 import { TagRepository } from "../../../infrastructure/persistence/tags";
+import { createDb } from "../../../libs/drizzle/client";
 import { tags } from ".";
 
 describe("tags", () => {
   describe("正常系", () => {
     it("should return array of tags", async () => {
       const db = createDb();
-      await Promise.all([
-        db.transaction(async (tx) => {
-          const repository = new TagRepository(tx);
-          return await repository.create({ name: "Frontend" });
-        }),
-        db.transaction(async (tx) => {
-          const repository = new TagRepository(tx);
-          return await repository.create({ name: "Backend" });
-        }),
-        db.transaction(async (tx) => {
-          const repository = new TagRepository(tx);
-          return await repository.create({ name: "Database" });
-        }),
-      ]);
+      await db.transaction(async (tx) => {
+        const repository = new TagRepository(tx);
+        await repository.create({ name: "Frontend" });
+        await repository.create({ name: "Backend" });
+        await repository.create({ name: "Database" });
+      });
 
       const result = await tags();
 

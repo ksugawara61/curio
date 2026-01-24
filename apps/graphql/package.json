@@ -16,6 +16,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "generate:openapi": "openapi-typescript openapi/qiita.yaml -o src/generated/openapi/schema.d.ts",
+    "scaffold": "scaffdog generate",
+    "scaffold:list": "scaffdog list",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -33,6 +35,7 @@
     "msw": "catalog:",
     "openapi-msw": "catalog:",
     "openapi-typescript": "catalog:",
+    "scaffdog": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
     "wrangler": "catalog:"

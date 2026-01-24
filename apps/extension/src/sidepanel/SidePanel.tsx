@@ -1,8 +1,8 @@
-import { GET_ARTICLES, useQuery } from "@curio/graphql-client";
+import { GetArticles, useQuery } from "@curio/graphql-client";
 import type { FC } from "react";
 
 export const SidePanel: FC = () => {
-  const { data, loading, error } = useQuery(GET_ARTICLES, {
+  const { data, loading, error } = useQuery(GetArticles, {
     variables: {
       limit: 20,
       offset: 0,
@@ -15,9 +15,10 @@ export const SidePanel: FC = () => {
         <div className="mb-4 font-bold text-2xl">Curio Articles</div>
 
         {loading && (
-          <div className="flex justify-center p-8">
+          <output className="flex justify-center p-8">
             <span className="loading loading-spinner loading-lg" />
-          </div>
+            <span className="sr-only">Loading...</span>
+          </output>
         )}
 
         {error && (

@@ -3,11 +3,14 @@
   "compilerOptions": {
     "lib": ["ES2022", "DOM"],
     "jsx": "react-jsx",
+    "declaration": true,
     "resolveJsonModule": true,
     "plugins": [
       {
         "name": "@0no-co/graphqlsp",
-        "schema": "./src/graphql/schema.graphql"
+        "schema": "./src/graphql/schema.graphql",
+        "tadaOutputLocation": "./src/graphql/graphql-env.d.ts",
+        "trackFieldUsage": true
       }
     ]
   },

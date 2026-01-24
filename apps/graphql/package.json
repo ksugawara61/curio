@@ -18,7 +18,8 @@
     "generate:openapi": "openapi-typescript openapi/qiita.yaml -o src/generated/openapi/schema.d.ts",
     "scaffold": "scaffdog generate",
     "scaffold:list": "scaffdog list",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "codegen": "pnpm build && cp .pylon/schema.graphql ../../packages/graphql-client/src/graphql/schema.graphql"
   },
   "dependencies": {
     "@getcronit/pylon": "catalog:",

@@ -19,6 +19,8 @@ export {
   createMockQuery,
   mockLoadingResolver,
 } from "./msw-utils";
+// Queries
+export { GetArticles } from "./queries/articles";
 export type { CustomRenderOptions, TestProviderProps } from "./test-utils";
 // Test utilities
 export {

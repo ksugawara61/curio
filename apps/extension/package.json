@@ -14,8 +14,6 @@
   },
   "dependencies": {
     "@curio/graphql-client": "workspace:*",
-    "gql.tada": "catalog:",
-    "graphql": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"
   },

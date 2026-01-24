@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@curio/graphql-client": "workspace:*",
-    "@curio/ui": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:"
   },

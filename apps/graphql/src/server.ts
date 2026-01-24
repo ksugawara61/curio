@@ -1,11 +1,11 @@
-import { fetchArticlesUseCase } from "./application/queries/articles/FetchArticlesUseCase";
-import { fetchBookmarkByIdUseCase } from "./application/queries/bookmarks/FetchBookmarkByIdUseCase";
-import { fetchBookmarksUseCase } from "./application/queries/bookmarks/FetchBookmarksUseCase";
-import { fetchTagsUseCase } from "./application/queries/tags/FetchTagsUseCase";
-import { createBookmarkUseCase } from "./application/mutations/bookmarks/CreateBookmarkUseCase";
-import { deleteBookmarkUseCase } from "./application/mutations/bookmarks/DeleteBookmarkUseCase";
-import { updateBookmarkUseCase } from "./application/mutations/bookmarks/UpdateBookmarkUseCase";
-import { createTagUseCase } from "./application/mutations/tags/CreateTagUseCase";
+import { fetchArticlesUseCase } from "./application/queries/FetchArticles";
+import { fetchBookmarkByIdUseCase } from "./application/queries/FetchBookmarkById";
+import { fetchBookmarksUseCase } from "./application/queries/FetchBookmarks";
+import { fetchTagsUseCase } from "./application/queries/FetchTags";
+import { createBookmarkUseCase } from "./application/mutations/CreateBookmark";
+import { deleteBookmarkUseCase } from "./application/mutations/DeleteBookmark";
+import { updateBookmarkUseCase } from "./application/mutations/UpdateBookmark";
+import { createTagUseCase } from "./application/mutations/CreateTag";
 import { withAuth } from "./middleware/auth";
 
 export const server = {

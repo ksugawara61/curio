@@ -44,6 +44,7 @@ catalog:
   openapi-typescript: ^7.9.1
   react: ^19.2.3
   react-dom: ^19.2.3
+  scaffdog: ^4.1.0
   storybook: 10.1.11
   tailwindcss: ^4.1.18
   textlint: 15.5.1

@@ -4,7 +4,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    dedupe: ["react", "react-dom", "@apollo/client"],
+    dedupe: ["react", "react-dom"],
   },
   test: {
     globals: true,
@@ -20,7 +20,7 @@ export default defineConfig({
     ],
     server: {
       deps: {
-        inline: ["@curio/graphql-client", "@apollo/client", "gql.tada"],
+        inline: ["@curio/graphql-client", "gql.tada"],
       },
     },
   },

@@ -13,7 +13,6 @@
     "vrt:update": "playwright install chromium && playwright test --update-snapshots"
   },
   "dependencies": {
-    "@apollo/client": "catalog:",
     "@curio/graphql-client": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:"

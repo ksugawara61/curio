@@ -1,12 +1,12 @@
 import {
   ApolloProvider,
   createGraphQLClient,
+  createMockQuery,
   GET_ARTICLES,
 } from "@curio/graphql-client";
 import { render, screen, waitFor } from "@testing-library/react";
 import { HttpResponse } from "msw";
 import { beforeEach, describe, expect, it } from "vitest";
-import { createMockQuery } from "../test/msw/msw-utils";
 import { server } from "../test/msw/server";
 import { SidePanel } from "./SidePanel";
 

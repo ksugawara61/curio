@@ -16,3 +16,6 @@ export { graphql, readFragment } from "./graphql/graphql";
 
 // Queries
 export { GET_ARTICLES } from "./queries/articles";
+
+// MSW utilities for testing
+export { createMockMutation, createMockQuery } from "./msw-utils";

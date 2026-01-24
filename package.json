@@ -5,7 +5,8 @@
 		"lint": "biome ci .",
 		"fmt": "biome check . --write",
 		"typecheck": "turbo typecheck",
-		"test": "turbo test"
+		"test": "turbo test",
+		"build": "turbo build"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "catalog:",

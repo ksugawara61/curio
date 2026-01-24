@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Generated with `npm create pylon`",
   "scripts": {
-    "start": "PYLON_TELEMETRY_DISABLED=1 pylon dev -c \"wrangler dev --port 3000\" --client --client-port 3000 --client-path src/generated/gqty/index.ts",
+    "dev": "PYLON_TELEMETRY_DISABLED=1 pylon dev -c \"wrangler dev --port 3000\" --client --client-port 3000 --client-path src/generated/gqty/index.ts",
     "build": "PYLON_TELEMETRY_DISABLED=1 pylon build",
     "deploy": "pnpm build && wrangler deploy",
     "test": "vitest",

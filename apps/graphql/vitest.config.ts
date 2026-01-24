@@ -7,14 +7,10 @@ export default defineConfig({
     silent: false,
     watch: false,
     pool: "forks",
-    poolOptions: {
-      forks: {
-        singleFork: true,
-      },
-    },
     sequence: {
       concurrent: false,
     },
+    maxWorkers: 1,
     env: {
       NODE_ENV: "test",
       PYLON_TELEMETRY_DISABLED: "1",

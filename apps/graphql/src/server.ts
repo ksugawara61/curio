@@ -1,11 +1,11 @@
-import { fetchArticlesUseCase } from "./application/articles/FetchArticlesUseCase";
-import { createBookmarkUseCase } from "./application/bookmarks/CreateBookmarkUseCase";
-import { deleteBookmarkUseCase } from "./application/bookmarks/DeleteBookmarkUseCase";
-import { fetchBookmarkByIdUseCase } from "./application/bookmarks/FetchBookmarkByIdUseCase";
-import { fetchBookmarksUseCase } from "./application/bookmarks/FetchBookmarksUseCase";
-import { updateBookmarkUseCase } from "./application/bookmarks/UpdateBookmarkUseCase";
-import { createTagUseCase } from "./application/tags/CreateTagUseCase";
-import { fetchTagsUseCase } from "./application/tags/FetchTagsUseCase";
+import { fetchArticlesUseCase } from "./application/queries/articles/FetchArticlesUseCase";
+import { fetchBookmarkByIdUseCase } from "./application/queries/bookmarks/FetchBookmarkByIdUseCase";
+import { fetchBookmarksUseCase } from "./application/queries/bookmarks/FetchBookmarksUseCase";
+import { fetchTagsUseCase } from "./application/queries/tags/FetchTagsUseCase";
+import { createBookmarkUseCase } from "./application/mutations/bookmarks/CreateBookmarkUseCase";
+import { deleteBookmarkUseCase } from "./application/mutations/bookmarks/DeleteBookmarkUseCase";
+import { updateBookmarkUseCase } from "./application/mutations/bookmarks/UpdateBookmarkUseCase";
+import { createTagUseCase } from "./application/mutations/tags/CreateTagUseCase";
 import { withAuth } from "./middleware/auth";
 
 export const server = {

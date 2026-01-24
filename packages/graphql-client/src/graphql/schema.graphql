@@ -1,0 +1,72 @@
+"""
+GraphQL schema for Curio Extension
+"""
+scalar DateTimeISO
+
+type User {
+  name: String
+}
+
+type Tag_1 {
+  name: String!
+}
+
+type Article {
+  id: String!
+  title: String!
+  body: String!
+  url: String!
+  created_at: String!
+  updated_at: String!
+  user: User!
+  tags: [Tag_1!]!
+}
+
+type Bookmark {
+  id: String!
+  title: String!
+  url: String!
+  description: String
+  created_at: DateTimeISO!
+  updated_at: DateTimeISO!
+  tags: [Tag!]
+}
+
+type Tag {
+  id: String!
+  name: String!
+  created_at: DateTimeISO!
+  updated_at: DateTimeISO!
+}
+
+type Query {
+  articles(limit: Float, offset: Float): [Article!]!
+  bookmark(id: String!): Bookmark
+  bookmarks: [Bookmark!]!
+  tags: [Tag!]!
+}
+
+input CreateBookmarkInput {
+  title: String!
+  url: String!
+  description: String
+  tagNames: [String!]
+}
+
+input UpdateBookmarkInput {
+  title: String
+  url: String
+  description: String
+  tagNames: [String!]
+}
+
+input CreateTagInput {
+  name: String!
+}
+
+type Mutation {
+  createBookmark(input: CreateBookmarkInput!): Bookmark!
+  updateBookmark(id: String!, input: UpdateBookmarkInput!): Bookmark!
+  deleteBookmark(id: String!): Boolean!
+  createTag(input: CreateTagInput!): Tag!
+}

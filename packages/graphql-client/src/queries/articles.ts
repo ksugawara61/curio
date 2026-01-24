@@ -1,7 +1,7 @@
 import { graphql } from "../graphql/graphql";
 
-export const GET_ARTICLES = graphql(`
-  query GetArticles($limit: Float, $offset: Float) {
+export const GetArticles = graphql(`
+  query GetArticles($limit: Number, $offset: Number) {
     articles(limit: $limit, offset: $offset) {
       id
       title

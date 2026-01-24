@@ -1,72 +1,70 @@
-"""
-GraphQL schema for Curio Extension
-"""
-scalar DateTimeISO
-
-type User {
-  name: String
-}
-
-type Tag_1 {
-  name: String!
-}
-
-type Article {
-  id: String!
-  title: String!
-  body: String!
-  url: String!
-  created_at: String!
-  updated_at: String!
-  user: User!
-  tags: [Tag_1!]!
-}
-
-type Bookmark {
-  id: String!
-  title: String!
-  url: String!
-  description: String
-  created_at: DateTimeISO!
-  updated_at: DateTimeISO!
-  tags: [Tag!]
-}
-
-type Tag {
-  id: String!
-  name: String!
-  created_at: DateTimeISO!
-  updated_at: DateTimeISO!
-}
-
-type Query {
-  articles(limit: Float, offset: Float): [Article!]!
-  bookmark(id: String!): Bookmark
-  bookmarks: [Bookmark!]!
-  tags: [Tag!]!
-}
-
-input CreateBookmarkInput {
+input CreateBookmarkInputInput {
   title: String!
   url: String!
   description: String
   tagNames: [String!]
 }
-
-input UpdateBookmarkInput {
+input UpdateBookmarkInputInput {
   title: String
   url: String
   description: String
   tagNames: [String!]
 }
-
-input CreateTagInput {
+input CreateTagInputInput {
   name: String!
 }
-
-type Mutation {
-  createBookmark(input: CreateBookmarkInput!): Bookmark!
-  updateBookmark(id: String!, input: UpdateBookmarkInput!): Bookmark!
-  deleteBookmark(id: String!): Boolean!
-  createTag(input: CreateTagInput!): Tag!
+type Query {
+  articles(offset: Number, limit: Number): [Article!]!
+  bookmarks: [Bookmark!]!
+  bookmark(id: String!): Bookmark
+  tags: [Tag!]!
 }
+type Article {
+  id: String!
+  title: String!
+  body: String!
+  url: String!
+  user: User!
+  tags: [Tag_1!]!
+  created_at: String!
+  updated_at: String!
+}
+type User {
+  name: String
+}
+type Tag_1 {
+  name: String!
+}
+type Bookmark {
+  id: String!
+  title: String!
+  url: String!
+  description: String
+  created_at: Date!
+  updated_at: Date!
+  tags: [Tag!]
+}
+type Tag {
+  id: String!
+  name: String!
+  created_at: Date!
+  updated_at: Date!
+}
+type Mutation {
+  createBookmark(input: CreateBookmarkInputInput!): Bookmark!
+  updateBookmark(id: String!, input: UpdateBookmarkInputInput!): Bookmark!
+  deleteBookmark(id: String!): Boolean!
+  createTag(input: CreateTagInputInput!): Tag!
+}
+scalar ID
+scalar Int
+scalar Float
+scalar Number
+scalar Any
+scalar Void
+scalar Object
+scalar File
+scalar Date
+scalar JSON
+scalar String
+scalar Boolean

@@ -1,6 +1,6 @@
 import {
   createMockQuery,
-  GET_ARTICLES,
+  GetArticles,
   render,
   screen,
   waitFor,
@@ -13,7 +13,7 @@ import { SidePanel } from "./SidePanel";
 describe("SidePanel", () => {
   it("displays loading state initially", () => {
     server.use(
-      createMockQuery(GET_ARTICLES, async () => {
+      createMockQuery(GetArticles, async () => {
         // Delay response to keep loading state
         await new Promise((resolve) => setTimeout(resolve, 100));
         return HttpResponse.json({
@@ -60,7 +60,7 @@ describe("SidePanel", () => {
     ];
 
     server.use(
-      createMockQuery(GET_ARTICLES, () => {
+      createMockQuery(GetArticles, () => {
         return HttpResponse.json({
           data: { articles: mockArticles },
         });
@@ -83,7 +83,7 @@ describe("SidePanel", () => {
 
   it("displays error message when query fails", async () => {
     server.use(
-      createMockQuery(GET_ARTICLES, () => {
+      createMockQuery(GetArticles, () => {
         return HttpResponse.json({
           errors: [
             {
@@ -120,7 +120,7 @@ describe("SidePanel", () => {
     ];
 
     server.use(
-      createMockQuery(GET_ARTICLES, () => {
+      createMockQuery(GetArticles, () => {
         return HttpResponse.json({
           data: { articles: mockArticles },
         });
@@ -154,7 +154,7 @@ describe("SidePanel", () => {
     ];
 
     server.use(
-      createMockQuery(GET_ARTICLES, () => {
+      createMockQuery(GetArticles, () => {
         return HttpResponse.json({
           data: { articles: mockArticles },
         });

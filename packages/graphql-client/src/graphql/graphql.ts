@@ -1,10 +1,19 @@
 import { initGraphQLTada } from "gql.tada";
-import type { introspection } from "./graphql-env.d.ts";
+import type { introspection } from "./graphql-env";
 
 export const graphql = initGraphQLTada<{
   introspection: introspection;
   scalars: {
+    Date: string;
+    DateTime: string;
+    Time: string;
     DateTimeISO: string;
+    Float: number;
+    Number: number;
+    String: string;
+    Boolean: boolean;
+    ID: string;
+    Void: undefined;
   };
 }>();
 

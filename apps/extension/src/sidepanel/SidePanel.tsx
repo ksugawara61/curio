@@ -15,9 +15,10 @@ export const SidePanel: FC = () => {
         <div className="mb-4 font-bold text-2xl">Curio Articles</div>
 
         {loading && (
-          <div className="flex justify-center p-8">
+          <output className="flex justify-center p-8">
             <span className="loading loading-spinner loading-lg" />
-          </div>
+            <span className="sr-only">Loading...</span>
+          </output>
         )}
 
         {error && (

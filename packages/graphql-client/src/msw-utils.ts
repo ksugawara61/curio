@@ -1,5 +1,6 @@
 import type { TadaDocumentNode } from "gql.tada";
 import {
+  delay,
   type GraphQLQuery,
   type GraphQLResponseResolver,
   type GraphQLVariables,
@@ -56,3 +57,5 @@ export const createMockMutation = <
     options,
   );
 };
+
+export const mockLoadingResolver = async () => await delay("infinite");

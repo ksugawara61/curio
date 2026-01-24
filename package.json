@@ -6,7 +6,8 @@
 		"fmt": "biome check . --write",
 		"typecheck": "turbo typecheck",
 		"test": "turbo test",
-		"build": "turbo build"
+		"build": "turbo build",
+		"codegen": "turbo codegen && pnpm fmt"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "catalog:",

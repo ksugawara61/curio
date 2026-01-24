@@ -1,22 +1,69 @@
+import { useQuery } from "@apollo/client/react";
 import type { FC } from "react";
+import { GET_ARTICLES } from "../graphql/queries/articles";
 
 export const SidePanel: FC = () => {
+  const { data, loading, error } = useQuery(GET_ARTICLES, {
+    variables: {
+      limit: 20,
+      offset: 0,
+    },
+  });
+
   return (
     <div className="min-h-screen bg-base-200 p-4">
       <div className="rounded-lg bg-base-100 p-6 shadow-xl">
-        <div className="font-bold text-2xl">Curio Side Panel2</div>
-        <div>Welcome to Curio Side Panel!</div>
-        <div className="flex flex-col gap-2">
-          <button className="btn btn-primary" type="submit">
-            Primary Action
-          </button>
-          <button className="btn btn-secondary" type="submit">
-            Secondary Action
-          </button>
-          <button className="btn btn-xl" type="submit">
-            Xlarge
-          </button>
-        </div>
+        <div className="mb-4 font-bold text-2xl">Curio Articles</div>
+
+        {loading && (
+          <div className="flex justify-center p-8">
+            <span className="loading loading-spinner loading-lg" />
+          </div>
+        )}
+
+        {error && (
+          <div className="alert alert-error">
+            <span>Error: {error.message}</span>
+          </div>
+        )}
+
+        {data?.articles && (
+          <div className="flex flex-col gap-4">
+            {data.articles.map((article) => (
+              <div key={article.id} className="card bg-base-200 shadow-md">
+                <div className="card-body">
+                  <h2 className="card-title">
+                    <a
+                      href={article.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="link link-primary"
+                    >
+                      {article.title}
+                    </a>
+                  </h2>
+                  <div className="text-sm text-base-content/70">
+                    {article.user?.name && <span>by {article.user.name}</span>}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {article.tags.map((tag, index) => (
+                      <span
+                        key={`${article.id}-${tag.name}-${index}`}
+                        className="badge badge-outline"
+                      >
+                        {tag.name}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-sm line-clamp-3">{article.body}</p>
+                  <div className="text-xs text-base-content/50">
+                    {new Date(article.created_at).toLocaleDateString()}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

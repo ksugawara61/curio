@@ -28,7 +28,8 @@
       "!**/pnpm-lock.yaml",
       "!**/*.local.json",
       "!**/.pylon",
-      "!**/src/**/gql-tada/graphql-*.d.ts"
+      "!**/src/**/gql-tada/graphql-*.d.ts",
+      "!**/src/graphql/graphql-env.d.ts"
     ]
   },
   "linter": {

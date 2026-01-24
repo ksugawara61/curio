@@ -3,7 +3,14 @@
   "compilerOptions": {
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
-    "types": ["chrome"]
+    "types": ["chrome"],
+    "resolveJsonModule": true,
+    "plugins": [
+      {
+        "name": "@0no-co/graphqlsp",
+        "schema": "./src/graphql/schema.graphql"
+      }
+    ]
   },
   "include": ["src/**/*", "index.html"],
   "exclude": ["node_modules", "dist"]

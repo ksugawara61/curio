@@ -1,20 +1,28 @@
 import { describe, expect, it } from "vitest";
-import * as bookmarkRepository from "../../../infrastructure/persistence/BookmarkRepository";
+import { BookmarkRepository } from "../../../infrastructure/persistence/bookmarks";
+import { createDb } from "../../../libs/drizzle/client";
 import { bookmarks } from ".";
 
 describe("bookmarks", () => {
   describe("正常系", () => {
     it("should return array of bookmarks", async () => {
-      await bookmarkRepository.create({
-        title: "Test Bookmark 1",
-        url: "https://example1.com",
-        description: "First test bookmark",
+      const db = createDb();
+      await db.transaction(async (tx) => {
+        const repository = new BookmarkRepository(tx);
+        return await repository.create({
+          title: "Test Bookmark 1",
+          url: "https://example1.com",
+          description: "First test bookmark",
+        });
       });
 
-      await bookmarkRepository.create({
-        title: "Test Bookmark 2",
-        url: "https://example2.com",
-        description: undefined,
+      await db.transaction(async (tx) => {
+        const repository = new BookmarkRepository(tx);
+        return await repository.create({
+          title: "Test Bookmark 2",
+          url: "https://example2.com",
+          description: undefined,
+        });
       });
 
       const result = await bookmarks();

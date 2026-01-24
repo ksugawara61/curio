@@ -3,15 +3,20 @@ import type {
   Bookmark,
   CreateBookmarkInput,
 } from "../../../infrastructure/domain/Bookmark";
-import * as bookmarkRepository from "../../../infrastructure/persistence/BookmarkRepository";
+import { BookmarkRepository } from "../../../infrastructure/persistence/bookmarks";
+import { createDb } from "../../../libs/drizzle/client";
 
 export type { CreateBookmarkInput };
 
 export const createBookmark = async (
   input: CreateBookmarkInput,
 ): Promise<Bookmark> => {
+  const db = createDb();
   try {
-    return await bookmarkRepository.create(input);
+    return await db.transaction(async (tx) => {
+      const repository = new BookmarkRepository(tx);
+      return await repository.create(input);
+    });
   } catch (error) {
     throw new ServiceError(
       `Failed to create bookmark: ${error instanceof Error ? error.message : "Unknown error"}`,

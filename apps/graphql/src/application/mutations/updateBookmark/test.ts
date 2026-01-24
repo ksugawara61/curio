@@ -1,14 +1,19 @@
 import { describe, expect, it } from "vitest";
-import * as bookmarkRepository from "../../../infrastructure/persistence/BookmarkRepository";
+import { BookmarkRepository } from "../../../infrastructure/persistence/bookmarks";
+import { createDb } from "../../../libs/drizzle/client";
 import { updateBookmark } from ".";
 
 describe("updateBookmark", () => {
   describe("正常系", () => {
     it("should update a bookmark successfully", async () => {
-      const bookmark = await bookmarkRepository.create({
-        title: "Original Title",
-        url: "https://example.com",
-        description: "Original description",
+      const db = createDb();
+      const bookmark = await db.transaction(async (tx) => {
+        const repository = new BookmarkRepository(tx);
+        return await repository.create({
+          title: "Original Title",
+          url: "https://example.com",
+          description: "Original description",
+        });
       });
 
       const updateInput = {
@@ -28,10 +33,14 @@ describe("updateBookmark", () => {
     });
 
     it("should update partial fields only", async () => {
-      const bookmark = await bookmarkRepository.create({
-        title: "Original Title",
-        url: "https://example.com",
-        description: "Original description",
+      const db = createDb();
+      const bookmark = await db.transaction(async (tx) => {
+        const repository = new BookmarkRepository(tx);
+        return await repository.create({
+          title: "Original Title",
+          url: "https://example.com",
+          description: "Original description",
+        });
       });
 
       const updateInput = {

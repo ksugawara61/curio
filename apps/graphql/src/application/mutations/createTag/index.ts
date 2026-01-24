@@ -1,10 +1,10 @@
 import { ServiceError } from "@getcronit/pylon";
-import type { CreateTagInput, Tag } from "../../infrastructure/domain/Tag";
-import * as tagRepository from "../../infrastructure/persistence/TagRepository";
+import type { CreateTagInput, Tag } from "../../../infrastructure/domain/Tag";
+import * as tagRepository from "../../../infrastructure/persistence/TagRepository";
 
 export type { CreateTagInput };
 
-export const createTagUseCase = async (input: CreateTagInput): Promise<Tag> => {
+export const createTag = async (input: CreateTagInput): Promise<Tag> => {
   try {
     return await tagRepository.create(input);
   } catch (error) {

@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { createTagUseCase } from "./CreateTagUseCase";
+import { createTag } from ".";
 
-describe("CreateTagUseCase", () => {
+describe("createTag", () => {
   describe("正常系", () => {
     it("should create a tag successfully", async () => {
       const input = {
         name: "Test Tag",
       };
 
-      const result = await createTagUseCase(input);
+      const result = await createTag(input);
 
       expect(result).toHaveProperty("id");
       expect(result.name).toBe(input.name);
@@ -22,10 +22,10 @@ describe("CreateTagUseCase", () => {
       };
 
       // Create first tag
-      await createTagUseCase(input);
+      await createTag(input);
 
       // Attempt to create second tag with same name should throw error
-      await expect(createTagUseCase(input)).rejects.toThrow();
+      await expect(createTag(input)).rejects.toThrow();
     });
   });
 });

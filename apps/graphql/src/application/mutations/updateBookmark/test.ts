@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRepository";
-import { updateBookmarkUseCase } from "./UpdateBookmarkUseCase";
+import * as bookmarkRepository from "../../../infrastructure/persistence/BookmarkRepository";
+import { updateBookmark } from ".";
 
-describe("UpdateBookmarkUseCase", () => {
+describe("updateBookmark", () => {
   describe("正常系", () => {
     it("should update a bookmark successfully", async () => {
       const bookmark = await bookmarkRepository.create({
@@ -16,7 +16,7 @@ describe("UpdateBookmarkUseCase", () => {
         description: "Updated description",
       };
 
-      const result = await updateBookmarkUseCase(bookmark.id, updateInput);
+      const result = await updateBookmark(bookmark.id, updateInput);
 
       expect(result.id).toBe(bookmark.id);
       expect(result.title).toBe(updateInput.title);
@@ -38,7 +38,7 @@ describe("UpdateBookmarkUseCase", () => {
         title: "Updated Title Only",
       };
 
-      const result = await updateBookmarkUseCase(bookmark.id, updateInput);
+      const result = await updateBookmark(bookmark.id, updateInput);
 
       expect(result.id).toBe(bookmark.id);
       expect(result.title).toBe(updateInput.title);
@@ -55,7 +55,7 @@ describe("UpdateBookmarkUseCase", () => {
       };
 
       await expect(
-        updateBookmarkUseCase(nonExistentId, updateInput),
+        updateBookmark(nonExistentId, updateInput),
       ).rejects.toThrowError(
         expect.objectContaining({
           message: "Bookmark not found",

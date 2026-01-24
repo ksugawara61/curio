@@ -1,7 +1,7 @@
 import { ServiceError } from "@getcronit/pylon";
-import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRepository";
+import * as bookmarkRepository from "../../../infrastructure/persistence/BookmarkRepository";
 
-export const deleteBookmarkUseCase = async (id: string): Promise<boolean> => {
+export const deleteBookmark = async (id: string): Promise<boolean> => {
   try {
     await bookmarkRepository.deleteBookmark(id);
     return true;

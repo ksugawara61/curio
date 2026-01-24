@@ -2,12 +2,12 @@ import { ServiceError } from "@getcronit/pylon";
 import type {
   Bookmark,
   UpdateBookmarkInput,
-} from "../../infrastructure/domain/Bookmark";
-import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRepository";
+} from "../../../infrastructure/domain/Bookmark";
+import * as bookmarkRepository from "../../../infrastructure/persistence/BookmarkRepository";
 
 export type { UpdateBookmarkInput };
 
-export const updateBookmarkUseCase = async (
+export const updateBookmark = async (
   id: string,
   input: UpdateBookmarkInput,
 ): Promise<Bookmark> => {

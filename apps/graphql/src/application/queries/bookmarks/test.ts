@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRepository";
-import { fetchBookmarksUseCase } from "./FetchBookmarksUseCase";
+import * as bookmarkRepository from "../../../infrastructure/persistence/BookmarkRepository";
+import { bookmarks } from ".";
 
-describe("FetchBookmarksUseCase", () => {
+describe("bookmarks", () => {
   describe("正常系", () => {
     it("should return array of bookmarks", async () => {
       await bookmarkRepository.create({
@@ -17,7 +17,7 @@ describe("FetchBookmarksUseCase", () => {
         description: undefined,
       });
 
-      const result = await fetchBookmarksUseCase();
+      const result = await bookmarks();
 
       expect(result).toHaveLength(2);
       expect(result[0]).toHaveProperty("id");
@@ -28,7 +28,7 @@ describe("FetchBookmarksUseCase", () => {
     });
 
     it("should return empty array when no bookmarks exist", async () => {
-      const result = await fetchBookmarksUseCase();
+      const result = await bookmarks();
 
       expect(result).toEqual([]);
       expect(result).toHaveLength(0);

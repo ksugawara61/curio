@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRepository";
-import { deleteBookmarkUseCase } from "./DeleteBookmarkUseCase";
+import * as bookmarkRepository from "../../../infrastructure/persistence/BookmarkRepository";
+import { deleteBookmark } from ".";
 
-describe("DeleteBookmarkUseCase", () => {
+describe("deleteBookmark", () => {
   describe("正常系", () => {
     it("should delete a bookmark successfully", async () => {
       const bookmark = await bookmarkRepository.create({
@@ -11,7 +11,7 @@ describe("DeleteBookmarkUseCase", () => {
         description: "A test bookmark",
       });
 
-      const result = await deleteBookmarkUseCase(bookmark.id);
+      const result = await deleteBookmark(bookmark.id);
 
       expect(result).toBe(true);
 
@@ -24,7 +24,7 @@ describe("DeleteBookmarkUseCase", () => {
     it("should throw ServiceError with NOT_FOUND when bookmark does not exist", async () => {
       const nonExistentId = "non-existent-id";
 
-      await expect(deleteBookmarkUseCase(nonExistentId)).rejects.toThrowError(
+      await expect(deleteBookmark(nonExistentId)).rejects.toThrowError(
         expect.objectContaining({
           message: "Bookmark not found",
         }),

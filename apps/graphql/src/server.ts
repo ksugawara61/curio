@@ -1,24 +1,24 @@
-import { fetchArticlesUseCase } from "./application/articles/FetchArticlesUseCase";
-import { createBookmarkUseCase } from "./application/bookmarks/CreateBookmarkUseCase";
-import { deleteBookmarkUseCase } from "./application/bookmarks/DeleteBookmarkUseCase";
-import { fetchBookmarkByIdUseCase } from "./application/bookmarks/FetchBookmarkByIdUseCase";
-import { fetchBookmarksUseCase } from "./application/bookmarks/FetchBookmarksUseCase";
-import { updateBookmarkUseCase } from "./application/bookmarks/UpdateBookmarkUseCase";
-import { createTagUseCase } from "./application/tags/CreateTagUseCase";
-import { fetchTagsUseCase } from "./application/tags/FetchTagsUseCase";
+import { createBookmark } from "./application/mutations/createBookmark";
+import { createTag } from "./application/mutations/createTag";
+import { deleteBookmark } from "./application/mutations/deleteBookmark";
+import { updateBookmark } from "./application/mutations/updateBookmark";
+import { articles } from "./application/queries/articles";
+import { bookmark } from "./application/queries/bookmark";
+import { bookmarks } from "./application/queries/bookmarks";
+import { tags } from "./application/queries/tags";
 import { withAuth } from "./middleware/auth";
 
 export const server = {
   Query: {
-    articles: withAuth(fetchArticlesUseCase),
-    bookmarks: withAuth(fetchBookmarksUseCase),
-    bookmark: withAuth(fetchBookmarkByIdUseCase),
-    tags: withAuth(fetchTagsUseCase),
+    articles: withAuth(articles),
+    bookmarks: withAuth(bookmarks),
+    bookmark: withAuth(bookmark),
+    tags: withAuth(tags),
   },
   Mutation: {
-    createBookmark: withAuth(createBookmarkUseCase),
-    updateBookmark: withAuth(updateBookmarkUseCase),
-    deleteBookmark: withAuth(deleteBookmarkUseCase),
-    createTag: withAuth(createTagUseCase),
+    createBookmark: withAuth(createBookmark),
+    updateBookmark: withAuth(updateBookmark),
+    deleteBookmark: withAuth(deleteBookmark),
+    createTag: withAuth(createTag),
   },
 };

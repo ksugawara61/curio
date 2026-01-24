@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import * as bookmarkRepository from "../../infrastructure/persistence/BookmarkRepository";
+import * as bookmarkRepository from "../../../infrastructure/persistence/BookmarkRepository";
 import { updateBookmark } from ".";
 
 describe("updateBookmark", () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import * as tagRepository from "../../infrastructure/persistence/TagRepository";
+import * as tagRepository from "../../../infrastructure/persistence/TagRepository";
 import { tags } from ".";
 
 describe("tags", () => {

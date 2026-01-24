@@ -11,7 +11,7 @@
     "storybook": "storybook dev -p 6006",
     "vrt": " playwright install chromium && playwright test",
     "vrt:update": "playwright install chromium && playwright test --update-snapshots",
-    "codegen": "graphql-codegen"
+    "codegen": "gql.tada generate-output --output src/graphql/graphql-env.d.ts"
   },
   "dependencies": {
     "@apollo/client": "catalog:",
@@ -24,10 +24,6 @@
   "devDependencies": {
     "@0no-co/graphqlsp": "catalog:",
     "@gql.tada/cli-utils": "catalog:",
-    "@graphql-codegen/cli": "catalog:",
-    "@graphql-codegen/client-preset": "catalog:",
-    "@graphql-codegen/introspection": "catalog:",
-    "@graphql-typed-document-node/core": "catalog:",
     "@playwright/test": "catalog:",
     "@storybook/addon-links": "catalog:",
     "@storybook/addon-themes": "catalog:",

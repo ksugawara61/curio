@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite build --watch --mode development",
     "build": "tsc && vite build",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -18,7 +19,10 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@graphql-eslint/eslint-plugin": "catalog:",
     "@playwright/test": "catalog:",
+    "eslint": "catalog:",
+    "typescript-eslint": "catalog:",
     "@storybook/addon-links": "catalog:",
     "@storybook/addon-themes": "catalog:",
     "@storybook/react": "catalog:",

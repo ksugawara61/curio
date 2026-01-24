@@ -4,6 +4,9 @@ packages:
 
 catalog:
   '@0no-co/graphqlsp': ^1.15.2
+  '@graphql-eslint/eslint-plugin': ^4.4.0
+  eslint: ^9.28.0
+  typescript-eslint: ^8.33.0
   '@apollo/client': ^4.1.1
   '@apollo/server': ^5.2.0
   '@as-integrations/express5': ^1.1.2

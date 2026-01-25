@@ -15,6 +15,7 @@ const verifyAuth = async () => {
   ctx.set("userId", "dummy");
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 // biome-ignore lint/suspicious/noExplicitAny: 抽象化のためanyを許容
 type AnyFunction = (...args: any) => Promise<any>;
 

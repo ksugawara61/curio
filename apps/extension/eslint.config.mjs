@@ -19,7 +19,6 @@ export default tseslint.config(
       "**/dist/**",
       "**/build/**",
       "**/coverage/**",
-      "**/.pylon/**",
       "**/generated/**",
       "**/*.generated.ts",
     ],

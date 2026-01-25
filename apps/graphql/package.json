@@ -10,6 +10,7 @@
     "deploy": "pnpm build && wrangler deploy",
     "test": "vitest",
     "test:changed": "vitest --changed main",
+    "lint": "eslint . --ext js,ts,jsx,tsx",
     "db:local": "turso dev -f .dev/dev.db",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
@@ -30,14 +31,17 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "catalog:",
+    "@eslint/js": "catalog:",
     "@getcronit/pylon-dev": "catalog:",
     "@vitest/ui": "catalog:",
     "drizzle-kit": "catalog:",
+    "eslint": "catalog:",
     "msw": "catalog:",
     "openapi-msw": "catalog:",
     "openapi-typescript": "catalog:",
     "scaffdog": "catalog:",
     "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
     "vitest": "catalog:",
     "wrangler": "catalog:"
   }

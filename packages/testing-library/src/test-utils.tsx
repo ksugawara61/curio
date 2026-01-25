@@ -1,4 +1,4 @@
-import type { ApolloClient } from "@apollo/client";
+import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 import { ApolloProvider } from "@apollo/client/react";
 import {
   type RenderOptions,
@@ -9,20 +9,25 @@ import type { ReactElement } from "react";
 
 export type TestProviderProps = {
   children: React.ReactNode;
-  client: ApolloClient;
 };
+
+const createTestClient = () =>
+  new ApolloClient({
+    link: new HttpLink({ uri: "http://localhost:4000/graphql" }),
+    cache: new InMemoryCache(),
+  });
 
 /**
  * テスト用のプロバイダーコンポーネント
  * Apollo Client をテスト用の設定で提供する
  */
-export function TestProvider({ children, client }: TestProviderProps) {
-  return <ApolloProvider client={client}>{children}</ApolloProvider>;
+export function TestProvider({ children }: TestProviderProps) {
+  return (
+    <ApolloProvider client={createTestClient()}>{children}</ApolloProvider>
+  );
 }
 
-export type CustomRenderOptions = {
-  client: ApolloClient;
-} & Omit<RenderOptions, "wrapper">;
+export type CustomRenderOptions = Omit<RenderOptions, "wrapper">;
 
 /**
  * Testing Library の render 関数のラッパー
@@ -30,15 +35,11 @@ export type CustomRenderOptions = {
  */
 export function render(
   ui: ReactElement,
-  options: CustomRenderOptions,
+  options?: CustomRenderOptions,
 ): RenderResult {
-  const { client, ...renderOptions } = options;
-
   return rtlRender(ui, {
-    wrapper: ({ children }) => (
-      <TestProvider client={client}>{children}</TestProvider>
-    ),
-    ...renderOptions,
+    wrapper: ({ children }) => <TestProvider>{children}</TestProvider>,
+    ...options,
   });
 }
 

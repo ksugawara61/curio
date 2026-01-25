@@ -1,6 +1,5 @@
-import { server } from "@curio/testing-library";
+import { render, screen, server, waitFor } from "@curio/testing-library";
 import { describe, expect, it } from "vitest";
-import { render, screen, waitFor } from "../../../../libs/test/render";
 import { BookmarkList } from ".";
 import { BookmarksListQueryMocks } from "./BookmarksQuery.mocks";
 

@@ -19,9 +19,12 @@
   "dependencies": {
     "@apollo/client": "catalog:",
     "@curio/graphql-client": "workspace:*",
+    "@hookform/resolvers": "catalog:",
     "graphql": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "react-hook-form": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@curio/eslint-config": "workspace:*",

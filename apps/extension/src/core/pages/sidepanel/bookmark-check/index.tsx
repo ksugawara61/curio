@@ -1,7 +1,10 @@
 import { useMutation, useQuery } from "@curio/graphql-client";
-import { type FC, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { FC } from "react";
+import { useForm } from "react-hook-form";
 import { BookmarksQuery } from "./BookmarksQuery";
 import { CreateBookmarkMutation } from "./CreateBookmarkMutation";
+import { type BookmarkFormValues, bookmarkFormSchema } from "./schema";
 
 type Props = {
   currentUrl: string;
@@ -9,8 +12,13 @@ type Props = {
 };
 
 export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
-  const [description, setDescription] = useState("");
-  const [tagInput, setTagInput] = useState("");
+  const { register, handleSubmit, reset } = useForm<BookmarkFormValues>({
+    resolver: zodResolver(bookmarkFormSchema),
+    defaultValues: {
+      description: "",
+      tagInput: "",
+    },
+  });
 
   const { data, loading, error, refetch } = useQuery(BookmarksQuery);
 
@@ -19,8 +27,7 @@ export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
     {
       onCompleted: () => {
         refetch();
-        setDescription("");
-        setTagInput("");
+        reset();
       },
     },
   );
@@ -29,18 +36,20 @@ export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
     (bookmark) => bookmark.url === currentUrl,
   );
 
-  const handleAddBookmark = () => {
-    const tagNames = tagInput
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag.length > 0);
+  const onSubmit = (data: BookmarkFormValues) => {
+    const tagNames = data.tagInput
+      ? data.tagInput
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter((tag) => tag.length > 0)
+      : [];
 
     createBookmark({
       variables: {
         input: {
           title: currentTitle,
           url: currentUrl,
-          description: description || undefined,
+          description: data.description || undefined,
           tagNames: tagNames.length > 0 ? tagNames : undefined,
         },
       },
@@ -104,7 +113,7 @@ export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
 
   return (
     <div className="card bg-base-200">
-      <div className="card-body">
+      <form className="card-body" onSubmit={handleSubmit(onSubmit)}>
         <h2 className="card-title text-lg">Add Bookmark</h2>
         <p className="truncate text-sm text-base-content/70">{currentUrl}</p>
 
@@ -129,8 +138,7 @@ export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
             id="bookmark-description"
             className="textarea textarea-bordered"
             placeholder="Add a description..."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            {...register("description")}
           />
         </div>
 
@@ -143,18 +151,12 @@ export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
             type="text"
             className="input input-bordered"
             placeholder="e.g., tech, tutorial, react"
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
+            {...register("tagInput")}
           />
         </div>
 
         <div className="card-actions mt-4 justify-end">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={handleAddBookmark}
-            disabled={creating}
-          >
+          <button type="submit" className="btn btn-primary" disabled={creating}>
             {creating ? (
               <>
                 <span className="loading loading-spinner loading-sm" />
@@ -165,7 +167,7 @@ export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
             )}
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

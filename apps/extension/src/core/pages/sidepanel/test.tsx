@@ -1,5 +1,5 @@
 import { render, screen, server, waitFor } from "@curio/testing-library";
-import userEvent from "@testing-library/user-event";
+import { act } from "react";
 import { describe, expect, it } from "vitest";
 import { SidePanel } from ".";
 import { ArticlesListQueryMocks } from "./article-list/ArticlesQuery.mocks";
@@ -42,11 +42,9 @@ describe("SidePanel", () => {
   });
 
   it("switches to Bookmarks tab when clicked", async () => {
-    const user = userEvent.setup();
     server.use(BookmarksQueryMocks.Empty, BookmarksListQueryMocks.Empty);
 
-    render(<SidePanel {...defaultProps} />);
-
+    const { user } = render(<SidePanel {...defaultProps} />);
     // Wait for initial load
     await waitFor(() => {
       expect(
@@ -55,7 +53,7 @@ describe("SidePanel", () => {
     });
 
     const bookmarksTab = screen.getByRole("tab", { name: "Bookmarks" });
-    await user.click(bookmarksTab);
+    await act(() => user.click(bookmarksTab));
 
     expect(bookmarksTab).toHaveAttribute("aria-selected", "true");
 
@@ -65,13 +63,12 @@ describe("SidePanel", () => {
   });
 
   it("switches to Articles tab when clicked", async () => {
-    const user = userEvent.setup();
     server.use(BookmarksQueryMocks.Empty, ArticlesListQueryMocks.Success);
 
-    render(<SidePanel {...defaultProps} />);
+    const { user } = render(<SidePanel {...defaultProps} />);
 
     const articlesTab = screen.getByRole("tab", { name: "Articles" });
-    await user.click(articlesTab);
+    await act(() => user.click(articlesTab));
 
     expect(articlesTab).toHaveAttribute("aria-selected", "true");
 

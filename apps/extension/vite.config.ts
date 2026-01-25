@@ -12,7 +12,7 @@ export default defineConfig({
       name: "copy-manifest",
       closeBundle() {
         // distディレクトリが存在しない場合は作成
-        mkdirSync(resolve(__dirname, "dist"), { recursive: true });
+        mkdirSync(resolve(__dirname, "dist/src/pages/"), { recursive: true });
 
         // manifest.jsonをコピー
         copyFileSync(
@@ -25,11 +25,11 @@ export default defineConfig({
         mkdirSync(resolve(__dirname, "dist/sidepanel"), { recursive: true });
 
         renameSync(
-          resolve(__dirname, "dist/src/popup/index.html"),
+          resolve(__dirname, "dist/src/pages/popup/index.html"),
           resolve(__dirname, "dist/popup/index.html")
         );
         renameSync(
-          resolve(__dirname, "dist/src/sidepanel/index.html"),
+          resolve(__dirname, "dist/src/pages/sidepanel/index.html"),
           resolve(__dirname, "dist/sidepanel/index.html")
         );
 
@@ -51,18 +51,9 @@ export default defineConfig({
     outDir: "dist",
     rollupOptions: {
       input: {
-        popup: resolve(__dirname, "src/popup/index.html"),
-        sidepanel: resolve(__dirname, "src/sidepanel/index.html"),
+        popup: resolve(__dirname, "src/pages/popup/index.html"),
+        sidepanel: resolve(__dirname, "src/pages/sidepanel/index.html"),
       },
     },
-  },
-  test: {
-    environment: "jsdom",
-    setupFiles: ["./src/libs/test/setup.ts"],
-    exclude: [
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/tests/vrt/**", // Playwright VRT tests
-    ],
   },
 });

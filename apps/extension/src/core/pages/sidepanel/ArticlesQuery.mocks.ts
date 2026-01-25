@@ -1,6 +1,6 @@
 import { createMockQuery, mockLoadingResolver } from "@curio/graphql-client";
 import { HttpResponse } from "msw";
-import { ArticlesQuery } from "../queries/articles";
+import { ArticlesQuery } from "./ArticlesQuery";
 
 const mockArticles = [
   {

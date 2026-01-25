@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Popup } from "./Popup";
+import { Popup } from ".";
 
 const meta = {
   component: Popup,
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof Popup>;
 
 export default meta;

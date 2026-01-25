@@ -1,6 +1,6 @@
 import { useQuery } from "@curio/graphql-client";
 import type { FC } from "react";
-import { ArticlesQuery } from "../queries/articles";
+import { ArticlesQuery } from "./ArticlesQuery";
 
 export const SidePanel: FC = () => {
   const { data, loading, error } = useQuery(ArticlesQuery, {

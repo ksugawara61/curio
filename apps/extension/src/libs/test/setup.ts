@@ -1,7 +1,8 @@
-import { cleanup } from "@testing-library/react";
-import { afterEach } from "vitest";
-import "@testing-library/jest-dom/vitest";
+import "@testing-library/jest-dom";
+import { afterAll, afterEach, beforeAll } from "vitest";
+import { server } from "./msw/server";
 
-afterEach(() => {
-  cleanup();
-});
+// MSW server setup
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());

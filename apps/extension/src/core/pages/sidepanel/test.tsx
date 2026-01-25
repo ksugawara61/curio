@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from "@curio/graphql-client";
 import { describe, expect, it } from "vitest";
-import { server } from "../test/msw/server";
-import { ArticlesQueryMocks } from "./mocks";
-import { SidePanel } from "./SidePanel";
+import { server } from "../../../libs/test/msw/server";
+import { SidePanel } from ".";
+import { ArticlesQueryMocks } from "./ArticlesQuery.mocks";
 
 describe("SidePanel", () => {
   it("displays loading state initially", () => {

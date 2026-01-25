@@ -1,7 +1,7 @@
 import { withThemeByDataAttribute } from "@storybook/addon-themes";
 import type { Preview, ReactRenderer } from "@storybook/react";
 
-import "../src/style.css";
+import "../src/pages/style.css";
 
 const preview: Preview = {
   parameters: {

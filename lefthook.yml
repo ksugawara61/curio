@@ -27,4 +27,9 @@ pre-commit:
       run: pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --write {staged_files}
     lint-graphql:
       glob: "apps/extension/src/**/*.{js,mjs,ts,mts,jsx,tsx}"
-      run: echo "{staged_files}" | sed 's|apps/extension/||g' | xargs pnpm --filter @curio/extension lint --fix
+      run: |
+        if [ ! -d "apps/extension/node_modules" ]; then
+          echo "⚠️  node_modules not found. Run 'pnpm install' first."
+          exit 1
+        fi
+        echo "{staged_files}" | sed 's|apps/extension/||g' | xargs pnpm --filter @curio/extension lint --fix

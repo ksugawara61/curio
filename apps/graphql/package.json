@@ -32,6 +32,7 @@
   "devDependencies": {
     "@curio/eslint-config": "workspace:*",
     "@cloudflare/workers-types": "catalog:",
+    "eslint": "catalog:",
     "@getcronit/pylon-dev": "catalog:",
     "@vitest/ui": "catalog:",
     "drizzle-kit": "catalog:",

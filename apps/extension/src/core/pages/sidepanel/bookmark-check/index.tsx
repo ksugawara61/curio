@@ -47,7 +47,7 @@ export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
     });
   };
 
-  if (loading) {
+  if (!currentUrl || loading) {
     return (
       <div className="flex justify-center p-8">
         <span className="loading loading-spinner loading-lg" />

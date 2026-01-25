@@ -1,6 +1,7 @@
-import { render, screen, server, waitFor } from "@curio/testing-library";
+import { render, screen, waitFor } from "@curio/testing-library";
 import { act } from "react";
 import { describe, expect, it } from "vitest";
+import { server } from "../../../libs/test/msw/server";
 import { SidePanel } from ".";
 import { ArticlesListQueryMocks } from "./article-list/ArticlesQuery.mocks";
 import { BookmarksQueryMocks } from "./bookmark-check/BookmarksQuery.mocks";

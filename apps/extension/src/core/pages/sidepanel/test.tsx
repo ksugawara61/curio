@@ -1,57 +1,103 @@
-import { render, screen, waitFor } from "@curio/graphql-client";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../libs/test/msw/server";
+import { render, screen, waitFor } from "../../../libs/test/render";
 import { SidePanel } from ".";
-import { ArticlesQueryMocks } from "./ArticlesQuery.mocks";
+import { ArticlesListQueryMocks } from "./article-list/ArticlesQuery.mocks";
+import { BookmarksQueryMocks } from "./bookmark-check/BookmarksQuery.mocks";
+import { BookmarksListQueryMocks } from "./bookmark-list/BookmarksQuery.mocks";
+
+const defaultProps = {
+  initialUrl: "https://example.com",
+  initialTitle: "Example Page",
+};
 
 describe("SidePanel", () => {
-  it("displays loading state initially", () => {
-    server.use(ArticlesQueryMocks.Loading);
+  it("displays tab navigation", () => {
+    server.use(BookmarksQueryMocks.Empty);
 
-    render(<SidePanel />);
+    render(<SidePanel {...defaultProps} />);
 
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
+    expect(
+      screen.getByRole("tab", { name: "Current Page" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Bookmarks" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Articles" })).toBeInTheDocument();
   });
 
-  it("displays articles when data is loaded", async () => {
-    server.use(ArticlesQueryMocks.Success);
+  it("shows Current Page tab by default", async () => {
+    server.use(BookmarksQueryMocks.Empty);
 
-    render(<SidePanel />);
+    render(<SidePanel {...defaultProps} />);
 
-    expect(await screen.findByText("Test Article 1")).toBeInTheDocument();
-
-    expect(screen.getByText("Test Article 2")).toBeInTheDocument();
-    expect(screen.getByText("by Test User")).toBeInTheDocument();
-    expect(screen.getByText("by Another User")).toBeInTheDocument();
-    expect(screen.getByText("React")).toBeInTheDocument();
-    expect(screen.getByText("TypeScript")).toBeInTheDocument();
-    expect(screen.getByText("JavaScript")).toBeInTheDocument();
-  });
-
-  it("displays error message when query fails", async () => {
-    server.use(ArticlesQueryMocks.Error);
-
-    render(<SidePanel />);
+    expect(screen.getByRole("tab", { name: "Current Page" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
 
     await waitFor(() => {
-      expect(screen.getByText(/Error:/)).toBeInTheDocument();
+      expect(
+        screen.getByRole("heading", { name: "Add Bookmark" }),
+      ).toBeInTheDocument();
     });
-
-    expect(screen.getByText(/Failed to fetch articles/)).toBeInTheDocument();
   });
 
-  it("displays article links with correct href", async () => {
-    server.use(ArticlesQueryMocks.SingleArticle);
-    render(<SidePanel />);
+  it("switches to Bookmarks tab when clicked", async () => {
+    const user = userEvent.setup();
+    server.use(BookmarksQueryMocks.Empty, BookmarksListQueryMocks.Empty);
 
-    const link = await screen.findByRole("link", { name: "Test Article" });
+    render(<SidePanel {...defaultProps} />);
 
-    expect(link).toHaveAttribute("href", "https://example.com/test");
-    expect(link).toHaveAttribute("target", "_blank");
-    expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    // Wait for initial load
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: "Add Bookmark" }),
+      ).toBeInTheDocument();
+    });
 
-    // Date formatting depends on locale, so just check that a date is displayed
-    const dateText = new Date("2024-01-01T00:00:00Z").toLocaleDateString();
-    expect(screen.getByText(dateText)).toBeInTheDocument();
+    const bookmarksTab = screen.getByRole("tab", { name: "Bookmarks" });
+    await user.click(bookmarksTab);
+
+    expect(bookmarksTab).toHaveAttribute("aria-selected", "true");
+
+    await waitFor(() => {
+      expect(screen.getByText("No bookmarks yet")).toBeInTheDocument();
+    });
+  });
+
+  it("switches to Articles tab when clicked", async () => {
+    const user = userEvent.setup();
+    server.use(BookmarksQueryMocks.Empty, ArticlesListQueryMocks.Success);
+
+    render(<SidePanel {...defaultProps} />);
+
+    const articlesTab = screen.getByRole("tab", { name: "Articles" });
+    await user.click(articlesTab);
+
+    expect(articlesTab).toHaveAttribute("aria-selected", "true");
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Getting Started with React"),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("displays header with Curio title", () => {
+    server.use(BookmarksQueryMocks.Empty);
+
+    render(<SidePanel {...defaultProps} />);
+
+    expect(screen.getByRole("heading", { name: "Curio" })).toBeInTheDocument();
+  });
+
+  it("shows bookmark details when URL is already bookmarked", async () => {
+    server.use(BookmarksQueryMocks.WithMatchingUrl(defaultProps.initialUrl));
+
+    render(<SidePanel {...defaultProps} />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Bookmarked")).toBeInTheDocument();
+    });
   });
 });

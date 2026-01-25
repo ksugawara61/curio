@@ -8,7 +8,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint . --ext js,ts,jsx,tsx",
+    "lint": "eslint . --ext js,mjs,ts,mts,jsx,tsx",
     "storybook": "storybook dev -p 6006",
     "vrt": " playwright install chromium && playwright test",
     "vrt:update": "playwright install chromium && playwright test --update-snapshots"

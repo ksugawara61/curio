@@ -10,7 +10,7 @@
     "deploy": "pnpm build && wrangler deploy",
     "test": "vitest",
     "test:changed": "vitest --changed main",
-    "lint": "eslint . --ext js,ts,jsx,tsx",
+    "lint": "eslint . --ext js,mjs,ts,mts,jsx,tsx",
     "db:local": "turso dev -f .dev/dev.db",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",

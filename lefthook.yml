@@ -23,5 +23,5 @@ pre-commit:
   parallel: true
   commands:
     lint:
-      glob: "**/*.{js,ts,jsx,tsx,json}"
+      glob: "**/*.{js,mjs,ts,mts,jsx,tsx,json}"
       run: pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --write {staged_files}

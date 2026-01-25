@@ -5,7 +5,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ["**/*.{js,ts,jsx,tsx}"],
+    files: ["**/*.{js,mjs,ts,mts,jsx,tsx}"],
     rules: {
       "@typescript-eslint/no-unused-vars": [
         "error",

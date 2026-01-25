@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { BookmarkCheck } from ".";
-import { BookmarksQueryMocks } from "./BookmarksQuery.mocks";
+import { BookmarkQueryMocks } from "./BookmarkQuery.mocks";
 import { CreateBookmarkMutationMocks } from "./CreateBookmarkMutation.mocks";
 
 const meta = {
@@ -29,7 +29,7 @@ export const NotBookmarked: Story = {
   parameters: {
     msw: {
       handlers: [
-        BookmarksQueryMocks.Empty,
+        BookmarkQueryMocks.NotFound,
         CreateBookmarkMutationMocks.Success,
       ],
     },
@@ -43,7 +43,7 @@ export const AlreadyBookmarked: Story = {
   },
   parameters: {
     msw: {
-      handlers: [BookmarksQueryMocks.Success],
+      handlers: [BookmarkQueryMocks.Success],
     },
   },
 };
@@ -51,7 +51,7 @@ export const AlreadyBookmarked: Story = {
 export const ErrorState: Story = {
   parameters: {
     msw: {
-      handlers: [BookmarksQueryMocks.Error],
+      handlers: [BookmarkQueryMocks.Error],
     },
   },
 };

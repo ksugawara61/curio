@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@curio/graphql-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { FC } from "react";
 import { useForm } from "react-hook-form";
-import { BookmarksQuery } from "./BookmarksQuery";
+import { BookmarkQuery } from "./BookmarkQuery";
 import { CreateBookmarkMutation } from "./CreateBookmarkMutation";
 import { type BookmarkFormValues, bookmarkFormSchema } from "./schema";
 
@@ -20,7 +20,10 @@ export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
     },
   });
 
-  const { data, loading, error, refetch } = useQuery(BookmarksQuery);
+  const { data, loading, error, refetch } = useQuery(BookmarkQuery, {
+    variables: { uri: currentUrl },
+    skip: !currentUrl,
+  });
 
   const [createBookmark, { loading: creating }] = useMutation(
     CreateBookmarkMutation,
@@ -32,9 +35,7 @@ export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
     },
   );
 
-  const existingBookmark = data?.bookmarks.find(
-    (bookmark) => bookmark.url === currentUrl,
-  );
+  const existingBookmark = data?.bookmark;
 
   const onSubmit = (data: BookmarkFormValues) => {
     const tagNames = data.tagInput

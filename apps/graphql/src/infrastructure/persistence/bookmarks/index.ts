@@ -126,6 +126,55 @@ export class BookmarkRepository {
     return bookmark;
   }
 
+  async findByUrl(url: string): Promise<Bookmark | null> {
+    const result = await this.db
+      .select({
+        id: bookmarks.id,
+        title: bookmarks.title,
+        url: bookmarks.url,
+        description: bookmarks.description,
+        created_at: bookmarks.created_at,
+        updated_at: bookmarks.updated_at,
+        tag_id: tags.id,
+        tag_name: tags.name,
+        tag_created_at: tags.created_at,
+        tag_updated_at: tags.updated_at,
+      })
+      .from(bookmarks)
+      .leftJoin(bookmarkTags, eq(bookmarks.id, bookmarkTags.bookmark_id))
+      .leftJoin(tags, eq(bookmarkTags.tag_id, tags.id))
+      .where(eq(bookmarks.url, url));
+
+    if (result.length === 0) {
+      return null;
+    }
+
+    const firstRow = result[0];
+    const bookmark: Bookmark = {
+      id: firstRow.id,
+      title: firstRow.title,
+      url: firstRow.url,
+      description: firstRow.description,
+      created_at: new Date(firstRow.created_at),
+      updated_at: new Date(firstRow.updated_at),
+      tags: [],
+    };
+
+    for (const row of result) {
+      if (row.tag_id) {
+        bookmark.tags = bookmark.tags || [];
+        bookmark.tags.push({
+          id: row.tag_id,
+          name: row.tag_name ?? "",
+          created_at: new Date(row.tag_created_at ?? 0),
+          updated_at: new Date(row.tag_updated_at ?? 0),
+        });
+      }
+    }
+
+    return bookmark;
+  }
+
   async create(input: CreateBookmarkInput): Promise<Bookmark> {
     // First create or find tags (deduplicate tag names)
     const uniqueTagNames = input.tagNames ? [...new Set(input.tagNames)] : [];

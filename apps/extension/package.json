@@ -22,8 +22,6 @@
   "devDependencies": {
     "@graphql-eslint/eslint-plugin": "catalog:",
     "@playwright/test": "catalog:",
-    "eslint": "catalog:",
-    "typescript-eslint": "catalog:",
     "@storybook/addon-links": "catalog:",
     "@storybook/addon-themes": "catalog:",
     "@storybook/react": "catalog:",
@@ -38,12 +36,20 @@
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "daisyui": "catalog:",
+    "eslint": "catalog:",
     "jsdom": "catalog:",
     "msw": "catalog:",
+    "msw-storybook-addon": "catalog:",
     "storybook": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
+    "typescript-eslint": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
+  },
+  "msw": {
+    "workerDirectory": [
+      ".storybook/public"
+    ]
   }
 }

@@ -13,6 +13,8 @@
       "**/apps/*/src/**",
       "**/packages/*/src/**",
       "**/scripts/**",
+      "**/vite.config.*",
+      "**/vitest.config.*",
       "!**/*.css",
       "!package.json",
       "!**/src/**/generated/*",
@@ -29,7 +31,8 @@
       "!**/*.local.json",
       "!**/.pylon",
       "!**/src/**/gql-tada/graphql-*.d.ts",
-      "!**/src/graphql/graphql-env.d.ts"
+      "!**/src/graphql/graphql-env.d.ts",
+      "!**/mockServiceWorker.js"
     ]
   },
   "linter": {

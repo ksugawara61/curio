@@ -17,7 +17,7 @@ export default defineConfig({
         // manifest.jsonをコピー
         copyFileSync(
           resolve(__dirname, "public/manifest.json"),
-          resolve(__dirname, "dist/manifest.json")
+          resolve(__dirname, "dist/manifest.json"),
         );
 
         // HTMLファイルを正しい場所に移動
@@ -26,11 +26,11 @@ export default defineConfig({
 
         renameSync(
           resolve(__dirname, "dist/src/pages/popup/index.html"),
-          resolve(__dirname, "dist/popup/index.html")
+          resolve(__dirname, "dist/popup/index.html"),
         );
         renameSync(
           resolve(__dirname, "dist/src/pages/sidepanel/index.html"),
-          resolve(__dirname, "dist/sidepanel/index.html")
+          resolve(__dirname, "dist/sidepanel/index.html"),
         );
 
         // 空のsrcディレクトリを削除
@@ -43,9 +43,9 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "react": resolve(__dirname, "node_modules/react"),
+      react: resolve(__dirname, "node_modules/react"),
       "react-dom": resolve(__dirname, "node_modules/react-dom"),
-    }
+    },
   },
   build: {
     outDir: "dist",

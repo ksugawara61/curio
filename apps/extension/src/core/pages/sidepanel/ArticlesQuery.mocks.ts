@@ -4,6 +4,7 @@ import { ArticlesQuery } from "./ArticlesQuery";
 
 const mockArticles = [
   {
+    __typename: "Article" as const,
     id: "1",
     title: "Test Article 1",
     body: "This is a test article body",
@@ -16,6 +17,7 @@ const mockArticles = [
     tags: [{ name: "React" }, { name: "TypeScript" }],
   },
   {
+    __typename: "Article" as const,
     id: "2",
     title: "Test Article 2",
     body: "This is another test article",
@@ -41,6 +43,7 @@ export const ArticlesQueryMocks = {
       data: {
         articles: [
           {
+            __typename: "Article",
             id: "1",
             title: "Test Article",
             body: "Test body",

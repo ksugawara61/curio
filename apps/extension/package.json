@@ -11,7 +11,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "storybook": "storybook dev -p 6006",
-    "vrt": " playwright install chromium && playwright test",
+    "vrt": "playwright install chromium && playwright test",
+    "vrt:dry-run": "playwright install chromium && playwright test --ignore-snapshots",
+    "vrt:html": "playwright install chromium && playwright test --reporter=html",
     "vrt:update": "playwright install chromium && playwright test --update-snapshots"
   },
   "dependencies": {
@@ -56,7 +58,7 @@
   },
   "msw": {
     "workerDirectory": [
-      ".storybook/public"
+      "public"
     ]
   }
 }

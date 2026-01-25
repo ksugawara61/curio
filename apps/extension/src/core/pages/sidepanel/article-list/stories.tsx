@@ -36,14 +36,6 @@ export const Empty: Story = {
   },
 };
 
-export const Loading: Story = {
-  parameters: {
-    msw: {
-      handlers: [ArticlesListQueryMocks.Loading],
-    },
-  },
-};
-
 export const ErrorState: Story = {
   parameters: {
     msw: {

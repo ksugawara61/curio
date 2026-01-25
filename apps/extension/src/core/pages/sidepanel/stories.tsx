@@ -56,18 +56,6 @@ export const WithExistingBookmark: Story = {
   },
 };
 
-export const Loading: Story = {
-  parameters: {
-    msw: {
-      handlers: [
-        BookmarksQueryMocks.Loading,
-        BookmarksListQueryMocks.Loading,
-        ArticlesListQueryMocks.Loading,
-      ],
-    },
-  },
-};
-
 export const ErrorState: Story = {
   parameters: {
     msw: {

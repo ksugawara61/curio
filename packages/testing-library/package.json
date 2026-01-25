@@ -38,6 +38,7 @@
   "devDependencies": {
     "@curio/eslint-config": "workspace:*",
     "@apollo/client": "catalog:",
+    "eslint": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "gql.tada": "catalog:",

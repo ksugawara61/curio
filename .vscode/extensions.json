@@ -3,6 +3,7 @@
     "biomejs.biome",
     "davidanson.vscode-markdownlint",
     "apollographql.vscode-apollo",
-    "vitest.explorer"
+    "vitest.explorer",
+    "dbaeumer.vscode-eslint"
   ]
 }

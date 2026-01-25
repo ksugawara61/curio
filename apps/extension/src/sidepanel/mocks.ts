@@ -1,6 +1,6 @@
 import { createMockQuery, mockLoadingResolver } from "@curio/graphql-client";
 import { HttpResponse } from "msw";
-import { GetArticles } from "../queries/articles";
+import { ArticlesQuery } from "../queries/articles";
 
 const mockArticles = [
   {
@@ -29,14 +29,14 @@ const mockArticles = [
   },
 ];
 
-export const GetArticlesMocks = {
-  Loading: createMockQuery(GetArticles, mockLoadingResolver),
-  Success: createMockQuery(GetArticles, () => {
+export const ArticlesQueryMocks = {
+  Loading: createMockQuery(ArticlesQuery, mockLoadingResolver),
+  Success: createMockQuery(ArticlesQuery, () => {
     return HttpResponse.json({
       data: { articles: mockArticles },
     });
   }),
-  SingleArticle: createMockQuery(GetArticles, () => {
+  SingleArticle: createMockQuery(ArticlesQuery, () => {
     return HttpResponse.json({
       data: {
         articles: [
@@ -56,7 +56,7 @@ export const GetArticlesMocks = {
       },
     });
   }),
-  Error: createMockQuery(GetArticles, () => {
+  Error: createMockQuery(ArticlesQuery, () => {
     return HttpResponse.json({
       errors: [
         {

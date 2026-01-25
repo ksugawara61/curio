@@ -1,7 +1,7 @@
 import { graphql } from "@curio/graphql-client";
 
 export const ArticlesQuery = graphql(`
-  query Articles($limit: Number, $offset: Number) {
+  query ArticlesList($limit: Number, $offset: Number) {
     articles(limit: $limit, offset: $offset) {
       __typename
       body

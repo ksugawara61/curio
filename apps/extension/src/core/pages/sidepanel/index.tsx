@@ -1,70 +1,85 @@
-import { useQuery } from "@curio/graphql-client";
-import type { FC } from "react";
-import { ArticlesQuery } from "./ArticlesQuery";
+import { type FC, useEffect, useState } from "react";
+import { ArticleList } from "./article-list";
+import { BookmarkCheck } from "./bookmark-check";
+import { BookmarkList } from "./bookmark-list";
 
-export const SidePanel: FC = () => {
-  const { data, loading, error } = useQuery(ArticlesQuery, {
-    variables: {
-      limit: 20,
-      offset: 0,
-    },
-  });
+type TabType = "current" | "bookmarks" | "articles";
+
+type Props = {
+  initialUrl?: string;
+  initialTitle?: string;
+};
+
+export const SidePanel: FC<Props> = ({ initialUrl, initialTitle }) => {
+  const [activeTab, setActiveTab] = useState<TabType>("current");
+  const [currentUrl, setCurrentUrl] = useState(initialUrl ?? "");
+  const [currentTitle, setCurrentTitle] = useState(initialTitle ?? "");
+
+  useEffect(() => {
+    if (initialUrl && initialTitle) {
+      return;
+    }
+
+    const getCurrentTab = async () => {
+      if (typeof chrome !== "undefined" && chrome.tabs) {
+        const [tab] = await chrome.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+        if (tab?.url && tab?.title) {
+          setCurrentUrl(tab.url);
+          setCurrentTitle(tab.title);
+        }
+      }
+    };
+
+    getCurrentTab();
+
+    if (typeof chrome !== "undefined" && chrome.tabs?.onActivated) {
+      const listener = () => {
+        getCurrentTab();
+      };
+      chrome.tabs.onActivated.addListener(listener);
+      return () => {
+        chrome.tabs.onActivated.removeListener(listener);
+      };
+    }
+  }, [initialUrl, initialTitle]);
+
+  const tabs: { id: TabType; label: string }[] = [
+    { id: "current", label: "Current Page" },
+    { id: "bookmarks", label: "Bookmarks" },
+    { id: "articles", label: "Articles" },
+  ];
 
   return (
-    <div className="min-h-screen bg-base-200 p-4">
-      <div className="rounded-lg bg-base-100 p-6 shadow-xl">
-        <div className="mb-4 font-bold text-2xl">Curio Articles</div>
-
-        {loading && (
-          <output className="flex justify-center p-8">
-            <span className="loading loading-spinner loading-lg" />
-            <span className="sr-only">Loading...</span>
-          </output>
-        )}
-
-        {error && (
-          <div className="alert alert-error">
-            <span>Error: {error.message}</span>
-          </div>
-        )}
-
-        {data?.articles && (
-          <div className="flex flex-col gap-4">
-            {data.articles.map((article) => (
-              <div key={article.id} className="card bg-base-200 shadow-md">
-                <div className="card-body">
-                  <h2 className="card-title">
-                    <a
-                      href={article.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="link link-primary"
-                    >
-                      {article.title}
-                    </a>
-                  </h2>
-                  <div className="text-sm text-base-content/70">
-                    {article.user?.name && <span>by {article.user.name}</span>}
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {article.tags.map((tag, index) => (
-                      <span
-                        key={`${article.id}-${tag.name}-${index}`}
-                        className="badge badge-outline"
-                      >
-                        {tag.name}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="text-sm line-clamp-3">{article.body}</p>
-                  <div className="text-xs text-base-content/50">
-                    {new Date(article.created_at).toLocaleDateString()}
-                  </div>
-                </div>
-              </div>
+    <div className="min-h-screen bg-base-200">
+      <div className="sticky top-0 z-10 bg-base-100 shadow-sm">
+        <div className="p-4 pb-0">
+          <h1 className="mb-3 font-bold text-xl">Curio</h1>
+          <div role="tablist" className="tabs tabs-bordered">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                role="tab"
+                className={`tab ${activeTab === tab.id ? "tab-active" : ""}`}
+                onClick={() => setActiveTab(tab.id)}
+                aria-selected={activeTab === tab.id}
+              >
+                {tab.label}
+              </button>
             ))}
           </div>
+        </div>
+      </div>
+
+      <div className="p-4">
+        {activeTab === "current" && (
+          <BookmarkCheck currentUrl={currentUrl} currentTitle={currentTitle} />
         )}
+        {activeTab === "bookmarks" && <BookmarkList />}
+        {activeTab === "articles" && <ArticleList />}
       </div>
     </div>
   );

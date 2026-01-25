@@ -27,7 +27,8 @@
     "@libsql/client": "catalog:",
     "@paralleldrive/cuid2": "catalog:",
     "drizzle-orm": "catalog:",
-    "openapi-fetch": "catalog:"
+    "openapi-fetch": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@curio/eslint-config": "workspace:*",

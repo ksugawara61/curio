@@ -1,13 +1,15 @@
 import { ServiceError } from "@getcronit/pylon";
 import type { Bookmark } from "../../../infrastructure/domain/Bookmark";
 import { BookmarkRepository } from "../../../infrastructure/persistence/bookmarks";
+import { bookmarkQuerySchema } from "./validate";
 
 export const bookmark = async (
   id?: string,
   uri?: string,
 ): Promise<Bookmark | null> => {
-  if (!id && !uri) {
-    throw new ServiceError("Either id or uri must be provided", {
+  const result = bookmarkQuerySchema.safeParse({ id, uri });
+  if (!result.success) {
+    throw new ServiceError(result.error.errors[0].message, {
       statusCode: 400,
       code: "BAD_REQUEST",
     });

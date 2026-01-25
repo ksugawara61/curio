@@ -22,5 +22,7 @@ jobs:
           cache-dependency-path: '**/pnpm-lock.yaml'
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-      - name: Lint # root に biome があるのでパフォーマンスの問題が起きるまでは affected しない
+      - name: Biome Lint # root に biome があるのでパフォーマンスの問題が起きるまでは affected しない
         run: pnpm lint
+      - name: ESLint Lint
+        run: pnpm turbo lint --affected

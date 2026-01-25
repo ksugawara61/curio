@@ -11,8 +11,8 @@ if [ -z "$file_path" ]; then
   exit 0
 fi
 
-# Check if the file matches the pattern (js, ts, jsx, tsx, json)
-if [[ "$file_path" =~ \.(js|ts|jsx|tsx|json)$ ]]; then
+# Check if the file matches the pattern (js, mjs, ts, mts, jsx, tsx, json)
+if [[ "$file_path" =~ \.(js|mjs|ts|mts|jsx|tsx|json)$ ]]; then
   # Run biome check on the file
   cd "$CLAUDE_PROJECT_DIR"
   pnpm biome check --no-errors-on-unmatched --files-ignore-unknown=true --write "$file_path" 2>&1

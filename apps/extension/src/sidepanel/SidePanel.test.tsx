@@ -1,12 +1,12 @@
 import { render, screen, waitFor } from "@curio/graphql-client";
 import { describe, expect, it } from "vitest";
 import { server } from "../test/msw/server";
-import { GetArticlesMocks } from "./mocks";
+import { ArticlesQueryMocks } from "./mocks";
 import { SidePanel } from "./SidePanel";
 
 describe("SidePanel", () => {
   it("displays loading state initially", () => {
-    server.use(GetArticlesMocks.Loading);
+    server.use(ArticlesQueryMocks.Loading);
 
     render(<SidePanel />);
 
@@ -14,7 +14,7 @@ describe("SidePanel", () => {
   });
 
   it("displays articles when data is loaded", async () => {
-    server.use(GetArticlesMocks.Success);
+    server.use(ArticlesQueryMocks.Success);
 
     render(<SidePanel />);
 
@@ -29,7 +29,7 @@ describe("SidePanel", () => {
   });
 
   it("displays error message when query fails", async () => {
-    server.use(GetArticlesMocks.Error);
+    server.use(ArticlesQueryMocks.Error);
 
     render(<SidePanel />);
 
@@ -41,8 +41,7 @@ describe("SidePanel", () => {
   });
 
   it("displays article links with correct href", async () => {
-    server.use(GetArticlesMocks.SingleArticle);
-
+    server.use(ArticlesQueryMocks.SingleArticle);
     render(<SidePanel />);
 
     const link = await screen.findByRole("link", { name: "Test Article" });

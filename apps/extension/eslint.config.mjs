@@ -13,7 +13,7 @@ const schemaPath = resolve(
 
 const graphQLConfig = {
   schema: schemaPath,
-  documents: [`${__dirname}/src/**/*.ts`, `${__dirname}/src/**/*.tsx`],
+  documents: [`${__dirname}/src/**/*.{js,mjs,ts,mts,jsx,tsx}`],
   extensions: {
     pluckConfig: {
       globalGqlIdentifierName: "graphql",
@@ -32,7 +32,7 @@ export default tseslint.config(
     ignores: ["node_modules/**", "dist/**", ".storybook/**"],
   },
   {
-    files: ["src/**/*.ts", "src/**/*.tsx"],
+    files: ["src/**/*.{js,mjs,ts,mts,jsx,tsx}"],
     extends: [tseslint.configs.base],
     processor: graphqlPlugin.processor,
   },
@@ -49,7 +49,11 @@ export default tseslint.config(
     },
     rules: {
       ...graphqlPlugin.configs["flat/operations-recommended"].rules,
-      "@graphql-eslint/naming-convention": "off",
+      "@graphql-eslint/alphabetize": [
+        "error",
+        { selections: ["OperationDefinition", "FragmentDefinition"] },
+      ],
+      "@graphql-eslint/no-anonymous-operations": "error",
     },
   },
 );

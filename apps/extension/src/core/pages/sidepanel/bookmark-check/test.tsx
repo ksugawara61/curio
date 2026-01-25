@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@curio/testing-library";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../../libs/test/msw/server";
 import { BookmarkCheck } from ".";
-import { BookmarksQueryMocks } from "./BookmarksQuery.mocks";
+import { BookmarkQueryMocks } from "./BookmarkQuery.mocks";
 import { CreateBookmarkMutationMocks } from "./CreateBookmarkMutation.mocks";
 
 const defaultProps = {
@@ -12,7 +12,7 @@ const defaultProps = {
 
 describe("BookmarkCheck", () => {
   it("displays loading state initially", () => {
-    server.use(BookmarksQueryMocks.Loading);
+    server.use(BookmarkQueryMocks.Loading);
 
     render(<BookmarkCheck {...defaultProps} />);
 
@@ -20,7 +20,7 @@ describe("BookmarkCheck", () => {
   });
 
   it("displays add bookmark form when URL is not bookmarked", async () => {
-    server.use(BookmarksQueryMocks.Empty);
+    server.use(BookmarkQueryMocks.NotFound);
 
     render(<BookmarkCheck {...defaultProps} />);
 
@@ -40,7 +40,7 @@ describe("BookmarkCheck", () => {
   });
 
   it("displays bookmark details when URL is already bookmarked", async () => {
-    server.use(BookmarksQueryMocks.WithMatchingUrl(defaultProps.currentUrl));
+    server.use(BookmarkQueryMocks.WithMatchingUrl(defaultProps.currentUrl));
 
     render(<BookmarkCheck {...defaultProps} />);
 
@@ -56,7 +56,7 @@ describe("BookmarkCheck", () => {
   });
 
   it("displays error message when query fails", async () => {
-    server.use(BookmarksQueryMocks.Error);
+    server.use(BookmarkQueryMocks.Error);
 
     render(<BookmarkCheck {...defaultProps} />);
 
@@ -64,11 +64,14 @@ describe("BookmarkCheck", () => {
       expect(screen.getByText(/Error:/)).toBeInTheDocument();
     });
 
-    expect(screen.getByText(/Failed to fetch bookmarks/)).toBeInTheDocument();
+    expect(screen.getByText(/Failed to fetch bookmark/)).toBeInTheDocument();
   });
 
   it("allows adding a bookmark with description and tags", async () => {
-    server.use(BookmarksQueryMocks.Empty, CreateBookmarkMutationMocks.Success);
+    server.use(
+      BookmarkQueryMocks.NotFound,
+      CreateBookmarkMutationMocks.Success,
+    );
 
     render(<BookmarkCheck {...defaultProps} />);
 

@@ -1,8 +1,8 @@
 import { graphql } from "@curio/graphql-client";
 
-export const BookmarksQuery = graphql(`
-  query Bookmarks {
-    bookmarks {
+export const BookmarkQuery = graphql(`
+  query Bookmark($uri: String!) {
+    bookmark(uri: $uri) {
       __typename
       created_at
       description

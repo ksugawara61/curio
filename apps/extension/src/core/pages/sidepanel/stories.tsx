@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { SidePanel } from ".";
 import { ArticlesListQueryMocks } from "./article-list/ArticlesQuery.mocks";
-import { BookmarksQueryMocks } from "./bookmark-check/BookmarksQuery.mocks";
+import { BookmarkQueryMocks } from "./bookmark-check/BookmarkQuery.mocks";
 import { CreateBookmarkMutationMocks } from "./bookmark-check/CreateBookmarkMutation.mocks";
 import { BookmarksListQueryMocks } from "./bookmark-list/BookmarksQuery.mocks";
 
@@ -31,7 +31,7 @@ export const Default: Story = {
   parameters: {
     msw: {
       handlers: [
-        BookmarksQueryMocks.Empty,
+        BookmarkQueryMocks.NotFound,
         BookmarksListQueryMocks.Success,
         ArticlesListQueryMocks.Success,
         CreateBookmarkMutationMocks.Success,
@@ -48,7 +48,7 @@ export const WithExistingBookmark: Story = {
   parameters: {
     msw: {
       handlers: [
-        BookmarksQueryMocks.Success,
+        BookmarkQueryMocks.Success,
         BookmarksListQueryMocks.Success,
         ArticlesListQueryMocks.Success,
       ],
@@ -60,7 +60,7 @@ export const ErrorState: Story = {
   parameters: {
     msw: {
       handlers: [
-        BookmarksQueryMocks.Error,
+        BookmarkQueryMocks.Error,
         BookmarksListQueryMocks.Error,
         ArticlesListQueryMocks.Error,
       ],
@@ -72,7 +72,7 @@ export const EmptyState: Story = {
   parameters: {
     msw: {
       handlers: [
-        BookmarksQueryMocks.Empty,
+        BookmarkQueryMocks.NotFound,
         BookmarksListQueryMocks.Empty,
         ArticlesListQueryMocks.Empty,
         CreateBookmarkMutationMocks.Success,

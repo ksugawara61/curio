@@ -106,6 +106,57 @@ describe("BookmarkRepository", () => {
     });
   });
 
+  describe("findByUrl", () => {
+    it("should return bookmark by url", async () => {
+      const db = createDb();
+      const testUrl = "https://example.com/findbyurl";
+
+      const created = await db.transaction(async (tx) => {
+        const repository = new BookmarkRepository(tx);
+        return await repository.create({
+          title: "Test Bookmark",
+          url: testUrl,
+        });
+      });
+
+      const repository = new BookmarkRepository();
+      const result = await repository.findByUrl(testUrl);
+
+      expect(result).toEqual(created);
+    });
+
+    it("should return bookmark with tags by url", async () => {
+      const db = createDb();
+      const testUrl = "https://example.com/findbyurl-with-tags";
+
+      const created = await db.transaction(async (tx) => {
+        const repository = new BookmarkRepository(tx);
+        return await repository.create({
+          title: "Test Bookmark",
+          url: testUrl,
+          tagNames: ["tag1", "tag2"],
+        });
+      });
+
+      const repository = new BookmarkRepository();
+      const result = await repository.findByUrl(testUrl);
+
+      expect(result).not.toBeNull();
+      expect(result?.id).toBe(created.id);
+      expect(result?.tags).toHaveLength(2);
+      expect(result?.tags?.map((tag) => tag.name).sort()).toEqual([
+        "tag1",
+        "tag2",
+      ]);
+    });
+
+    it("should return null for non-existent url", async () => {
+      const repository = new BookmarkRepository();
+      const result = await repository.findByUrl("https://non-existent-url.com");
+      expect(result).toBeNull();
+    });
+  });
+
   describe("update", () => {
     it("should update existing bookmark", async () => {
       const db = createDb();

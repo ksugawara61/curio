@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { server } from "../../../libs/test/msw/server";
 import { SidePanel } from ".";
 import { ArticlesListQueryMocks } from "./article-list/ArticlesQuery.mocks";
-import { BookmarksQueryMocks } from "./bookmark-check/BookmarksQuery.mocks";
+import { BookmarkQueryMocks } from "./bookmark-check/BookmarkQuery.mocks";
 import { BookmarksListQueryMocks } from "./bookmark-list/BookmarksQuery.mocks";
 
 const defaultProps = {
@@ -14,7 +14,7 @@ const defaultProps = {
 
 describe("SidePanel", () => {
   it("displays tab navigation", () => {
-    server.use(BookmarksQueryMocks.Empty);
+    server.use(BookmarkQueryMocks.NotFound);
 
     render(<SidePanel {...defaultProps} />);
 
@@ -26,7 +26,7 @@ describe("SidePanel", () => {
   });
 
   it("shows Current Page tab by default", async () => {
-    server.use(BookmarksQueryMocks.Empty);
+    server.use(BookmarkQueryMocks.NotFound);
 
     render(<SidePanel {...defaultProps} />);
 
@@ -43,7 +43,7 @@ describe("SidePanel", () => {
   });
 
   it("switches to Bookmarks tab when clicked", async () => {
-    server.use(BookmarksQueryMocks.Empty, BookmarksListQueryMocks.Empty);
+    server.use(BookmarkQueryMocks.NotFound, BookmarksListQueryMocks.Empty);
 
     const { user } = render(<SidePanel {...defaultProps} />);
     // Wait for initial load
@@ -64,7 +64,7 @@ describe("SidePanel", () => {
   });
 
   it("switches to Articles tab when clicked", async () => {
-    server.use(BookmarksQueryMocks.Empty, ArticlesListQueryMocks.Success);
+    server.use(BookmarkQueryMocks.NotFound, ArticlesListQueryMocks.Success);
 
     const { user } = render(<SidePanel {...defaultProps} />);
 
@@ -81,7 +81,7 @@ describe("SidePanel", () => {
   });
 
   it("displays header with Curio title", () => {
-    server.use(BookmarksQueryMocks.Empty);
+    server.use(BookmarkQueryMocks.NotFound);
 
     render(<SidePanel {...defaultProps} />);
 
@@ -89,7 +89,7 @@ describe("SidePanel", () => {
   });
 
   it("shows bookmark details when URL is already bookmarked", async () => {
-    server.use(BookmarksQueryMocks.WithMatchingUrl(defaultProps.initialUrl));
+    server.use(BookmarkQueryMocks.WithMatchingUrl(defaultProps.initialUrl));
 
     render(<SidePanel {...defaultProps} />);
 

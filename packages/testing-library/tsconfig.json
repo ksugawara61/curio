@@ -6,6 +6,6 @@
     "declaration": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "../../apps/extension/src/libs/test/msw"],
   "exclude": ["node_modules", "dist"]
 }

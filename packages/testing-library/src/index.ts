@@ -1,7 +1,6 @@
 // MSW utilities for testing
 
 // MSW server
-export { server } from "./msw/server";
 export {
   createMockMutation,
   createMockQuery,

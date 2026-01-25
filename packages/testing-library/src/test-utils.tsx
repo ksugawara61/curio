@@ -5,6 +5,7 @@ import {
   type RenderResult,
   render as rtlRender,
 } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import type { ReactElement } from "react";
 
 export type TestProviderProps = {
@@ -36,11 +37,13 @@ export type CustomRenderOptions = Omit<RenderOptions, "wrapper">;
 export function render(
   ui: ReactElement,
   options?: CustomRenderOptions,
-): RenderResult {
-  return rtlRender(ui, {
+): RenderResult & { user: ReturnType<typeof userEvent.setup> } {
+  const user = userEvent.setup();
+  const res = rtlRender(ui, {
     wrapper: ({ children }) => <TestProvider>{children}</TestProvider>,
     ...options,
   });
+  return { ...res, user };
 }
 
 // Re-export commonly used utilities from @testing-library/react

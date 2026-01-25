@@ -48,14 +48,6 @@ export const AlreadyBookmarked: Story = {
   },
 };
 
-export const Loading: Story = {
-  parameters: {
-    msw: {
-      handlers: [BookmarksQueryMocks.Loading],
-    },
-  },
-};
-
 export const ErrorState: Story = {
   parameters: {
     msw: {

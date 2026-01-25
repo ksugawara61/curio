@@ -1,5 +1,5 @@
 {
-  "name": "@repo/eslint-config",
+  "name": "@curio/eslint-config",
   "version": "0.1.0",
   "type": "module",
   "main": "./base.js",

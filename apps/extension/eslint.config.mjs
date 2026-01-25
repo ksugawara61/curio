@@ -1,8 +1,8 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createGraphQLClientConfig } from "@repo/eslint-config/graphql";
-import { createReactConfig } from "@repo/eslint-config/react";
-import { createTestingConfig } from "@repo/eslint-config/testing";
+import { createGraphQLClientConfig } from "@curio/eslint-config/graphql";
+import { createReactConfig } from "@curio/eslint-config/react";
+import { createTestingConfig } from "@curio/eslint-config/testing";
 import tseslint from "typescript-eslint";
 
 const __filename = fileURLToPath(import.meta.url);

@@ -1,4 +1,4 @@
-import { createBaseConfig } from "@repo/eslint-config/base";
-import { createReactConfig } from "@repo/eslint-config/react";
+import { createBaseConfig } from "@curio/eslint-config/base";
+import { createReactConfig } from "@curio/eslint-config/react";
 
 export default [...createBaseConfig(), createReactConfig()];

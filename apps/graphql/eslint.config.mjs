@@ -1,6 +1,6 @@
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createGraphQLServerConfig } from "@repo/eslint-config/graphql";
+import { createGraphQLServerConfig } from "@curio/eslint-config/graphql";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

@@ -36,7 +36,7 @@
     }
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
+    "@curio/eslint-config": "workspace:*",
     "@apollo/client": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",

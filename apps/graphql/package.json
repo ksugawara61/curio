@@ -30,7 +30,7 @@
     "openapi-fetch": "catalog:"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
+    "@curio/eslint-config": "workspace:*",
     "@cloudflare/workers-types": "catalog:",
     "@getcronit/pylon-dev": "catalog:",
     "@vitest/ui": "catalog:",

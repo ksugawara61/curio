@@ -6,16 +6,17 @@ export default defineConfig({
   plugins: [
     dts({
       include: ["src/**/*"],
-      exclude: ["**/*.test.ts"],
+      exclude: ["**/*.test.ts", "**/*.test.tsx"],
       rollupTypes: false,
       copyDtsFiles: true,
     }),
   ],
   build: {
     lib: {
-      entry: resolve(__dirname, "src/index.ts"),
-      name: "CurioGraphQLClient",
-      fileName: "index",
+      entry: {
+        index: resolve(__dirname, "src/index.ts"),
+        setup: resolve(__dirname, "src/setup.ts"),
+      },
       formats: ["es"],
     },
     rollupOptions: {
@@ -23,8 +24,12 @@ export default defineConfig({
         "react",
         "@apollo/client",
         "@apollo/client/react",
-        "graphql",
+        "@testing-library/react",
+        "@testing-library/jest-dom",
+        "msw",
+        "msw/node",
         "gql.tada",
+        "vitest",
       ],
     },
   },

@@ -1,4 +1,7 @@
-import { createMockMutation, mockLoadingResolver } from "@curio/graphql-client";
+import {
+  createMockMutation,
+  mockLoadingResolver,
+} from "@curio/testing-library";
 import { HttpResponse } from "msw";
 import { CreateBookmarkMutation } from "./CreateBookmarkMutation";
 

@@ -22,6 +22,7 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@curio/testing-library": "workspace:*",
     "@graphql-eslint/eslint-plugin": "catalog:",
     "@playwright/test": "catalog:",
     "@storybook/addon-links": "catalog:",

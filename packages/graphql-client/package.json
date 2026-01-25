@@ -30,10 +30,8 @@
   "devDependencies": {
     "@0no-co/graphqlsp": "catalog:",
     "@gql.tada/cli-utils": "catalog:",
-    "@testing-library/react": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
-    "msw": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vite-plugin-dts": "catalog:"

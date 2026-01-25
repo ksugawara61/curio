@@ -1,4 +1,4 @@
-import { createMockQuery, mockLoadingResolver } from "@curio/graphql-client";
+import { createMockQuery, mockLoadingResolver } from "@curio/testing-library";
 import { HttpResponse } from "msw";
 import { BookmarksQuery } from "./BookmarksQuery";
 

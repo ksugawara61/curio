@@ -58,7 +58,11 @@ export default tseslint.config(
     },
   },
   {
-    files: ["src/**/*.test.{ts,tsx}", "src/**/*.spec.{ts,tsx}"],
+    files: [
+      "src/**/*.test.{ts,tsx}",
+      "src/**/*.spec.{ts,tsx}",
+      "src/**/__tests__/**/*.{ts,tsx}",
+    ],
     plugins: {
       "testing-library": testingLibrary,
     },

@@ -20,30 +20,44 @@ export const SidePanel: FC<Props> = ({ initialUrl, initialTitle }) => {
       return;
     }
 
+    if (typeof chrome === "undefined" || !chrome.tabs) {
+      return;
+    }
+
     const getCurrentTab = async () => {
-      if (typeof chrome !== "undefined" && chrome.tabs) {
-        const [tab] = await chrome.tabs.query({
-          active: true,
-          currentWindow: true,
-        });
-        if (tab?.url && tab?.title) {
-          setCurrentUrl(tab.url);
-          setCurrentTitle(tab.title);
-        }
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      if (tab?.url && tab?.title) {
+        setCurrentUrl(tab.url);
+        setCurrentTitle(tab.title);
       }
     };
 
     getCurrentTab();
 
-    if (typeof chrome !== "undefined" && chrome.tabs?.onActivated) {
-      const listener = () => {
-        getCurrentTab();
-      };
-      chrome.tabs.onActivated.addListener(listener);
-      return () => {
-        chrome.tabs.onActivated.removeListener(listener);
-      };
-    }
+    const onActivatedListener = () => {
+      getCurrentTab();
+    };
+    chrome.tabs.onActivated.addListener(onActivatedListener);
+
+    const onUpdatedListener: Parameters<
+      typeof chrome.tabs.onUpdated.addListener
+    >[0] = (_tabId, changeInfo, tab) => {
+      if (changeInfo.status === "complete" && tab.active) {
+        if (tab.url && tab.title) {
+          setCurrentUrl(tab.url);
+          setCurrentTitle(tab.title);
+        }
+      }
+    };
+    chrome.tabs.onUpdated.addListener(onUpdatedListener);
+
+    return () => {
+      chrome.tabs.onActivated.removeListener(onActivatedListener);
+      chrome.tabs.onUpdated.removeListener(onUpdatedListener);
+    };
   }, [initialUrl, initialTitle]);
 
   const tabs: { id: TabType; label: string }[] = [

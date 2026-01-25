@@ -9,5 +9,5 @@
   "side_panel": {
     "default_path": "sidepanel/index.html"
   },
-  "permissions": ["sidePanel"]
+  "permissions": ["sidePanel", "tabs"]
 }

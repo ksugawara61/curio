@@ -138,6 +138,9 @@ importers:
       '@playwright/test':
         specifier: 'catalog:'
         version: 1.57.0
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
       '@storybook/addon-links':
         specifier: 'catalog:'
         version: 10.1.11(react@19.2.3)(storybook@10.1.11(@testing-library/dom@10.4.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))

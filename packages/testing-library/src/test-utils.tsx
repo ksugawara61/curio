@@ -22,11 +22,9 @@ const createTestClient = () =>
  * テスト用のプロバイダーコンポーネント
  * Apollo Client をテスト用の設定で提供する
  */
-export function TestProvider({ children }: TestProviderProps) {
-  return (
-    <ApolloProvider client={createTestClient()}>{children}</ApolloProvider>
-  );
-}
+export const TestProvider = ({ children }: TestProviderProps) => (
+  <ApolloProvider client={createTestClient()}>{children}</ApolloProvider>
+);
 
 export type CustomRenderOptions = Omit<RenderOptions, "wrapper">;
 
@@ -34,17 +32,17 @@ export type CustomRenderOptions = Omit<RenderOptions, "wrapper">;
  * Testing Library の render 関数のラッパー
  * 自動的に TestProvider でラップする
  */
-export function render(
+export const render = (
   ui: ReactElement,
   options?: CustomRenderOptions,
-): RenderResult & { user: ReturnType<typeof userEvent.setup> } {
+): RenderResult & { user: ReturnType<typeof userEvent.setup> } => {
   const user = userEvent.setup();
   const res = rtlRender(ui, {
     wrapper: ({ children }) => <TestProvider>{children}</TestProvider>,
     ...options,
   });
   return { ...res, user };
-}
+};
 
 // Re-export commonly used utilities from @testing-library/react
 export { fireEvent, screen, waitFor, within } from "@testing-library/react";

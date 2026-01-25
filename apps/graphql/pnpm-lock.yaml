@@ -81,6 +81,9 @@ importers:
       '@getcronit/pylon-dev':
         specifier: 'catalog:'
         version: 1.0.5(@types/node@24.0.15)(hono@4.8.5)(typescript@5.9.3)
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
       '@vitest/ui':
         specifier: 'catalog:'
         version: 4.0.17(vitest@4.0.17)

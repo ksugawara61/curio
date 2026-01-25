@@ -1,0 +1,24 @@
+{
+  "name": "@repo/eslint-config",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./base.js",
+  "exports": {
+    ".": "./base.js",
+    "./base": "./base.js",
+    "./react": "./react.js",
+    "./testing": "./testing.js",
+    "./graphql": "./graphql.js"
+  },
+  "files": [
+    "*.js"
+  ],
+  "dependencies": {
+    "@graphql-eslint/eslint-plugin": "catalog:",
+    "eslint": "catalog:",
+    "eslint-plugin-prefer-arrow-functions": "catalog:",
+    "eslint-plugin-react-hooks": "catalog:",
+    "eslint-plugin-testing-library": "catalog:",
+    "typescript-eslint": "catalog:"
+  }
+}

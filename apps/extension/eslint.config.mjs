@@ -1,6 +1,9 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import graphqlPlugin from "@graphql-eslint/eslint-plugin";
+import preferArrowFunctions from "eslint-plugin-prefer-arrow-functions";
+import reactHooks from "eslint-plugin-react-hooks";
+import testingLibrary from "eslint-plugin-testing-library";
 import tseslint from "typescript-eslint";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -35,6 +38,33 @@ export default tseslint.config(
     files: ["src/**/*.{js,mjs,ts,mts,jsx,tsx}"],
     extends: [tseslint.configs.base],
     processor: graphqlPlugin.processor,
+    plugins: {
+      "prefer-arrow-functions": preferArrowFunctions,
+      "react-hooks": reactHooks,
+    },
+    rules: {
+      "prefer-arrow-functions/prefer-arrow-functions": [
+        "error",
+        {
+          allowNamedFunctions: false,
+          classPropertiesAllowed: false,
+          disallowPrototype: false,
+          returnStyle: "unchanged",
+          singleReturnOnly: false,
+        },
+      ],
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+    },
+  },
+  {
+    files: ["src/**/*.test.{ts,tsx}", "src/**/*.spec.{ts,tsx}"],
+    plugins: {
+      "testing-library": testingLibrary,
+    },
+    rules: {
+      ...testingLibrary.configs["flat/react"].rules,
+    },
   },
   {
     files: ["**/*.graphql"],

@@ -18,6 +18,7 @@
     "generate:openapi": "openapi-typescript openapi/qiita.yaml -o src/generated/openapi/schema.d.ts",
     "scaffold": "scaffdog generate",
     "scaffold:list": "scaffdog list",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "codegen": "pnpm build && cp .pylon/schema.graphql ../../packages/graphql-client/src/graphql/schema.graphql"
   },
@@ -29,6 +30,7 @@
     "openapi-fetch": "catalog:"
   },
   "devDependencies": {
+    "@curio/eslint-config": "workspace:*",
     "@cloudflare/workers-types": "catalog:",
     "@getcronit/pylon-dev": "catalog:",
     "@vitest/ui": "catalog:",

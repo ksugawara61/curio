@@ -129,6 +129,9 @@ importers:
         specifier: 'catalog:'
         version: 19.2.3(react@19.2.3)
     devDependencies:
+      '@curio/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
       '@curio/testing-library':
         specifier: workspace:*
         version: link:../../packages/testing-library

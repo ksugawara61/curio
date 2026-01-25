@@ -16,6 +16,7 @@
   ],
   "scripts": {
     "build": "vite build",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "codegen": "gql.tada generate-output --output src/graphql/graphql-env.d.ts"
   },
@@ -28,6 +29,7 @@
     "react": "catalog:"
   },
   "devDependencies": {
+    "@curio/eslint-config": "workspace:*",
     "@0no-co/graphqlsp": "catalog:",
     "@gql.tada/cli-utils": "catalog:",
     "@types/node": "catalog:",

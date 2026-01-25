@@ -12,7 +12,7 @@ export type GraphQLClientConfig = {
   defaultOptions?: DefaultOptions;
 };
 
-export function createGraphQLClient(config: GraphQLClientConfig) {
+export const createGraphQLClient = (config: GraphQLClientConfig) => {
   const httpLink = createHttpLink({
     uri: config.uri,
   });
@@ -35,4 +35,4 @@ export function createGraphQLClient(config: GraphQLClientConfig) {
       },
     },
   });
-}
+};

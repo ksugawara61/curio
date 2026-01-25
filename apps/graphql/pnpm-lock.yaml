@@ -78,6 +78,9 @@ importers:
       '@cloudflare/workers-types':
         specifier: 'catalog:'
         version: 4.20251011.0
+      '@curio/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
       '@getcronit/pylon-dev':
         specifier: 'catalog:'
         version: 1.0.5(@types/node@24.0.15)(hono@4.8.5)(typescript@5.9.3)

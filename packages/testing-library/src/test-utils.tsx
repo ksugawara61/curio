@@ -1,3 +1,4 @@
+import type { ApolloClient } from "@apollo/client";
 import { ApolloProvider } from "@apollo/client/react";
 import {
   type RenderOptions,
@@ -5,11 +6,10 @@ import {
   render as rtlRender,
 } from "@testing-library/react";
 import type { ReactElement } from "react";
-import { createGraphQLClient } from "./apollo-client";
 
 export type TestProviderProps = {
   children: React.ReactNode;
-  client?: ReturnType<typeof createGraphQLClient>;
+  client: ApolloClient;
 };
 
 /**
@@ -17,17 +17,11 @@ export type TestProviderProps = {
  * Apollo Client をテスト用の設定で提供する
  */
 export function TestProvider({ children, client }: TestProviderProps) {
-  const testClient =
-    client ??
-    createGraphQLClient({
-      uri: "http://localhost:4000/graphql",
-    });
-
-  return <ApolloProvider client={testClient}>{children}</ApolloProvider>;
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
 }
 
 export type CustomRenderOptions = {
-  client?: ReturnType<typeof createGraphQLClient>;
+  client: ApolloClient;
 } & Omit<RenderOptions, "wrapper">;
 
 /**
@@ -36,9 +30,9 @@ export type CustomRenderOptions = {
  */
 export function render(
   ui: ReactElement,
-  options?: CustomRenderOptions,
+  options: CustomRenderOptions,
 ): RenderResult {
-  const { client, ...renderOptions } = options ?? {};
+  const { client, ...renderOptions } = options;
 
   return rtlRender(ui, {
     wrapper: ({ children }) => (

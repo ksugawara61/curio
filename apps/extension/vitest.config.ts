@@ -21,6 +21,15 @@ export default defineConfig({
         __dirname,
         "../../packages/graphql-client/src/index.ts",
       ),
+      // Use testing-library source directly
+      "@curio/testing-library/setup": resolve(
+        __dirname,
+        "../../packages/testing-library/src/setup.ts",
+      ),
+      "@curio/testing-library": resolve(
+        __dirname,
+        "../../packages/testing-library/src/index.ts",
+      ),
     },
   },
   test: {

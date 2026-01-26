@@ -176,6 +176,12 @@ export class BookmarkRepository {
   }
 
   async create(input: CreateBookmarkInput): Promise<Bookmark> {
+    // Check for duplicate URL
+    const existingBookmark = await this.findByUrl(input.url);
+    if (existingBookmark) {
+      throw new Error("Bookmark with this URL already exists");
+    }
+
     // First create or find tags (deduplicate tag names)
     const uniqueTagNames = input.tagNames ? [...new Set(input.tagNames)] : [];
     const tagEntities =
@@ -220,6 +226,14 @@ export class BookmarkRepository {
   }
 
   async update(id: string, input: UpdateBookmarkInput): Promise<Bookmark> {
+    // Check for duplicate URL (only if URL is being updated)
+    if (input.url !== undefined) {
+      const existingBookmark = await this.findByUrl(input.url);
+      if (existingBookmark && existingBookmark.id !== id) {
+        throw new Error("Bookmark with this URL already exists");
+      }
+    }
+
     // Update bookmark data
     const updateData: Partial<typeof bookmarks.$inferInsert> = {};
     if (input.title !== undefined) updateData.title = input.title;

@@ -11,7 +11,7 @@ describe("updateBookmark", () => {
         const repository = new BookmarkRepository(tx);
         return await repository.create({
           title: "Original Title",
-          url: "https://example.com",
+          url: `https://example.com/update-test-1-${Date.now()}`,
           description: "Original description",
         });
       });
@@ -38,7 +38,7 @@ describe("updateBookmark", () => {
         const repository = new BookmarkRepository(tx);
         return await repository.create({
           title: "Original Title",
-          url: "https://example.com",
+          url: `https://example.com/update-test-2-${Date.now()}`,
           description: "Original description",
         });
       });
@@ -53,6 +53,30 @@ describe("updateBookmark", () => {
       expect(result.title).toBe(updateInput.title);
       expect(result.url).toBe(bookmark.url);
       expect(result.description).toBe(bookmark.description);
+    });
+
+    it("should allow updating to the same URL", async () => {
+      const db = createDb();
+      const url = `https://example.com/update-same-url-${Date.now()}`;
+      const bookmark = await db.transaction(async (tx) => {
+        const repository = new BookmarkRepository(tx);
+        return await repository.create({
+          title: "Original Title",
+          url,
+          description: "Original description",
+        });
+      });
+
+      const updateInput = {
+        url,
+        title: "Updated Title",
+      };
+
+      const result = await updateBookmark(bookmark.id, updateInput);
+
+      expect(result.id).toBe(bookmark.id);
+      expect(result.url).toBe(url);
+      expect(result.title).toBe(updateInput.title);
     });
   });
 
@@ -70,6 +94,34 @@ describe("updateBookmark", () => {
           message: "Bookmark not found",
         }),
       );
+    });
+
+    it("should throw error when updating to an existing URL", async () => {
+      const db = createDb();
+      const existingUrl = `https://example.com/existing-url-${Date.now()}`;
+
+      // Create first bookmark with a specific URL
+      await db.transaction(async (tx) => {
+        const repository = new BookmarkRepository(tx);
+        return await repository.create({
+          title: "First Bookmark",
+          url: existingUrl,
+        });
+      });
+
+      // Create second bookmark with a different URL
+      const secondBookmark = await db.transaction(async (tx) => {
+        const repository = new BookmarkRepository(tx);
+        return await repository.create({
+          title: "Second Bookmark",
+          url: `https://example.com/second-url-${Date.now()}`,
+        });
+      });
+
+      // Try to update second bookmark to use the existing URL
+      await expect(
+        updateBookmark(secondBookmark.id, { url: existingUrl }),
+      ).rejects.toThrowError(/Bookmark with this URL already exists/);
     });
   });
 });

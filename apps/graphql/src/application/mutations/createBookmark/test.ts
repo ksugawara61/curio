@@ -6,7 +6,7 @@ describe("createBookmark", () => {
     it("should create a bookmark successfully", async () => {
       const input = {
         title: "Test Bookmark",
-        url: "https://example.com",
+        url: `https://example.com/create-test-1-${Date.now()}`,
         description: "A test bookmark",
       };
 
@@ -23,7 +23,7 @@ describe("createBookmark", () => {
     it("should create a bookmark without description", async () => {
       const input = {
         title: "Test Bookmark",
-        url: "https://example.com",
+        url: `https://example.com/create-test-2-${Date.now()}`,
       };
 
       const result = await createBookmark(input);
@@ -34,6 +34,24 @@ describe("createBookmark", () => {
       expect(result.description).toBeNull();
       expect(result).toHaveProperty("created_at");
       expect(result).toHaveProperty("updated_at");
+    });
+  });
+
+  describe("異常系", () => {
+    it("should throw error when creating bookmark with duplicate URL", async () => {
+      const url = `https://example.com/duplicate-test-${Date.now()}`;
+
+      await createBookmark({
+        title: "First Bookmark",
+        url,
+      });
+
+      await expect(
+        createBookmark({
+          title: "Second Bookmark",
+          url,
+        }),
+      ).rejects.toThrowError(/Bookmark with this URL already exists/);
     });
   });
 });

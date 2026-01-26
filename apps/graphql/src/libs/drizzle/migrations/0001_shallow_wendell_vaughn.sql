@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `bookmarks_url_unique` ON `bookmarks` (`url`);

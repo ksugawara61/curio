@@ -4,7 +4,7 @@ import { primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
 export const bookmarks = sqliteTable("bookmarks", {
   id: text("id").primaryKey(),
   title: text("title").notNull(),
-  url: text("url").notNull(),
+  url: text("url").unique().notNull(),
   description: text("description"),
   created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
   updated_at: text("updated_at").default(sql`(datetime('now'))`).notNull(),

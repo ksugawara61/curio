@@ -32,7 +32,8 @@
       "!**/.pylon",
       "!**/src/**/gql-tada/graphql-*.d.ts",
       "!**/src/graphql/graphql-env.d.ts",
-      "!**/mockServiceWorker.js"
+      "!**/mockServiceWorker.js",
+      "!**/drizzle/migrations"
     ]
   },
   "linter": {

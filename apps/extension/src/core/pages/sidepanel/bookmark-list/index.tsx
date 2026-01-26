@@ -1,9 +1,24 @@
-import { useQuery } from "@curio/graphql-client";
+import { useMutation, useQuery } from "@curio/graphql-client";
 import type { FC } from "react";
 import { BookmarksQuery } from "./BookmarksQuery";
+import { DeleteBookmarkMutation } from "./DeleteBookmarkMutation";
 
 export const BookmarkList: FC = () => {
-  const { data, loading, error } = useQuery(BookmarksQuery);
+  const { data, loading, error, refetch } = useQuery(BookmarksQuery);
+  const [deleteBookmark, { loading: deleting }] = useMutation(
+    DeleteBookmarkMutation,
+    {
+      onCompleted: () => {
+        refetch();
+      },
+    },
+  );
+
+  const handleDelete = (id: string, title: string) => {
+    if (window.confirm(`Delete "${title}"?`)) {
+      deleteBookmark({ variables: { id } });
+    }
+  };
 
   if (loading) {
     return (
@@ -74,8 +89,18 @@ export const BookmarkList: FC = () => {
                 ))}
               </div>
             )}
-            <div className="text-xs text-base-content/50">
-              {new Date(bookmark.created_at).toLocaleDateString()}
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-base-content/50">
+                {new Date(bookmark.created_at).toLocaleDateString()}
+              </div>
+              <button
+                type="button"
+                className="btn btn-ghost btn-xs text-error"
+                onClick={() => handleDelete(bookmark.id, bookmark.title)}
+                disabled={deleting}
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>

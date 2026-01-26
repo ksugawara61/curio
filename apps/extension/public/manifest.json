@@ -9,5 +9,6 @@
   "side_panel": {
     "default_path": "sidepanel/index.html"
   },
-  "permissions": ["sidePanel", "tabs"]
+  "permissions": ["tabs", "activeTab", "sidePanel"],
+  "host_permissions": ["https://*/*", "http://*/*"]
 }

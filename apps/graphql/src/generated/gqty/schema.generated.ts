@@ -137,7 +137,7 @@ export const generatedSchema = {
       __type: "[Article!]!",
       __args: { limit: "Number", offset: "Number" },
     },
-    bookmark: { __type: "Bookmark", __args: { id: "String!" } },
+    bookmark: { __type: "Bookmark", __args: { id: "String", uri: "String" } },
     bookmarks: { __type: "[Bookmark!]!" },
     tags: { __type: "[Tag!]!" },
   },
@@ -204,7 +204,10 @@ export interface Query {
     limit?: Maybe<ScalarsEnums["Number"]>;
     offset?: Maybe<ScalarsEnums["Number"]>;
   }) => Array<Article>;
-  bookmark: (args: { id: ScalarsEnums["String"] }) => Maybe<Bookmark>;
+  bookmark: (args?: {
+    id?: Maybe<ScalarsEnums["String"]>;
+    uri?: Maybe<ScalarsEnums["String"]>;
+  }) => Maybe<Bookmark>;
   bookmarks: Array<Bookmark>;
   tags: Array<Tag>;
 }

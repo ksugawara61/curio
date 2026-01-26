@@ -27,7 +27,7 @@ export const SidePanel: FC<Props> = ({ initialUrl, initialTitle }) => {
     const getCurrentTab = async () => {
       const [tab] = await chrome.tabs.query({
         active: true,
-        lastFocusedWindow: true,
+        currentWindow: true,
       });
       if (tab?.url && tab?.title) {
         setCurrentUrl(tab.url);

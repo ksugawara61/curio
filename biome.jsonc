@@ -5,7 +5,6 @@
     "includes": [
       "biome.jsonc",
       "turbo.json",
-      "**/package.json",
       "**/.mcp.json",
       "**/.textlintrc.json",
       "**/eslint.config.mjs",
@@ -15,6 +14,7 @@
       "**/scripts/**",
       "**/vite.config.*",
       "**/vitest.config.*",
+      "**/manifest.json",
       "!**/*.css",
       "!package.json",
       "!**/src/**/generated/*",

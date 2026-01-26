@@ -6,5 +6,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default createGraphQLServerConfig(__dirname, {
-  ignores: ["node_modules/**", "dist/**", "src/generated/**"],
+  ignores: [
+    "node_modules/**",
+    "dist/**",
+    "src/generated/**",
+    "src/libs/drizzle/migrations/**",
+  ],
 });

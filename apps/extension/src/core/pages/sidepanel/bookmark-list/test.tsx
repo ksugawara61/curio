@@ -142,7 +142,6 @@ describe("BookmarkList", () => {
     const user = userEvent.setup();
     vi.spyOn(window, "confirm").mockReturnValue(true);
 
-    const queryCount = 0;
     server.use(
       DeleteBookmarkMutationMocks.Success,
       BookmarksListQueryMocks.Success,

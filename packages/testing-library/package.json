@@ -24,7 +24,8 @@
     "@testing-library/react": "catalog:",
     "@testing-library/user-event": "catalog:",
     "msw": "catalog:",
-    "react-error-boundary": "catalog:"
+    "react-error-boundary": "catalog:",
+    "swr": "catalog:"
   },
   "peerDependencies": {
     "@apollo/client": "catalog:",

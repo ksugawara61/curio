@@ -7,8 +7,9 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ComponentType, ReactElement, ReactNode } from "react";
-import { act, Suspense } from "react";
+import { act, Suspense, useMemo } from "react";
 import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
+import { SWRConfig } from "swr";
 
 export type TestProviderProps = {
   children: React.ReactNode;
@@ -22,11 +23,22 @@ const createTestClient = () =>
 
 /**
  * テスト用のプロバイダーコンポーネント
- * Apollo Client をテスト用の設定で提供する
+ * Apollo Client と SWR をテスト用の設定で提供する
  */
-export const TestProvider = ({ children }: TestProviderProps) => (
-  <ApolloProvider client={createTestClient()}>{children}</ApolloProvider>
-);
+export const TestProvider = ({ children }: TestProviderProps) => {
+  const swrConfig = useMemo(
+    () => ({
+      provider: () => new Map(),
+    }),
+    [],
+  );
+
+  return (
+    <SWRConfig value={swrConfig}>
+      <ApolloProvider client={createTestClient()}>{children}</ApolloProvider>
+    </SWRConfig>
+  );
+};
 
 export type CustomRenderOptions = Omit<RenderOptions, "wrapper">;
 

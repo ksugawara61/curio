@@ -1,7 +1,8 @@
-import { type FC, Suspense, useEffect, useState } from "react";
+import { type FC, Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "../../components/ErrorFallback";
 import { Loading } from "../../components/Loading";
+import { useCurrentTab } from "../../hooks/useCurrentTab";
 import { ArticleList } from "./article-list";
 import { BookmarkCheck } from "./bookmark-check";
 import { BookmarkList } from "./bookmark-list";
@@ -15,53 +16,10 @@ type Props = {
 
 export const SidePanel: FC<Props> = ({ initialUrl, initialTitle }) => {
   const [activeTab, setActiveTab] = useState<TabType>("current");
-  const [currentUrl, setCurrentUrl] = useState(initialUrl ?? "");
-  const [currentTitle, setCurrentTitle] = useState(initialTitle ?? "");
-
-  useEffect(() => {
-    if (initialUrl && initialTitle) {
-      return;
-    }
-
-    if (typeof chrome === "undefined" || !chrome.tabs) {
-      return;
-    }
-
-    const getCurrentTab = async () => {
-      const [tab] = await chrome.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
-      if (tab?.url && tab?.title) {
-        setCurrentUrl(tab.url);
-        setCurrentTitle(tab.title);
-      }
-    };
-
-    getCurrentTab();
-
-    const onActivatedListener = () => {
-      getCurrentTab();
-    };
-    chrome.tabs.onActivated.addListener(onActivatedListener);
-
-    const onUpdatedListener: Parameters<
-      typeof chrome.tabs.onUpdated.addListener
-    >[0] = (_tabId, changeInfo, tab) => {
-      if (changeInfo.status === "complete" && tab.active) {
-        if (tab.url && tab.title) {
-          setCurrentUrl(tab.url);
-          setCurrentTitle(tab.title);
-        }
-      }
-    };
-    chrome.tabs.onUpdated.addListener(onUpdatedListener);
-
-    return () => {
-      chrome.tabs.onActivated.removeListener(onActivatedListener);
-      chrome.tabs.onUpdated.removeListener(onUpdatedListener);
-    };
-  }, [initialUrl, initialTitle]);
+  const { currentUrl, currentTitle } = useCurrentTab({
+    initialUrl,
+    initialTitle,
+  });
 
   const tabs: { id: TabType; label: string }[] = [
     { id: "current", label: "Current Page" },

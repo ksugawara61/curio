@@ -1,8 +1,9 @@
 import { useMutation, useSuspenseQuery } from "@curio/graphql-client";
-import { type FC, Suspense, useEffect, useState } from "react";
+import { type FC, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "../../components/ErrorFallback";
 import { Loading } from "../../components/Loading";
+import { useCurrentTab } from "../../hooks/useCurrentTab";
 import { BookmarkQuery } from "../sidepanel/bookmark-check/BookmarkQuery";
 import { CreateBookmarkMutation } from "../sidepanel/bookmark-check/CreateBookmarkMutation";
 
@@ -96,31 +97,10 @@ type PopupProps = {
 };
 
 export const Popup: FC<PopupProps> = ({ initialUrl, initialTitle }) => {
-  const [currentUrl, setCurrentUrl] = useState(initialUrl ?? "");
-  const [currentTitle, setCurrentTitle] = useState(initialTitle ?? "");
-
-  useEffect(() => {
-    if (initialUrl && initialTitle) {
-      return;
-    }
-
-    if (typeof chrome === "undefined" || !chrome.tabs) {
-      return;
-    }
-
-    const getCurrentTab = async () => {
-      const [tab] = await chrome.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
-      if (tab?.url && tab?.title) {
-        setCurrentUrl(tab.url);
-        setCurrentTitle(tab.title);
-      }
-    };
-
-    getCurrentTab();
-  }, [initialUrl, initialTitle]);
+  const { currentUrl, currentTitle } = useCurrentTab({
+    initialUrl,
+    initialTitle,
+  });
 
   return (
     <div className="w-80 bg-base-100 p-4">

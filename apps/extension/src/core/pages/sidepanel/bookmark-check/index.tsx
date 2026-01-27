@@ -1,5 +1,6 @@
-import { useQuery } from "@curio/graphql-client";
+import { useSuspenseQuery } from "@curio/graphql-client";
 import type { FC } from "react";
+import { Loading } from "../../../components/Loading";
 import { BookmarkAddForm } from "./BookmarkAddForm";
 import { BookmarkEditForm } from "./BookmarkEditForm";
 import { BookmarkQuery } from "./BookmarkQuery";
@@ -9,30 +10,12 @@ type Props = {
   currentTitle: string;
 };
 
-export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
-  const { data, loading, error, refetch } = useQuery(BookmarkQuery, {
+const BookmarkCheckContent: FC<Props> = ({ currentUrl, currentTitle }) => {
+  const { data, refetch } = useSuspenseQuery(BookmarkQuery, {
     variables: { uri: currentUrl },
-    skip: !currentUrl,
   });
 
   const existingBookmark = data?.bookmark;
-
-  if (!currentUrl || loading) {
-    return (
-      <div className="flex justify-center p-8">
-        <span className="loading loading-spinner loading-lg" />
-        <span className="sr-only">Loading...</span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="alert alert-error">
-        <span>Error: {error.message}</span>
-      </div>
-    );
-  }
 
   if (existingBookmark) {
     return <BookmarkEditForm bookmark={existingBookmark} onSuccess={refetch} />;
@@ -44,5 +27,15 @@ export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
       currentTitle={currentTitle}
       onSuccess={refetch}
     />
+  );
+};
+
+export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
+  if (!currentUrl) {
+    return <Loading />;
+  }
+
+  return (
+    <BookmarkCheckContent currentUrl={currentUrl} currentTitle={currentTitle} />
   );
 };

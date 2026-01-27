@@ -1,14 +1,33 @@
 import { render, screen, waitFor } from "@curio/testing-library";
+import { act, Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../../libs/test/msw/server";
+import { ErrorFallback } from "../../../components/ErrorFallback";
+import { Loading } from "../../../components/Loading";
 import { ArticleList } from ".";
 import { ArticlesListQueryMocks } from "./ArticlesQuery.mocks";
 
+const renderWithSuspense = async () => {
+  let result: ReturnType<typeof render> | undefined;
+  await act(async () => {
+    result = render(
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <Suspense fallback={<Loading />}>
+          <ArticleList />
+        </Suspense>
+      </ErrorBoundary>,
+    );
+  });
+  if (!result) throw new Error("render failed");
+  return result;
+};
+
 describe("ArticleList", () => {
-  it("displays loading state initially", () => {
+  it("displays loading state initially", async () => {
     server.use(ArticlesListQueryMocks.Loading);
 
-    render(<ArticleList />);
+    await renderWithSuspense();
 
     expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
@@ -16,7 +35,7 @@ describe("ArticleList", () => {
   it("displays articles when data is loaded", async () => {
     server.use(ArticlesListQueryMocks.Success);
 
-    render(<ArticleList />);
+    await renderWithSuspense();
 
     await waitFor(() => {
       expect(
@@ -33,7 +52,7 @@ describe("ArticleList", () => {
   it("displays empty state when no articles exist", async () => {
     server.use(ArticlesListQueryMocks.Empty);
 
-    render(<ArticleList />);
+    await renderWithSuspense();
 
     await waitFor(() => {
       expect(screen.getByText("No articles yet")).toBeInTheDocument();
@@ -43,7 +62,7 @@ describe("ArticleList", () => {
   it("displays error message when query fails", async () => {
     server.use(ArticlesListQueryMocks.Error);
 
-    render(<ArticleList />);
+    await renderWithSuspense();
 
     await waitFor(() => {
       expect(screen.getByText(/Error:/)).toBeInTheDocument();
@@ -55,7 +74,7 @@ describe("ArticleList", () => {
   it("displays article count badge", async () => {
     server.use(ArticlesListQueryMocks.Success);
 
-    render(<ArticleList />);
+    await renderWithSuspense();
 
     await waitFor(() => {
       expect(screen.getByText("3")).toBeInTheDocument();
@@ -65,7 +84,7 @@ describe("ArticleList", () => {
   it("displays article links with correct attributes", async () => {
     server.use(ArticlesListQueryMocks.SingleArticle);
 
-    render(<ArticleList />);
+    await renderWithSuspense();
 
     const link = await screen.findByRole("link", {
       name: "Getting Started with React",
@@ -79,7 +98,7 @@ describe("ArticleList", () => {
   it("displays article tags", async () => {
     server.use(ArticlesListQueryMocks.SingleArticle);
 
-    render(<ArticleList />);
+    await renderWithSuspense();
 
     await waitFor(() => {
       expect(screen.getByText("React")).toBeInTheDocument();

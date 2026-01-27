@@ -5,12 +5,15 @@ import { BookmarkAddForm } from "./BookmarkAddForm";
 import { BookmarkEditForm } from "./BookmarkEditForm";
 import { BookmarkQuery } from "./BookmarkQuery";
 
-type Props = {
+type BookmarkCheckProps = {
   currentUrl: string;
   currentTitle: string;
 };
 
-const BookmarkCheckContent: FC<Props> = ({ currentUrl, currentTitle }) => {
+const BookmarkCheckContent: FC<BookmarkCheckProps> = ({
+  currentUrl,
+  currentTitle,
+}) => {
   const { data, refetch } = useSuspenseQuery(BookmarkQuery, {
     variables: { uri: currentUrl },
   });
@@ -30,7 +33,10 @@ const BookmarkCheckContent: FC<Props> = ({ currentUrl, currentTitle }) => {
   );
 };
 
-export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
+export const BookmarkCheck: FC<BookmarkCheckProps> = ({
+  currentUrl,
+  currentTitle,
+}) => {
   if (!currentUrl) {
     return <Loading />;
   }

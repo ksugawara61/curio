@@ -1,10 +1,11 @@
 import { useMutation, useQuery } from "@curio/graphql-client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { FC } from "react";
+import { type FC, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { BookmarkQuery } from "./BookmarkQuery";
 import { CreateBookmarkMutation } from "./CreateBookmarkMutation";
 import { type BookmarkFormValues, bookmarkFormSchema } from "./schema";
+import { UpdateBookmarkMutation } from "./UpdateBookmarkMutation";
 
 type Props = {
   currentUrl: string;
@@ -35,7 +36,27 @@ export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
     },
   );
 
+  const [updateBookmark, { loading: updating }] = useMutation(
+    UpdateBookmarkMutation,
+    {
+      onCompleted: () => {
+        refetch();
+      },
+    },
+  );
+
   const existingBookmark = data?.bookmark;
+
+  // Reset form with existing bookmark data when bookmark is loaded
+  useEffect(() => {
+    if (existingBookmark) {
+      reset({
+        description: existingBookmark.description ?? "",
+        tagInput:
+          existingBookmark.tags?.map((tag) => tag.name).join(", ") ?? "",
+      });
+    }
+  }, [existingBookmark, reset]);
 
   const onSubmit = (data: BookmarkFormValues) => {
     const tagNames = data.tagInput
@@ -45,16 +66,28 @@ export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
           .filter((tag) => tag.length > 0)
       : [];
 
-    createBookmark({
-      variables: {
-        input: {
-          title: currentTitle,
-          url: currentUrl,
-          description: data.description || undefined,
-          tagNames: tagNames.length > 0 ? tagNames : undefined,
+    if (existingBookmark) {
+      updateBookmark({
+        variables: {
+          id: existingBookmark.id,
+          input: {
+            description: data.description || undefined,
+            tagNames: tagNames.length > 0 ? tagNames : undefined,
+          },
         },
-      },
-    });
+      });
+    } else {
+      createBookmark({
+        variables: {
+          input: {
+            title: currentTitle,
+            url: currentUrl,
+            description: data.description || undefined,
+            tagNames: tagNames.length > 0 ? tagNames : undefined,
+          },
+        },
+      });
+    }
   };
 
   if (!currentUrl || loading) {
@@ -77,7 +110,7 @@ export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
   if (existingBookmark) {
     return (
       <div className="card bg-base-200">
-        <div className="card-body">
+        <form className="card-body" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-2 flex items-center gap-2">
             <span className="badge badge-success">Bookmarked</span>
           </div>
@@ -90,24 +123,53 @@ export const BookmarkCheck: FC<Props> = ({ currentUrl, currentTitle }) => {
           >
             {existingBookmark.url}
           </a>
-          {existingBookmark.description && (
-            <p className="text-sm text-base-content/70">
-              {existingBookmark.description}
-            </p>
-          )}
-          {existingBookmark.tags && existingBookmark.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {existingBookmark.tags.map((tag) => (
-                <span key={tag.id} className="badge badge-outline">
-                  {tag.name}
-                </span>
-              ))}
-            </div>
-          )}
-          <div className="text-xs text-base-content/50">
+
+          <div className="form-control mt-4">
+            <label className="label" htmlFor="bookmark-description">
+              <span className="label-text">Description</span>
+            </label>
+            <textarea
+              id="bookmark-description"
+              className="textarea textarea-bordered"
+              placeholder="Add a description..."
+              {...register("description")}
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label" htmlFor="bookmark-tags">
+              <span className="label-text">Tags (comma separated)</span>
+            </label>
+            <input
+              id="bookmark-tags"
+              type="text"
+              className="input input-bordered"
+              placeholder="e.g., tech, tutorial, react"
+              {...register("tagInput")}
+            />
+          </div>
+
+          <div className="mt-2 text-xs text-base-content/50">
             Added: {new Date(existingBookmark.created_at).toLocaleDateString()}
           </div>
-        </div>
+
+          <div className="card-actions mt-4 justify-end">
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={updating}
+            >
+              {updating ? (
+                <>
+                  <span className="loading loading-spinner loading-sm" />
+                  Updating...
+                </>
+              ) : (
+                "Update Bookmark"
+              )}
+            </button>
+          </div>
+        </form>
       </div>
     );
   }

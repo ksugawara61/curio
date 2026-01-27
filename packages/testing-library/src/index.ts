@@ -8,10 +8,15 @@ export {
 } from "./msw-utils";
 
 // Test utilities
-export type { CustomRenderOptions, TestProviderProps } from "./test-utils";
+export type {
+  CustomRenderOptions,
+  RenderSuspenseOptions,
+  TestProviderProps,
+} from "./test-utils";
 export {
   fireEvent,
   render,
+  renderSuspense,
   screen,
   TestProvider,
   waitFor,

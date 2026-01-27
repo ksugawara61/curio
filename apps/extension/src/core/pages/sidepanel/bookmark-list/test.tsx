@@ -1,10 +1,16 @@
 import { render, screen, waitFor } from "@curio/testing-library";
-import { describe, expect, it } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { server } from "../../../../libs/test/msw/server";
 import { BookmarkList } from ".";
 import { BookmarksListQueryMocks } from "./BookmarksQuery.mocks";
+import { DeleteBookmarkMutationMocks } from "./DeleteBookmarkMutation.mocks";
 
 describe("BookmarkList", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("displays loading state initially", () => {
     server.use(BookmarksListQueryMocks.Loading);
 
@@ -77,5 +83,81 @@ describe("BookmarkList", () => {
     expect(link).toHaveAttribute("href", "https://react.dev");
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
+  it("displays delete button for each bookmark", async () => {
+    server.use(BookmarksListQueryMocks.Success);
+
+    render(<BookmarkList />);
+
+    await waitFor(() => {
+      expect(screen.getByText("React Documentation")).toBeInTheDocument();
+    });
+
+    const deleteButtons = screen.getAllByRole("button", { name: "Delete" });
+    expect(deleteButtons).toHaveLength(3);
+  });
+
+  it("calls deleteBookmark mutation when delete is confirmed", async () => {
+    const user = userEvent.setup();
+    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
+
+    server.use(
+      BookmarksListQueryMocks.SingleBookmark,
+      DeleteBookmarkMutationMocks.Success,
+    );
+
+    render(<BookmarkList />);
+
+    await waitFor(() => {
+      expect(screen.getByText("React Documentation")).toBeInTheDocument();
+    });
+
+    const deleteButton = screen.getByRole("button", { name: "Delete" });
+    await user.click(deleteButton);
+
+    expect(confirmSpy).toHaveBeenCalledWith('Delete "React Documentation"?');
+  });
+
+  it("does not call deleteBookmark mutation when delete is cancelled", async () => {
+    const user = userEvent.setup();
+    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(false);
+
+    server.use(BookmarksListQueryMocks.SingleBookmark);
+
+    render(<BookmarkList />);
+
+    await waitFor(() => {
+      expect(screen.getByText("React Documentation")).toBeInTheDocument();
+    });
+
+    const deleteButton = screen.getByRole("button", { name: "Delete" });
+    await user.click(deleteButton);
+
+    expect(confirmSpy).toHaveBeenCalledWith('Delete "React Documentation"?');
+    expect(screen.getByText("React Documentation")).toBeInTheDocument();
+  });
+
+  it("refetches bookmarks after successful deletion", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+
+    server.use(
+      DeleteBookmarkMutationMocks.Success,
+      BookmarksListQueryMocks.Success,
+    );
+
+    render(<BookmarkList />);
+
+    await waitFor(() => {
+      expect(screen.getByText("React Documentation")).toBeInTheDocument();
+    });
+
+    const deleteButtons = screen.getAllByRole("button", { name: "Delete" });
+    await user.click(deleteButtons[0]);
+
+    await waitFor(() => {
+      expect(screen.getByText("React Documentation")).toBeInTheDocument();
+    });
   });
 });

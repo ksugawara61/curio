@@ -25,6 +25,7 @@
     "react-dom": "catalog:",
     "react-error-boundary": "catalog:",
     "react-hook-form": "catalog:",
+    "swr": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

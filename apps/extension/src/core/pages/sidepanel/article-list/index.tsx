@@ -1,31 +1,14 @@
-import { useQuery } from "@curio/graphql-client";
+import { useSuspenseQuery } from "@curio/graphql-client";
 import type { FC } from "react";
 import { ArticlesQuery } from "./ArticlesQuery";
 
 export const ArticleList: FC = () => {
-  const { data, loading, error } = useQuery(ArticlesQuery, {
+  const { data } = useSuspenseQuery(ArticlesQuery, {
     variables: {
       limit: 20,
       offset: 0,
     },
   });
-
-  if (loading) {
-    return (
-      <div className="flex justify-center p-8">
-        <span className="loading loading-spinner loading-lg" />
-        <span className="sr-only">Loading...</span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="alert alert-error">
-        <span>Error: {error.message}</span>
-      </div>
-    );
-  }
 
   if (!data?.articles || data.articles.length === 0) {
     return (

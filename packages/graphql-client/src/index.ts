@@ -7,6 +7,7 @@ export {
   useMutation,
   useQuery,
   useSubscription,
+  useSuspenseQuery,
 } from "@apollo/client/react";
 export type { GraphQLClientConfig } from "./apollo-client";
 export { createGraphQLClient } from "./apollo-client";

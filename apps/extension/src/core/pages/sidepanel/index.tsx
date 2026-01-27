@@ -1,4 +1,7 @@
-import { type FC, useEffect, useState } from "react";
+import { type FC, Suspense, useEffect, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { ErrorFallback } from "../../components/ErrorFallback";
+import { Loading } from "../../components/Loading";
 import { ArticleList } from "./article-list";
 import { BookmarkCheck } from "./bookmark-check";
 import { BookmarkList } from "./bookmark-list";
@@ -90,10 +93,29 @@ export const SidePanel: FC<Props> = ({ initialUrl, initialTitle }) => {
 
       <div className="p-4">
         {activeTab === "current" && (
-          <BookmarkCheck currentUrl={currentUrl} currentTitle={currentTitle} />
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <Suspense fallback={<Loading />}>
+              <BookmarkCheck
+                currentUrl={currentUrl}
+                currentTitle={currentTitle}
+              />
+            </Suspense>
+          </ErrorBoundary>
         )}
-        {activeTab === "bookmarks" && <BookmarkList />}
-        {activeTab === "articles" && <ArticleList />}
+        {activeTab === "bookmarks" && (
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <Suspense fallback={<Loading />}>
+              <BookmarkList />
+            </Suspense>
+          </ErrorBoundary>
+        )}
+        {activeTab === "articles" && (
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <Suspense fallback={<Loading />}>
+              <ArticleList />
+            </Suspense>
+          </ErrorBoundary>
+        )}
       </div>
     </div>
   );

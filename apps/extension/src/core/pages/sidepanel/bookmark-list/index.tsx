@@ -1,10 +1,10 @@
-import { useMutation, useQuery } from "@curio/graphql-client";
+import { useMutation, useSuspenseQuery } from "@curio/graphql-client";
 import type { FC } from "react";
 import { BookmarksQuery } from "./BookmarksQuery";
 import { DeleteBookmarkMutation } from "./DeleteBookmarkMutation";
 
 export const BookmarkList: FC = () => {
-  const { data, loading, error, refetch } = useQuery(BookmarksQuery);
+  const { data, refetch } = useSuspenseQuery(BookmarksQuery);
   const [deleteBookmark, { loading: deleting }] = useMutation(
     DeleteBookmarkMutation,
     {
@@ -19,23 +19,6 @@ export const BookmarkList: FC = () => {
       deleteBookmark({ variables: { id } });
     }
   };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center p-8">
-        <span className="loading loading-spinner loading-lg" />
-        <span className="sr-only">Loading...</span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="alert alert-error">
-        <span>Error: {error.message}</span>
-      </div>
-    );
-  }
 
   if (!data?.bookmarks || data.bookmarks.length === 0) {
     return (

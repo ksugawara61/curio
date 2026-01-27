@@ -76,6 +76,7 @@ catalog:
   wrangler: ^4.43.0
   zod: ^3.25.51
   '@hookform/resolvers': ^5.1.0
+  react-error-boundary: ^6.1.0
 
 catalogMode: strict
 

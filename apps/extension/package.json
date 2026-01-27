@@ -23,6 +23,7 @@
     "graphql": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "react-error-boundary": "catalog:",
     "react-hook-form": "catalog:",
     "zod": "catalog:"
   },

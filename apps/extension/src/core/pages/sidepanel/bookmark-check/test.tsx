@@ -2,29 +2,21 @@ import { renderSuspense, screen, waitFor } from "@curio/testing-library";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../../libs/test/msw/server";
-import { ErrorFallback } from "../../../components/ErrorFallback";
-import { Loading } from "../../../components/Loading";
-import { BookmarkCheck, type BookmarkCheckProps } from ".";
+import { BookmarkCheck } from ".";
 import { BookmarkQueryMocks } from "./BookmarkQuery.mocks";
 import { CreateBookmarkMutationMocks } from "./CreateBookmarkMutation.mocks";
 import { UpdateBookmarkMutationMocks } from "./UpdateBookmarkMutation.mocks";
 
-const defaultProps: BookmarkCheckProps = {
+const defaultProps = {
   currentUrl: "https://example.com",
   currentTitle: "Example Page",
 };
-
-const renderBookmarkCheck = (props = defaultProps) =>
-  renderSuspense(<BookmarkCheck {...props} />, {
-    loadingFallback: <Loading />,
-    errorFallback: ErrorFallback,
-  });
 
 describe("BookmarkCheck", () => {
   it("displays loading state initially", async () => {
     server.use(BookmarkQueryMocks.Loading);
 
-    await renderBookmarkCheck();
+    await renderSuspense(<BookmarkCheck {...defaultProps} />);
 
     expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
@@ -32,7 +24,7 @@ describe("BookmarkCheck", () => {
   it("displays add bookmark form when URL is not bookmarked", async () => {
     server.use(BookmarkQueryMocks.NotFound);
 
-    await renderBookmarkCheck();
+    await renderSuspense(<BookmarkCheck {...defaultProps} />);
 
     await waitFor(() => {
       expect(
@@ -52,7 +44,7 @@ describe("BookmarkCheck", () => {
   it("displays edit form when URL is already bookmarked", async () => {
     server.use(BookmarkQueryMocks.WithMatchingUrl(defaultProps.currentUrl));
 
-    await renderBookmarkCheck();
+    await renderSuspense(<BookmarkCheck {...defaultProps} />);
 
     await waitFor(() => {
       expect(screen.getByText("Bookmarked")).toBeInTheDocument();
@@ -73,7 +65,7 @@ describe("BookmarkCheck", () => {
   it("pre-fills form with existing bookmark data", async () => {
     server.use(BookmarkQueryMocks.WithMatchingUrl(defaultProps.currentUrl));
 
-    await renderBookmarkCheck();
+    await renderSuspense(<BookmarkCheck {...defaultProps} />);
 
     await waitFor(() => {
       expect(screen.getByText("Bookmarked")).toBeInTheDocument();
@@ -97,7 +89,7 @@ describe("BookmarkCheck", () => {
   it("displays error message when query fails", async () => {
     server.use(BookmarkQueryMocks.Error);
 
-    await renderBookmarkCheck();
+    await renderSuspense(<BookmarkCheck {...defaultProps} />);
 
     await waitFor(() => {
       expect(screen.getByText(/Error:/)).toBeInTheDocument();
@@ -112,7 +104,7 @@ describe("BookmarkCheck", () => {
       CreateBookmarkMutationMocks.Success,
     );
 
-    await renderBookmarkCheck();
+    await renderSuspense(<BookmarkCheck {...defaultProps} />);
 
     await waitFor(() => {
       expect(
@@ -140,7 +132,7 @@ describe("BookmarkCheck", () => {
       UpdateBookmarkMutationMocks.Success,
     );
 
-    await renderBookmarkCheck();
+    await renderSuspense(<BookmarkCheck {...defaultProps} />);
 
     await waitFor(() => {
       expect(screen.getByText("Bookmarked")).toBeInTheDocument();
@@ -177,7 +169,7 @@ describe("BookmarkCheck", () => {
   it("displays update button for existing bookmarks", async () => {
     server.use(BookmarkQueryMocks.Success);
 
-    await renderBookmarkCheck();
+    await renderSuspense(<BookmarkCheck {...defaultProps} />);
 
     await waitFor(() => {
       expect(screen.getByText("Bookmarked")).toBeInTheDocument();
@@ -194,7 +186,7 @@ describe("BookmarkCheck", () => {
   it("displays add button for new bookmarks", async () => {
     server.use(BookmarkQueryMocks.NotFound);
 
-    await renderBookmarkCheck();
+    await renderSuspense(<BookmarkCheck {...defaultProps} />);
 
     await waitFor(() => {
       expect(

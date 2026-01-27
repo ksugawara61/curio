@@ -1,22 +1,14 @@
 import { renderSuspense, screen, waitFor } from "@curio/testing-library";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../../libs/test/msw/server";
-import { ErrorFallback } from "../../../components/ErrorFallback";
-import { Loading } from "../../../components/Loading";
 import { ArticleList } from ".";
 import { ArticlesListQueryMocks } from "./ArticlesQuery.mocks";
-
-const renderArticleList = () =>
-  renderSuspense(<ArticleList />, {
-    loadingFallback: <Loading />,
-    errorFallback: ErrorFallback,
-  });
 
 describe("ArticleList", () => {
   it("displays loading state initially", async () => {
     server.use(ArticlesListQueryMocks.Loading);
 
-    await renderArticleList();
+    await renderSuspense(<ArticleList />);
 
     expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
@@ -24,7 +16,7 @@ describe("ArticleList", () => {
   it("displays articles when data is loaded", async () => {
     server.use(ArticlesListQueryMocks.Success);
 
-    await renderArticleList();
+    await renderSuspense(<ArticleList />);
 
     await waitFor(() => {
       expect(
@@ -41,7 +33,7 @@ describe("ArticleList", () => {
   it("displays empty state when no articles exist", async () => {
     server.use(ArticlesListQueryMocks.Empty);
 
-    await renderArticleList();
+    await renderSuspense(<ArticleList />);
 
     await waitFor(() => {
       expect(screen.getByText("No articles yet")).toBeInTheDocument();
@@ -51,7 +43,7 @@ describe("ArticleList", () => {
   it("displays error message when query fails", async () => {
     server.use(ArticlesListQueryMocks.Error);
 
-    await renderArticleList();
+    await renderSuspense(<ArticleList />);
 
     await waitFor(() => {
       expect(screen.getByText(/Error:/)).toBeInTheDocument();
@@ -63,7 +55,7 @@ describe("ArticleList", () => {
   it("displays article count badge", async () => {
     server.use(ArticlesListQueryMocks.Success);
 
-    await renderArticleList();
+    await renderSuspense(<ArticleList />);
 
     await waitFor(() => {
       expect(screen.getByText("3")).toBeInTheDocument();
@@ -73,7 +65,7 @@ describe("ArticleList", () => {
   it("displays article links with correct attributes", async () => {
     server.use(ArticlesListQueryMocks.SingleArticle);
 
-    await renderArticleList();
+    await renderSuspense(<ArticleList />);
 
     const link = await screen.findByRole("link", {
       name: "Getting Started with React",
@@ -87,7 +79,7 @@ describe("ArticleList", () => {
   it("displays article tags", async () => {
     server.use(ArticlesListQueryMocks.SingleArticle);
 
-    await renderArticleList();
+    await renderSuspense(<ArticleList />);
 
     await waitFor(() => {
       expect(screen.getByText("React")).toBeInTheDocument();

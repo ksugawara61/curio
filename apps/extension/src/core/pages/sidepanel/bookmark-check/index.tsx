@@ -5,7 +5,7 @@ import { BookmarkAddForm } from "./BookmarkAddForm";
 import { BookmarkEditForm } from "./BookmarkEditForm";
 import { BookmarkQuery } from "./BookmarkQuery";
 
-export type BookmarkCheckProps = {
+type BookmarkCheckProps = {
   currentUrl: string;
   currentTitle: string;
 };

@@ -2,17 +2,9 @@ import { renderSuspense, screen, waitFor } from "@curio/testing-library";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { server } from "../../../../libs/test/msw/server";
-import { ErrorFallback } from "../../../components/ErrorFallback";
-import { Loading } from "../../../components/Loading";
 import { BookmarkList } from ".";
 import { BookmarksListQueryMocks } from "./BookmarksQuery.mocks";
 import { DeleteBookmarkMutationMocks } from "./DeleteBookmarkMutation.mocks";
-
-const renderBookmarkList = () =>
-  renderSuspense(<BookmarkList />, {
-    loadingFallback: <Loading />,
-    errorFallback: ErrorFallback,
-  });
 
 describe("BookmarkList", () => {
   afterEach(() => {
@@ -22,7 +14,7 @@ describe("BookmarkList", () => {
   it("displays loading state initially", async () => {
     server.use(BookmarksListQueryMocks.Loading);
 
-    await renderBookmarkList();
+    await renderSuspense(<BookmarkList />);
 
     expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
@@ -30,7 +22,7 @@ describe("BookmarkList", () => {
   it("displays bookmarks when data is loaded", async () => {
     server.use(BookmarksListQueryMocks.Success);
 
-    await renderBookmarkList();
+    await renderSuspense(<BookmarkList />);
 
     await waitFor(() => {
       expect(screen.getByText("React Documentation")).toBeInTheDocument();
@@ -46,7 +38,7 @@ describe("BookmarkList", () => {
   it("displays empty state when no bookmarks exist", async () => {
     server.use(BookmarksListQueryMocks.Empty);
 
-    await renderBookmarkList();
+    await renderSuspense(<BookmarkList />);
 
     await waitFor(() => {
       expect(screen.getByText("No bookmarks yet")).toBeInTheDocument();
@@ -60,7 +52,7 @@ describe("BookmarkList", () => {
   it("displays error message when query fails", async () => {
     server.use(BookmarksListQueryMocks.Error);
 
-    await renderBookmarkList();
+    await renderSuspense(<BookmarkList />);
 
     await waitFor(() => {
       expect(screen.getByText(/Error:/)).toBeInTheDocument();
@@ -72,7 +64,7 @@ describe("BookmarkList", () => {
   it("displays bookmark count badge", async () => {
     server.use(BookmarksListQueryMocks.Success);
 
-    await renderBookmarkList();
+    await renderSuspense(<BookmarkList />);
 
     await waitFor(() => {
       expect(screen.getByText("3")).toBeInTheDocument();
@@ -82,7 +74,7 @@ describe("BookmarkList", () => {
   it("displays bookmark links with correct attributes", async () => {
     server.use(BookmarksListQueryMocks.SingleBookmark);
 
-    await renderBookmarkList();
+    await renderSuspense(<BookmarkList />);
 
     const link = await screen.findByRole("link", {
       name: "React Documentation",
@@ -96,7 +88,7 @@ describe("BookmarkList", () => {
   it("displays delete button for each bookmark", async () => {
     server.use(BookmarksListQueryMocks.Success);
 
-    await renderBookmarkList();
+    await renderSuspense(<BookmarkList />);
 
     await waitFor(() => {
       expect(screen.getByText("React Documentation")).toBeInTheDocument();
@@ -115,7 +107,7 @@ describe("BookmarkList", () => {
       DeleteBookmarkMutationMocks.Success,
     );
 
-    await renderBookmarkList();
+    await renderSuspense(<BookmarkList />);
 
     await waitFor(() => {
       expect(screen.getByText("React Documentation")).toBeInTheDocument();
@@ -133,7 +125,7 @@ describe("BookmarkList", () => {
 
     server.use(BookmarksListQueryMocks.SingleBookmark);
 
-    await renderBookmarkList();
+    await renderSuspense(<BookmarkList />);
 
     await waitFor(() => {
       expect(screen.getByText("React Documentation")).toBeInTheDocument();
@@ -155,7 +147,7 @@ describe("BookmarkList", () => {
       BookmarksListQueryMocks.Success,
     );
 
-    await renderBookmarkList();
+    await renderSuspense(<BookmarkList />);
 
     await waitFor(() => {
       expect(screen.getByText("React Documentation")).toBeInTheDocument();

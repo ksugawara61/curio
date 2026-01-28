@@ -25,4 +25,6 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
       - name: Visual Regression Test
-        run: pnpm --filter @curio/extension vrt
+        run: |
+          pnpm build
+          pnpm --filter @curio/extension vrt

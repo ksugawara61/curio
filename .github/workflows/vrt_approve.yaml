@@ -36,5 +36,5 @@ jobs:
           touch test.txt
           echo "Some changes" >> test.txt
           git add test.txt
-          git commit -m "Auto-generated changes"
-          git push origin ${{ github.head_ref }} --no-verify
+          git commit -m "Auto-generated changes" --no-verify
+          git push origin ${{ github.ref_name }} --no-verify

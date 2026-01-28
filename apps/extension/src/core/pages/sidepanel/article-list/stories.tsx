@@ -4,16 +4,6 @@ import { ArticlesListQueryMocks } from "./ArticlesQuery.mocks";
 
 const meta = {
   component: ArticleList,
-  parameters: {
-    layout: "centered",
-  },
-  decorators: [
-    (Story) => (
-      <div className="w-[400px]">
-        <Story />
-      </div>
-    ),
-  ],
 } satisfies Meta<typeof ArticleList>;
 
 export default meta;

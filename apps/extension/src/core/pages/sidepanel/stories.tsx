@@ -7,20 +7,10 @@ import { BookmarksListQueryMocks } from "./bookmark-list/BookmarksQuery.mocks";
 
 const meta = {
   component: SidePanel,
-  parameters: {
-    layout: "fullscreen",
-  },
   args: {
     initialUrl: "https://example.com",
     initialTitle: "Example Page",
   },
-  decorators: [
-    (Story) => (
-      <div className="w-[400px]">
-        <Story />
-      </div>
-    ),
-  ],
 } satisfies Meta<typeof SidePanel>;
 
 export default meta;

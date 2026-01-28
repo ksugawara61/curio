@@ -1,5 +1,8 @@
 import { ApolloProvider, createGraphQLClient } from "@curio/graphql-client";
-import type { FC, PropsWithChildren } from "react";
+import { type FC, type PropsWithChildren, Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { ErrorFallback } from "../../core/components/ErrorFallback";
+import { Loading } from "../../core/components/Loading";
 
 export const StorybookProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
@@ -8,7 +11,11 @@ export const StorybookProvider: FC<PropsWithChildren> = ({ children }) => {
         uri: "http://localhost:4000/graphql",
       })}
     >
-      {children}
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <Suspense fallback={<Loading />}>
+          <div className="w-[400px]">{children}</div>
+        </Suspense>
+      </ErrorBoundary>
     </ApolloProvider>
   );
 };

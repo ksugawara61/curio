@@ -17,6 +17,7 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    layout: "centered",
   },
   decorators: [
     withThemeByDataAttribute<ReactRenderer>({

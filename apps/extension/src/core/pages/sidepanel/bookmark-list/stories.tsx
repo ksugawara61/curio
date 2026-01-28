@@ -4,16 +4,6 @@ import { BookmarksListQueryMocks } from "./BookmarksQuery.mocks";
 
 const meta = {
   component: BookmarkList,
-  parameters: {
-    layout: "centered",
-  },
-  decorators: [
-    (Story) => (
-      <div className="w-[400px]">
-        <Story />
-      </div>
-    ),
-  ],
 } satisfies Meta<typeof BookmarkList>;
 
 export default meta;

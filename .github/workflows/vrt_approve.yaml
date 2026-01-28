@@ -28,3 +28,4 @@ jobs:
         with:
           app_id: ${{ vars.CURIO_MACHINE_APP_ID }}
           app_private_key: ${{ secrets.CURIO_MACHINE_PRIVATE_KEY }}
+          fail_on_self_push: false

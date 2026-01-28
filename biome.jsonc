@@ -15,6 +15,7 @@
       "**/vite.config.*",
       "**/vitest.config.*",
       "**/manifest.json",
+      "**/tests/vrt/**",
       "!**/*.css",
       "!package.json",
       "!**/src/**/generated/*",

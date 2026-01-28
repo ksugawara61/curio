@@ -19,6 +19,9 @@
     },
     "codegen": {
       "dependsOn": ["^codegen"]
+    },
+    "dev": {
+      "dependsOn": ["^build"]
     }
   }
 }

@@ -7,7 +7,8 @@
 		"typecheck": "turbo typecheck",
 		"test": "turbo test",
 		"build": "turbo build",
-		"codegen": "turbo codegen && pnpm fmt"
+		"codegen": "turbo codegen && pnpm fmt",
+		"dev": "turbo dev"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "catalog:",

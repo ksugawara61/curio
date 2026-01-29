@@ -1,9 +1,9 @@
 import { useMutation, useSuspenseQuery } from "@curio/graphql-client";
 import { type FC, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { ErrorFallback } from "../../components/ErrorFallback";
-import { Loading } from "../../components/Loading";
-import { useCurrentTab } from "../../hooks/useCurrentTab";
+import { ErrorFallback } from "../../shared/components/ErrorFallback";
+import { Loading } from "../../shared/components/Loading";
+import { useCurrentTab } from "../../shared/hooks/useCurrentTab";
 import { BookmarkQuery } from "../sidepanel/bookmark-check/BookmarkQuery";
 import { CreateBookmarkMutation } from "../sidepanel/bookmark-check/CreateBookmarkMutation";
 

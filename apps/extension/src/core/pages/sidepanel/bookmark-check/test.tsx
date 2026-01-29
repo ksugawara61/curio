@@ -2,8 +2,8 @@ import { renderSuspense, screen, waitFor } from "@curio/testing-library";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../../libs/test/msw/server";
-import { CreateBookmarkMutationMocks } from "../../shared/graphql/CreateBookmarkMutation.mocks";
 import { BookmarkQueryMocks } from "../../shared/graphql/BookmarkQuery.mocks";
+import { CreateBookmarkMutationMocks } from "../../shared/graphql/CreateBookmarkMutation.mocks";
 import { BookmarkCheck } from ".";
 import { UpdateBookmarkMutationMocks } from "./UpdateBookmarkMutation.mocks";
 

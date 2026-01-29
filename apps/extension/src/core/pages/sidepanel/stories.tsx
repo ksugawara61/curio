@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { SidePanel } from ".";
-import { ArticlesListQueryMocks } from "./article-list/ArticlesQuery.mocks";
-import { BookmarkQueryMocks } from "./bookmark-check/BookmarkQuery.mocks";
-import { CreateBookmarkMutationMocks } from "./bookmark-check/CreateBookmarkMutation.mocks";
-import { BookmarksListQueryMocks } from "./bookmark-list/BookmarksQuery.mocks";
+import { ArticlesListQueryMocks } from "../../shared/graphql/queries/ArticlesQuery.mocks";
+import { BookmarkQueryMocks } from "../../shared/graphql/queries/BookmarkQuery.mocks";
+import { CreateBookmarkMutationMocks } from "../../shared/graphql/mutations/CreateBookmarkMutation.mocks";
+import { BookmarksListQueryMocks } from "../../shared/graphql/queries/BookmarksQuery.mocks";
 
 const meta = {
   component: SidePanel,

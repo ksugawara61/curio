@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { server } from "../../../../libs/test/msw/server";
 import { BookmarkList } from ".";
-import { BookmarksListQueryMocks } from "./BookmarksQuery.mocks";
-import { DeleteBookmarkMutationMocks } from "./DeleteBookmarkMutation.mocks";
+import { BookmarksListQueryMocks } from "../../../shared/graphql/queries/BookmarksQuery.mocks";
+import { DeleteBookmarkMutationMocks } from "../../../shared/graphql/mutations/DeleteBookmarkMutation.mocks";
 
 describe("BookmarkList", () => {
   afterEach(() => {

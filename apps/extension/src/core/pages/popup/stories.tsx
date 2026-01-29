@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { BookmarkQueryMocks } from "../sidepanel/bookmark-check/BookmarkQuery.mocks";
+import { BookmarkQueryMocks } from "../../shared/graphql/queries/BookmarkQuery.mocks";
 import { Popup } from ".";
 
 const meta = {

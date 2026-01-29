@@ -3,9 +3,9 @@ import { act } from "react";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../libs/test/msw/server";
 import { SidePanel } from ".";
-import { ArticlesListQueryMocks } from "./article-list/ArticlesQuery.mocks";
-import { BookmarkQueryMocks } from "./bookmark-check/BookmarkQuery.mocks";
-import { BookmarksListQueryMocks } from "./bookmark-list/BookmarksQuery.mocks";
+import { ArticlesListQueryMocks } from "../../shared/graphql/queries/ArticlesQuery.mocks";
+import { BookmarkQueryMocks } from "../../shared/graphql/queries/BookmarkQuery.mocks";
+import { BookmarksListQueryMocks } from "../../shared/graphql/queries/BookmarksQuery.mocks";
 
 const defaultProps = {
   initialUrl: "https://example.com",

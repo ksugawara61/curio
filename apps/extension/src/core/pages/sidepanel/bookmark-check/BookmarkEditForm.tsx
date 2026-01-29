@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { type FC, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { type BookmarkFormValues, bookmarkFormSchema } from "./schema";
-import { UpdateBookmarkMutation } from "./UpdateBookmarkMutation";
+import { UpdateBookmarkMutation } from "../../../shared/graphql/mutations/UpdateBookmarkMutation";
 
 type Bookmark = {
   id: string;

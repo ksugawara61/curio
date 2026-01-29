@@ -1,7 +1,7 @@
 import { renderSuspense, screen, waitFor } from "@curio/testing-library";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../libs/test/msw/server";
-import { BookmarkQueryMocks } from "../sidepanel/bookmark-check/BookmarkQuery.mocks";
+import { BookmarkQueryMocks } from "../../shared/graphql/queries/BookmarkQuery.mocks";
 import { Popup } from ".";
 
 describe("Popup", () => {

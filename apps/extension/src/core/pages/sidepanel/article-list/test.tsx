@@ -2,7 +2,7 @@ import { renderSuspense, screen, waitFor } from "@curio/testing-library";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../../libs/test/msw/server";
 import { ArticleList } from ".";
-import { ArticlesListQueryMocks } from "./ArticlesQuery.mocks";
+import { ArticlesListQueryMocks } from "../../../shared/graphql/queries/ArticlesQuery.mocks";
 
 describe("ArticleList", () => {
   it("displays loading state initially", async () => {

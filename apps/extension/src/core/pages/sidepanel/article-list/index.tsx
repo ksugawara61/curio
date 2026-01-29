@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@curio/graphql-client";
 import type { FC } from "react";
-import { ArticlesQuery } from "./ArticlesQuery";
+import { ArticlesQuery } from "../../../shared/graphql/queries/ArticlesQuery";
 
 export const ArticleList: FC = () => {
   const { data } = useSuspenseQuery(ArticlesQuery, {

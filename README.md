@@ -74,15 +74,14 @@ curio/
 
 ### Prerequisites
 
-- Node.js >= 18
-- pnpm >= 10
+- Node.js >= 22 (v22.22.0 recommended)
+- pnpm >= 10.28
 - Docker (optional, for local database)
 
 ### Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/ksugawara61/curio.git
 cd curio
 ```
 
@@ -197,11 +196,12 @@ Root level commands:
 
 ## Contributing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Contributions are welcome! Please follow these steps:
+
+1. Create your feature branch (`git checkout -b feature/amazing-feature`)
+2. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+3. Push to the branch (`git push origin feature/amazing-feature`)
+4. Open a Pull Request
 
 ## Project Architecture
 
@@ -215,7 +215,7 @@ See [apps/graphql/README.md](apps/graphql/README.md) for detailed architecture d
 
 ## License
 
-This project is private and not licensed for public use.
+This project is for personal use.
 
 ## Links
 

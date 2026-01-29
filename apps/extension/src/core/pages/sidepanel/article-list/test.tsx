@@ -1,7 +1,7 @@
 import { renderSuspense, screen, waitFor } from "@curio/testing-library";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../../libs/test/msw/server";
-import { ArticlesListQueryMocks } from "../../../shared/graphql/queries/ArticlesQuery.mocks";
+import { ArticlesListQueryMocks } from "../../shared/graphql/queries/ArticlesQuery.mocks";
 import { ArticleList } from ".";
 
 describe("ArticleList", () => {

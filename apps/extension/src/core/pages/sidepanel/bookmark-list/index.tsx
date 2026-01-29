@@ -1,7 +1,7 @@
 import { useMutation, useSuspenseQuery } from "@curio/graphql-client";
 import type { FC } from "react";
-import { DeleteBookmarkMutation } from "../../../shared/graphql/mutations/DeleteBookmarkMutation";
-import { BookmarksQuery } from "../../../shared/graphql/queries/BookmarksQuery";
+import { DeleteBookmarkMutation } from "../../shared/graphql/mutations/DeleteBookmarkMutation";
+import { BookmarksQuery } from "../../shared/graphql/queries/BookmarksQuery";
 
 export const BookmarkList: FC = () => {
   const { data, refetch } = useSuspenseQuery(BookmarksQuery);

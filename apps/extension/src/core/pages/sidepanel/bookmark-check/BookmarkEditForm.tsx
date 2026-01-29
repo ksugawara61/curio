@@ -2,8 +2,8 @@ import { useMutation } from "@curio/graphql-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type FC, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { UpdateBookmarkMutation } from "./UpdateBookmarkMutation";
 import { type BookmarkFormValues, bookmarkFormSchema } from "./schema";
+import { UpdateBookmarkMutation } from "./UpdateBookmarkMutation";
 
 type Bookmark = {
   id: string;

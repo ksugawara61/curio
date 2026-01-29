@@ -4,8 +4,8 @@ import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "../../shared/components/ErrorFallback";
 import { Loading } from "../../shared/components/Loading";
 import { useCurrentTab } from "../../shared/hooks/useCurrentTab";
-import { BookmarkQuery } from "../sidepanel/bookmark-check/BookmarkQuery";
-import { CreateBookmarkMutation } from "../sidepanel/bookmark-check/CreateBookmarkMutation";
+import { BookmarkQuery } from "../shared/graphql/BookmarkQuery";
+import { CreateBookmarkMutation } from "../shared/graphql/CreateBookmarkMutation";
 
 type BookmarkContentProps = {
   currentUrl: string;

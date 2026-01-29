@@ -2,9 +2,9 @@ import { render, screen, waitFor } from "@curio/testing-library";
 import { act } from "react";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../libs/test/msw/server";
+import { BookmarkQueryMocks } from "../shared/graphql/BookmarkQuery.mocks";
 import { SidePanel } from ".";
 import { ArticlesListQueryMocks } from "./article-list/ArticlesQuery.mocks";
-import { BookmarkQueryMocks } from "./bookmark-check/BookmarkQuery.mocks";
 import { BookmarksListQueryMocks } from "./bookmark-list/BookmarksQuery.mocks";
 
 const defaultProps = {

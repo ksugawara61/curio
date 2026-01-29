@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { BookmarkQueryMocks } from "../shared/graphql/BookmarkQuery.mocks";
+import { CreateBookmarkMutationMocks } from "../shared/graphql/CreateBookmarkMutation.mocks";
 import { SidePanel } from ".";
 import { ArticlesListQueryMocks } from "./article-list/ArticlesQuery.mocks";
-import { BookmarkQueryMocks } from "./bookmark-check/BookmarkQuery.mocks";
-import { CreateBookmarkMutationMocks } from "./bookmark-check/CreateBookmarkMutation.mocks";
 import { BookmarksListQueryMocks } from "./bookmark-list/BookmarksQuery.mocks";
 
 const meta = {

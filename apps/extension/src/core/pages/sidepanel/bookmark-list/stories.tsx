@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { BookmarkList } from ".";
 import { BookmarksListQueryMocks } from "../../../shared/graphql/queries/BookmarksQuery.mocks";
+import { BookmarkList } from ".";
 
 const meta = {
   component: BookmarkList,

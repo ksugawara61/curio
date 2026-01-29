@@ -2,10 +2,10 @@ import { render, screen, waitFor } from "@curio/testing-library";
 import { act } from "react";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../libs/test/msw/server";
-import { SidePanel } from ".";
 import { ArticlesListQueryMocks } from "../../shared/graphql/queries/ArticlesQuery.mocks";
 import { BookmarkQueryMocks } from "../../shared/graphql/queries/BookmarkQuery.mocks";
 import { BookmarksListQueryMocks } from "../../shared/graphql/queries/BookmarksQuery.mocks";
+import { SidePanel } from ".";
 
 const defaultProps = {
   initialUrl: "https://example.com",

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ArticleList } from ".";
 import { ArticlesListQueryMocks } from "../../../shared/graphql/queries/ArticlesQuery.mocks";
+import { ArticleList } from ".";
 
 const meta = {
   component: ArticleList,

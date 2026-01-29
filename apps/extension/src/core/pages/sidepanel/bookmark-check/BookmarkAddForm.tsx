@@ -2,7 +2,7 @@ import { useMutation } from "@curio/graphql-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { FC } from "react";
 import { useForm } from "react-hook-form";
-import { CreateBookmarkMutation } from "../../shared/graphql/mutations/CreateBookmarkMutation";
+import { CreateBookmarkMutation } from "../../shared/graphql/CreateBookmarkMutation";
 import { type BookmarkFormValues, bookmarkFormSchema } from "./schema";
 
 type Props = {

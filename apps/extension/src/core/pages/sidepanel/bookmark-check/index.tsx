@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@curio/graphql-client";
 import type { FC } from "react";
 import { Loading } from "../../../shared/components/Loading";
-import { BookmarkQuery } from "../../shared/graphql/queries/BookmarkQuery";
+import { BookmarkQuery } from "../../shared/graphql/BookmarkQuery";
 import { BookmarkAddForm } from "./BookmarkAddForm";
 import { BookmarkEditForm } from "./BookmarkEditForm";
 

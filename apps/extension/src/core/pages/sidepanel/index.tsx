@@ -1,8 +1,8 @@
 import { type FC, Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { ErrorFallback } from "../../components/ErrorFallback";
-import { Loading } from "../../components/Loading";
-import { useCurrentTab } from "../../hooks/useCurrentTab";
+import { ErrorFallback } from "../../shared/components/ErrorFallback";
+import { Loading } from "../../shared/components/Loading";
+import { useCurrentTab } from "../../shared/hooks/useCurrentTab";
 import { ArticleList } from "./article-list";
 import { BookmarkCheck } from "./bookmark-check";
 import { BookmarkList } from "./bookmark-list";

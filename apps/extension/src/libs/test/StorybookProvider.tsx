@@ -1,8 +1,8 @@
 import { ApolloProvider, createGraphQLClient } from "@curio/graphql-client";
 import { type FC, type PropsWithChildren, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { ErrorFallback } from "../../core/components/ErrorFallback";
-import { Loading } from "../../core/components/Loading";
+import { ErrorFallback } from "../../core/shared/components/ErrorFallback";
+import { Loading } from "../../core/shared/components/Loading";
 
 export const StorybookProvider: FC<PropsWithChildren> = ({ children }) => {
   return (

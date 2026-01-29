@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../../libs/test/msw/server";
 import { CreateBookmarkMutationMocks } from "../../shared/graphql/mutations/CreateBookmarkMutation.mocks";
-import { UpdateBookmarkMutationMocks } from "../../shared/graphql/mutations/UpdateBookmarkMutation.mocks";
+import { UpdateBookmarkMutationMocks } from "./UpdateBookmarkMutation.mocks";
 import { BookmarkQueryMocks } from "../../shared/graphql/queries/BookmarkQuery.mocks";
 import { BookmarkCheck } from ".";
 

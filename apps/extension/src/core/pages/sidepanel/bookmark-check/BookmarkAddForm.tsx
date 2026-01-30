@@ -22,6 +22,7 @@ export const BookmarkAddForm: FC<Props> = ({
     resolver: zodResolver(bookmarkFormSchema),
     defaultValues: {
       description: "",
+      note: "",
       thumbnail: currentThumbnail,
       tagInput: "",
     },
@@ -51,6 +52,7 @@ export const BookmarkAddForm: FC<Props> = ({
           title: currentTitle,
           url: currentUrl,
           description: data.description || undefined,
+          note: data.note || undefined,
           thumbnail: data.thumbnail || undefined,
           tagNames: tagNames.length > 0 ? tagNames : undefined,
         },
@@ -86,6 +88,21 @@ export const BookmarkAddForm: FC<Props> = ({
             className="textarea textarea-bordered"
             placeholder="Add a description..."
             {...register("description")}
+          />
+        </div>
+
+        <div className="form-control">
+          <label className="label" htmlFor="bookmark-note">
+            <span className="label-text">
+              Note (optional, Markdown supported)
+            </span>
+          </label>
+          <textarea
+            id="bookmark-note"
+            className="textarea textarea-bordered"
+            rows={6}
+            placeholder="Add notes in Markdown format..."
+            {...register("note")}
           />
         </div>
 

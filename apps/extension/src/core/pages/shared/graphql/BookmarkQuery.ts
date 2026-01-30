@@ -7,6 +7,7 @@ export const BookmarkQuery = graphql(`
       created_at
       description
       id
+      note
       tags {
         id
         name

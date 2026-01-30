@@ -14,6 +14,7 @@ export const CreateBookmarkMutationMocks = {
           title?: string;
           url?: string;
           description?: string;
+          note?: string;
           thumbnail?: string;
         };
       };
@@ -27,6 +28,7 @@ export const CreateBookmarkMutationMocks = {
           title: input?.title ?? "New Bookmark",
           url: input?.url ?? "https://example.com",
           description: input?.description ?? null,
+          note: input?.note ?? null,
           thumbnail: input?.thumbnail ?? null,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),

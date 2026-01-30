@@ -2,6 +2,7 @@ input CreateBookmarkInputInput {
   title: String!
   url: String!
   description: String
+  note: String
   thumbnail: String
   tagNames: [String!]
 }
@@ -9,6 +10,7 @@ input UpdateBookmarkInputInput {
   title: String
   url: String
   description: String
+  note: String
   thumbnail: String
   tagNames: [String!]
 }
@@ -42,6 +44,7 @@ type Bookmark {
   title: String!
   url: String!
   description: String
+  note: String
   thumbnail: String
   created_at: Date!
   updated_at: Date!

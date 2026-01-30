@@ -25,6 +25,8 @@
     "react-dom": "catalog:",
     "react-error-boundary": "catalog:",
     "react-hook-form": "catalog:",
+    "react-markdown": "catalog:",
+    "remark-gfm": "catalog:",
     "swr": "catalog:",
     "zod": "catalog:"
   },

@@ -2,6 +2,7 @@ import { ApolloProvider } from "@curio/graphql-client";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Popup } from "../../core/pages/popup";
+import { AuthGuard } from "../../core/shared/components/AuthGuard";
 import { apolloClient } from "../../libs/apollo-client";
 import "../style.css";
 
@@ -9,7 +10,9 @@ import "../style.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ApolloProvider client={apolloClient}>
-      <Popup />
+      <AuthGuard>
+        <Popup />
+      </AuthGuard>
     </ApolloProvider>
   </React.StrictMode>,
 );

@@ -10,7 +10,12 @@ export const CreateBookmarkMutationMocks = {
   Success: createMockMutation(CreateBookmarkMutation, async ({ request }) => {
     const body = (await request.json()) as {
       variables?: {
-        input?: { title?: string; url?: string; description?: string };
+        input?: {
+          title?: string;
+          url?: string;
+          description?: string;
+          thumbnail?: string;
+        };
       };
     } | null;
     const input = body?.variables?.input;
@@ -22,6 +27,7 @@ export const CreateBookmarkMutationMocks = {
           title: input?.title ?? "New Bookmark",
           url: input?.url ?? "https://example.com",
           description: input?.description ?? null,
+          thumbnail: input?.thumbnail ?? null,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           tags: [],

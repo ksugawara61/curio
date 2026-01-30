@@ -11,6 +11,7 @@ export const UpdateBookmarkMutation = graphql(`
         id
         name
       }
+      thumbnail
       title
       updated_at
       url

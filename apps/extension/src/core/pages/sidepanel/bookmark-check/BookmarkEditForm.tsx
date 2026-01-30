@@ -10,6 +10,7 @@ type Bookmark = {
   title: string;
   url: string;
   description: string | null;
+  thumbnail: string | null;
   created_at: string;
   tags: Array<{ id: string; name: string }> | null;
 };
@@ -24,6 +25,7 @@ export const BookmarkEditForm: FC<Props> = ({ bookmark, onSuccess }) => {
     resolver: zodResolver(bookmarkFormSchema),
     defaultValues: {
       description: "",
+      thumbnail: "",
       tagInput: "",
     },
   });
@@ -40,6 +42,7 @@ export const BookmarkEditForm: FC<Props> = ({ bookmark, onSuccess }) => {
   useEffect(() => {
     reset({
       description: bookmark.description ?? "",
+      thumbnail: bookmark.thumbnail ?? "",
       tagInput: bookmark.tags?.map((tag) => tag.name).join(", ") ?? "",
     });
   }, [bookmark, reset]);
@@ -57,6 +60,7 @@ export const BookmarkEditForm: FC<Props> = ({ bookmark, onSuccess }) => {
         id: bookmark.id,
         input: {
           description: data.description || undefined,
+          thumbnail: data.thumbnail || undefined,
           tagNames: tagNames.length > 0 ? tagNames : undefined,
         },
       },
@@ -88,6 +92,19 @@ export const BookmarkEditForm: FC<Props> = ({ bookmark, onSuccess }) => {
             className="textarea textarea-bordered"
             placeholder="Add a description..."
             {...register("description")}
+          />
+        </div>
+
+        <div className="form-control">
+          <label className="label" htmlFor="bookmark-thumbnail">
+            <span className="label-text">Thumbnail URL</span>
+          </label>
+          <input
+            id="bookmark-thumbnail"
+            type="url"
+            className="input input-bordered"
+            placeholder="https://example.com/image.jpg"
+            {...register("thumbnail")}
           />
         </div>
 

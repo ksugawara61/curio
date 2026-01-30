@@ -11,6 +11,7 @@ export const BookmarksQuery = graphql(`
         id
         name
       }
+      thumbnail
       title
       updated_at
       url

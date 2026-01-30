@@ -6,6 +6,7 @@ export const bookmarks = sqliteTable("bookmarks", {
   title: text("title").notNull(),
   url: text("url").unique().notNull(),
   description: text("description"),
+  thumbnail: text("thumbnail"),
   created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
   updated_at: text("updated_at").default(sql`(datetime('now'))`).notNull(),
 });

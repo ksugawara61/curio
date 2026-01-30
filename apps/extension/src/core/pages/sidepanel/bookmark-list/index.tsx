@@ -55,6 +55,13 @@ export const BookmarkList: FC = () => {
                 {bookmark.title}
               </a>
             </h3>
+            {bookmark.thumbnail && (
+              <img
+                src={bookmark.thumbnail}
+                alt={bookmark.title}
+                className="mt-2 h-32 w-full rounded object-cover"
+              />
+            )}
             <p className="truncate text-xs text-base-content/50">
               {bookmark.url}
             </p>

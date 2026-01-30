@@ -20,6 +20,7 @@ export const BookmarkAddForm: FC<Props> = ({
     resolver: zodResolver(bookmarkFormSchema),
     defaultValues: {
       description: "",
+      thumbnail: "",
       tagInput: "",
     },
   });
@@ -48,6 +49,7 @@ export const BookmarkAddForm: FC<Props> = ({
           title: currentTitle,
           url: currentUrl,
           description: data.description || undefined,
+          thumbnail: data.thumbnail || undefined,
           tagNames: tagNames.length > 0 ? tagNames : undefined,
         },
       },
@@ -82,6 +84,19 @@ export const BookmarkAddForm: FC<Props> = ({
             className="textarea textarea-bordered"
             placeholder="Add a description..."
             {...register("description")}
+          />
+        </div>
+
+        <div className="form-control">
+          <label className="label" htmlFor="bookmark-thumbnail">
+            <span className="label-text">Thumbnail URL (optional)</span>
+          </label>
+          <input
+            id="bookmark-thumbnail"
+            type="url"
+            className="input input-bordered"
+            placeholder="https://example.com/image.jpg"
+            {...register("thumbnail")}
           />
         </div>
 

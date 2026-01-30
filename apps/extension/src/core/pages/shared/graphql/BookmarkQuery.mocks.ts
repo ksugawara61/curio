@@ -8,6 +8,7 @@ const mockBookmark = {
   title: "Example Bookmark",
   url: "https://example.com",
   description: "This is an example bookmark",
+  thumbnail: "https://example.com/image.jpg",
   created_at: "2024-01-01T00:00:00Z",
   updated_at: "2024-01-01T00:00:00Z",
   tags: [
@@ -38,6 +39,7 @@ export const BookmarkQueryMocks = {
             title: "Matching Bookmark",
             url: url,
             description: "This bookmark matches the current URL",
+            thumbnail: "https://example.com/matched-image.jpg",
             created_at: "2024-01-01T00:00:00Z",
             updated_at: "2024-01-01T00:00:00Z",
             tags: [{ id: "1", name: "Matched" }],

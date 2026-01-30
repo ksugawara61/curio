@@ -8,19 +8,21 @@ import { type BookmarkFormValues, bookmarkFormSchema } from "./schema";
 type Props = {
   currentUrl: string;
   currentTitle: string;
+  currentThumbnail?: string;
   onSuccess: () => void;
 };
 
 export const BookmarkAddForm: FC<Props> = ({
   currentUrl,
   currentTitle,
+  currentThumbnail = "",
   onSuccess,
 }) => {
   const { register, handleSubmit, reset } = useForm<BookmarkFormValues>({
     resolver: zodResolver(bookmarkFormSchema),
     defaultValues: {
       description: "",
-      thumbnail: "",
+      thumbnail: currentThumbnail,
       tagInput: "",
     },
   });

@@ -10,11 +10,13 @@ import { CreateBookmarkMutation } from "../shared/graphql/CreateBookmarkMutation
 type BookmarkContentProps = {
   currentUrl: string;
   currentTitle: string;
+  currentThumbnail: string;
 };
 
 const BookmarkContent: FC<BookmarkContentProps> = ({
   currentUrl,
   currentTitle,
+  currentThumbnail,
 }) => {
   const { data, refetch } = useSuspenseQuery(BookmarkQuery, {
     variables: { uri: currentUrl },
@@ -37,6 +39,7 @@ const BookmarkContent: FC<BookmarkContentProps> = ({
         input: {
           title: currentTitle,
           url: currentUrl,
+          thumbnail: currentThumbnail || undefined,
         },
       },
     });
@@ -97,7 +100,7 @@ type PopupProps = {
 };
 
 export const Popup: FC<PopupProps> = ({ initialUrl, initialTitle }) => {
-  const { currentUrl, currentTitle } = useCurrentTab({
+  const { currentUrl, currentTitle, currentThumbnail } = useCurrentTab({
     initialUrl,
     initialTitle,
   });
@@ -111,6 +114,7 @@ export const Popup: FC<PopupProps> = ({ initialUrl, initialTitle }) => {
             <BookmarkContent
               currentUrl={currentUrl}
               currentTitle={currentTitle}
+              currentThumbnail={currentThumbnail}
             />
           ) : (
             <Loading />

@@ -16,7 +16,7 @@ type Props = {
 
 export const SidePanel: FC<Props> = ({ initialUrl, initialTitle }) => {
   const [activeTab, setActiveTab] = useState<TabType>("current");
-  const { currentUrl, currentTitle } = useCurrentTab({
+  const { currentUrl, currentTitle, currentThumbnail } = useCurrentTab({
     initialUrl,
     initialTitle,
   });
@@ -56,6 +56,7 @@ export const SidePanel: FC<Props> = ({ initialUrl, initialTitle }) => {
               <BookmarkCheck
                 currentUrl={currentUrl}
                 currentTitle={currentTitle}
+                currentThumbnail={currentThumbnail}
               />
             </Suspense>
           </ErrorBoundary>

@@ -5,6 +5,7 @@ import useSWRSubscription, {
 type TabInfo = {
   url: string;
   title: string;
+  thumbnail: string;
 };
 
 type UseCurrentTabOptions = {
@@ -22,7 +23,7 @@ export const useCurrentTab = (options: UseCurrentTabOptions = {}) => {
       { next }: SWRSubscriptionOptions<TabInfo | undefined, Error>,
     ) => {
       if (initialUrl && initialTitle) {
-        next(null, { url: initialUrl, title: initialTitle });
+        next(null, { url: initialUrl, title: initialTitle, thumbnail: "" });
         return () => {};
       }
 
@@ -30,13 +31,43 @@ export const useCurrentTab = (options: UseCurrentTabOptions = {}) => {
         return () => {};
       }
 
+      const fetchThumbnail = async (tabId: number): Promise<string> => {
+        try {
+          const results = await chrome.scripting.executeScript({
+            target: { tabId },
+            func: () => {
+              const ogImage = document.querySelector<HTMLMetaElement>(
+                'meta[property="og:image"]',
+              );
+              if (ogImage?.content) return ogImage.content;
+
+              const twitterImage = document.querySelector<HTMLMetaElement>(
+                'meta[name="twitter:image"]',
+              );
+              if (twitterImage?.content) return twitterImage.content;
+
+              const linkIcon = document.querySelector<HTMLLinkElement>(
+                'link[rel="apple-touch-icon"]',
+              );
+              if (linkIcon?.href) return linkIcon.href;
+
+              return "";
+            },
+          });
+          return results?.[0]?.result ?? "";
+        } catch {
+          return "";
+        }
+      };
+
       const getCurrentTab = async () => {
         const [tab] = await chrome.tabs.query({
           active: true,
           currentWindow: true,
         });
-        if (tab?.url && tab?.title) {
-          next(null, { url: tab.url, title: tab.title });
+        if (tab?.url && tab?.title && tab?.id != null) {
+          const thumbnail = await fetchThumbnail(tab.id);
+          next(null, { url: tab.url, title: tab.title, thumbnail });
         }
       };
 
@@ -49,10 +80,11 @@ export const useCurrentTab = (options: UseCurrentTabOptions = {}) => {
 
       const onUpdatedListener: Parameters<
         typeof chrome.tabs.onUpdated.addListener
-      >[0] = (_tabId, changeInfo, tab) => {
+      >[0] = async (_tabId, changeInfo, tab) => {
         if (changeInfo.status === "complete" && tab.active) {
-          if (tab.url && tab.title) {
-            next(null, { url: tab.url, title: tab.title });
+          if (tab.url && tab.title && tab.id != null) {
+            const thumbnail = await fetchThumbnail(tab.id);
+            next(null, { url: tab.url, title: tab.title, thumbnail });
           }
         }
       };
@@ -68,5 +100,6 @@ export const useCurrentTab = (options: UseCurrentTabOptions = {}) => {
   return {
     currentUrl: data?.url ?? "",
     currentTitle: data?.title ?? "",
+    currentThumbnail: data?.thumbnail ?? "",
   };
 };

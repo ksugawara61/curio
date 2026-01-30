@@ -78,6 +78,7 @@ catalog:
   zod: ^3.25.51
   '@hookform/resolvers': ^5.1.0
   react-error-boundary: ^6.1.0
+  better-auth: 1.4.16
 
 catalogMode: strict
 

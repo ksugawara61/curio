@@ -23,6 +23,7 @@
     "codegen": "pnpm build && cp .pylon/schema.graphql ../../packages/graphql-client/src/graphql/schema.graphql"
   },
   "dependencies": {
+    "better-auth": "catalog:",
     "@getcronit/pylon": "catalog:",
     "@libsql/client": "catalog:",
     "@paralleldrive/cuid2": "catalog:",

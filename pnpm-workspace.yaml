@@ -17,6 +17,7 @@ catalog:
   '@graphql-codegen/introspection': ^5.0.0
   '@graphql-eslint/eslint-plugin': ^4.4.0
   '@graphql-typed-document-node/core': ^3.2.0
+  '@hookform/resolvers': ^5.1.0
   '@libsql/client': ^0.15.15
   '@paralleldrive/cuid2': ^2.2.2
   '@playwright/test': ^1.57.0
@@ -59,7 +60,10 @@ catalog:
   openapi-typescript: ^7.9.1
   react: ^19.2.3
   react-dom: ^19.2.3
+  react-error-boundary: ^6.1.0
   react-hook-form: ^7.58.1
+  react-markdown: ^10.1.0
+  remark-gfm: ^4.0.1
   scaffdog: ^4.1.0
   storybook: 10.1.11
   swr: ^2.3.4
@@ -76,8 +80,6 @@ catalog:
   vitest: ^4.0.17
   wrangler: ^4.43.0
   zod: ^3.25.51
-  '@hookform/resolvers': ^5.1.0
-  react-error-boundary: ^6.1.0
 
 catalogMode: strict
 

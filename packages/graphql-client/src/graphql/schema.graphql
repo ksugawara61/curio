@@ -1,63 +1,66 @@
 input CreateBookmarkInputInput {
-  title: String!
-  url: String!
-  description: String
-  thumbnail: String
-  tagNames: [String!]
+	title: String!
+	url: String!
+	description: String
+	note: String
+	thumbnail: String
+	tagNames: [String!]
 }
 input UpdateBookmarkInputInput {
-  title: String
-  url: String
-  description: String
-  thumbnail: String
-  tagNames: [String!]
+	title: String
+	url: String
+	description: String
+	note: String
+	thumbnail: String
+	tagNames: [String!]
 }
 input CreateTagInputInput {
-  name: String!
+	name: String!
 }
 type Query {
-  articles(offset: Number, limit: Number): [Article!]!
-  bookmarks: [Bookmark!]!
-  bookmark(id: String, uri: String): Bookmark
-  tags: [Tag!]!
+articles(offset: Number, limit: Number): [Article!]!
+bookmarks: [Bookmark!]!
+bookmark(id: String, uri: String): Bookmark
+tags: [Tag!]!
 }
 type Article {
-  id: String!
-  title: String!
-  body: String!
-  url: String!
-  user: User!
-  tags: [Tag_1!]!
-  created_at: String!
-  updated_at: String!
+id: String!
+title: String!
+body: String!
+url: String!
+user: User!
+tags: [Tag_1!]!
+created_at: String!
+updated_at: String!
 }
 type User {
-  name: String
+name: String
 }
 type Tag_1 {
-  name: String!
+name: String!
 }
 type Bookmark {
-  id: String!
-  title: String!
-  url: String!
-  description: String
-  thumbnail: String
-  created_at: Date!
-  updated_at: Date!
-  tags: [Tag!]
+id: String!
+title: String!
+url: String!
+description: String
+note: String
+thumbnail: String
+created_at: Date!
+updated_at: Date!
+tags: [Tag!]
 }
 type Tag {
-  id: String!
-  name: String!
-  created_at: Date!
-  updated_at: Date!
+id: String!
+name: String!
+created_at: Date!
+updated_at: Date!
 }
 type Mutation {
-  createBookmark(input: CreateBookmarkInputInput!): Bookmark!
-  updateBookmark(id: String!, input: UpdateBookmarkInputInput!): Bookmark!
-  deleteBookmark(id: String!): Boolean!
-  createTag(input: CreateTagInputInput!): Tag!
+createBookmark(input: CreateBookmarkInputInput!): Bookmark!
+updateBookmark(id: String!, input: UpdateBookmarkInputInput!): Bookmark!
+deleteBookmark(id: String!): Boolean!
+createTag(input: CreateTagInputInput!): Tag!
 }
 scalar ID
 scalar Int

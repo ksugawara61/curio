@@ -9,6 +9,7 @@ const mockBookmarks = [
     title: "React Documentation",
     url: "https://react.dev",
     description: "Official React documentation",
+    note: "## Key Features\n\n- **Hooks**: Use state and other React features\n- **Components**: Build encapsulated components",
     thumbnail: "https://react.dev/images/og-home.png",
     created_at: "2024-01-01T00:00:00Z",
     updated_at: "2024-01-01T00:00:00Z",
@@ -23,6 +24,7 @@ const mockBookmarks = [
     title: "TypeScript Handbook",
     url: "https://www.typescriptlang.org/docs/handbook/",
     description: "Learn TypeScript from the official handbook",
+    note: null,
     thumbnail:
       "https://www.typescriptlang.org/images/branding/ts-lettermark-blue.png",
     created_at: "2024-01-02T00:00:00Z",
@@ -38,6 +40,7 @@ const mockBookmarks = [
     title: "GitHub",
     url: "https://github.com",
     description: null,
+    note: null,
     thumbnail: null,
     created_at: "2024-01-03T00:00:00Z",
     updated_at: "2024-01-03T00:00:00Z",

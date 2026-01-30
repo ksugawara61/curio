@@ -10,6 +10,7 @@ type Bookmark = {
   title: string;
   url: string;
   description: string | null;
+  note: string | null;
   thumbnail: string | null;
   created_at: string;
   tags: Array<{ id: string; name: string }> | null;
@@ -25,6 +26,7 @@ export const BookmarkEditForm: FC<Props> = ({ bookmark, onSuccess }) => {
     resolver: zodResolver(bookmarkFormSchema),
     defaultValues: {
       description: "",
+      note: "",
       thumbnail: "",
       tagInput: "",
     },
@@ -42,6 +44,7 @@ export const BookmarkEditForm: FC<Props> = ({ bookmark, onSuccess }) => {
   useEffect(() => {
     reset({
       description: bookmark.description ?? "",
+      note: bookmark.note ?? "",
       thumbnail: bookmark.thumbnail ?? "",
       tagInput: bookmark.tags?.map((tag) => tag.name).join(", ") ?? "",
     });
@@ -60,6 +63,7 @@ export const BookmarkEditForm: FC<Props> = ({ bookmark, onSuccess }) => {
         id: bookmark.id,
         input: {
           description: data.description || undefined,
+          note: data.note || undefined,
           thumbnail: data.thumbnail || undefined,
           tagNames: tagNames.length > 0 ? tagNames : undefined,
         },
@@ -92,6 +96,19 @@ export const BookmarkEditForm: FC<Props> = ({ bookmark, onSuccess }) => {
             className="textarea textarea-bordered"
             placeholder="Add a description..."
             {...register("description")}
+          />
+        </div>
+
+        <div className="form-control">
+          <label className="label" htmlFor="bookmark-note">
+            <span className="label-text">Note (Markdown supported)</span>
+          </label>
+          <textarea
+            id="bookmark-note"
+            className="textarea textarea-bordered"
+            rows={6}
+            placeholder="Add notes in Markdown format..."
+            {...register("note")}
           />
         </div>
 

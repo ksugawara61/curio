@@ -1,5 +1,7 @@
 import { useMutation, useSuspenseQuery } from "@curio/graphql-client";
 import type { FC } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { BookmarksQuery } from "./BookmarksQuery";
 import { DeleteBookmarkMutation } from "./DeleteBookmarkMutation";
 
@@ -69,6 +71,13 @@ export const BookmarkList: FC = () => {
               <p className="text-sm text-base-content/70 line-clamp-2">
                 {bookmark.description}
               </p>
+            )}
+            {bookmark.note && (
+              <div className="prose prose-sm max-w-none text-base-content/70">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {bookmark.note}
+                </ReactMarkdown>
+              </div>
             )}
             {bookmark.tags && bookmark.tags.length > 0 && (
               <div className="flex flex-wrap gap-1">

@@ -5,6 +5,7 @@ export type Bookmark = {
   title: string;
   url: string;
   description?: string | null;
+  note?: string | null;
   thumbnail?: string | null;
   created_at: Date;
   updated_at: Date;
@@ -15,6 +16,7 @@ export type CreateBookmarkInput = {
   title: string;
   url: string;
   description?: string;
+  note?: string;
   thumbnail?: string;
   tagNames?: string[];
 };
@@ -23,6 +25,7 @@ export type UpdateBookmarkInput = {
   title?: string;
   url?: string;
   description?: string;
+  note?: string;
   thumbnail?: string;
   tagNames?: string[];
 };

@@ -31,6 +31,7 @@ export class BookmarkRepository {
         title: bookmarks.title,
         url: bookmarks.url,
         description: bookmarks.description,
+        note: bookmarks.note,
         thumbnail: bookmarks.thumbnail,
         created_at: bookmarks.created_at,
         updated_at: bookmarks.updated_at,
@@ -54,6 +55,7 @@ export class BookmarkRepository {
           title: row.title,
           url: row.url,
           description: row.description,
+          note: row.note,
           thumbnail: row.thumbnail,
           created_at: new Date(row.created_at),
           updated_at: new Date(row.updated_at),
@@ -86,6 +88,7 @@ export class BookmarkRepository {
         title: bookmarks.title,
         url: bookmarks.url,
         description: bookmarks.description,
+        note: bookmarks.note,
         thumbnail: bookmarks.thumbnail,
         created_at: bookmarks.created_at,
         updated_at: bookmarks.updated_at,
@@ -109,6 +112,7 @@ export class BookmarkRepository {
       title: firstRow.title,
       url: firstRow.url,
       description: firstRow.description,
+      note: firstRow.note,
       thumbnail: firstRow.thumbnail,
       created_at: new Date(firstRow.created_at),
       updated_at: new Date(firstRow.updated_at),
@@ -137,6 +141,7 @@ export class BookmarkRepository {
         title: bookmarks.title,
         url: bookmarks.url,
         description: bookmarks.description,
+        note: bookmarks.note,
         thumbnail: bookmarks.thumbnail,
         created_at: bookmarks.created_at,
         updated_at: bookmarks.updated_at,
@@ -160,6 +165,7 @@ export class BookmarkRepository {
       title: firstRow.title,
       url: firstRow.url,
       description: firstRow.description,
+      note: firstRow.note,
       thumbnail: firstRow.thumbnail,
       created_at: new Date(firstRow.created_at),
       updated_at: new Date(firstRow.updated_at),
@@ -207,6 +213,7 @@ export class BookmarkRepository {
         title: input.title,
         url: input.url,
         description: input.description,
+        note: input.note,
         thumbnail: input.thumbnail,
       })
       .returning();
@@ -226,6 +233,7 @@ export class BookmarkRepository {
       title: bookmark.title,
       url: bookmark.url,
       description: bookmark.description,
+      note: bookmark.note,
       thumbnail: bookmark.thumbnail,
       created_at: new Date(bookmark.created_at),
       updated_at: new Date(bookmark.updated_at),
@@ -248,6 +256,7 @@ export class BookmarkRepository {
     if (input.url !== undefined) updateData.url = input.url;
     if (input.description !== undefined)
       updateData.description = input.description;
+    if (input.note !== undefined) updateData.note = input.note;
     if (input.thumbnail !== undefined) updateData.thumbnail = input.thumbnail;
 
     // Always update the updated_at field
@@ -314,6 +323,7 @@ export class BookmarkRepository {
       title: updatedBookmark.title,
       url: updatedBookmark.url,
       description: updatedBookmark.description,
+      note: updatedBookmark.note,
       thumbnail: updatedBookmark.thumbnail,
       created_at: new Date(updatedBookmark.created_at),
       updated_at: new Date(updatedBookmark.updated_at),

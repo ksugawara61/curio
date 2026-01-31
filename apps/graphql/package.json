@@ -31,12 +31,13 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@curio/eslint-config": "workspace:*",
     "@cloudflare/workers-types": "catalog:",
-    "eslint": "catalog:",
+    "@curio/eslint-config": "workspace:*",
     "@getcronit/pylon-dev": "catalog:",
+    "@types/node": "catalog:",
     "@vitest/ui": "catalog:",
     "drizzle-kit": "catalog:",
+    "eslint": "catalog:",
     "msw": "catalog:",
     "openapi-msw": "catalog:",
     "openapi-typescript": "catalog:",

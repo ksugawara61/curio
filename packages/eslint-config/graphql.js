@@ -36,7 +36,7 @@ export const createGraphQLClientConfig = (dirname, options = {}) => {
     },
   };
 
-  const baseConfig = createBaseConfig({ ignores, files });
+  const baseConfig = createBaseConfig({ tsconfigRootDir: dirname, ignores, files });
 
   return tseslint.config(
     ...baseConfig,
@@ -81,7 +81,7 @@ export const createGraphQLServerConfig = (dirname, options = {}) => {
   const { files = ["src/**/*.{js,mjs,ts,mts}"], ignores = ["node_modules/**", "dist/**"] } =
     options;
 
-  const baseConfig = createBaseConfig({ ignores, files });
+  const baseConfig = createBaseConfig({ tsconfigRootDir: dirname, ignores, files });
 
   return tseslint.config(...baseConfig);
 };

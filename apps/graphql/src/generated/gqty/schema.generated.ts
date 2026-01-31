@@ -47,7 +47,9 @@ export interface Scalars {
 
 export interface CreateBookmarkInputInput {
   description?: InputMaybe<Scalars["String"]["input"]>;
+  note?: InputMaybe<Scalars["String"]["input"]>;
   tagNames?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  thumbnail?: InputMaybe<Scalars["String"]["input"]>;
   title: Scalars["String"]["input"];
   url: Scalars["String"]["input"];
 }
@@ -58,7 +60,9 @@ export interface CreateTagInputInput {
 
 export interface UpdateBookmarkInputInput {
   description?: InputMaybe<Scalars["String"]["input"]>;
+  note?: InputMaybe<Scalars["String"]["input"]>;
   tagNames?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  thumbnail?: InputMaybe<Scalars["String"]["input"]>;
   title?: InputMaybe<Scalars["String"]["input"]>;
   url?: InputMaybe<Scalars["String"]["input"]>;
 }
@@ -91,14 +95,18 @@ export const generatedSchema = {
     created_at: { __type: "DateTimeISO!" },
     description: { __type: "String" },
     id: { __type: "String!" },
+    note: { __type: "String" },
     tags: { __type: "[Tag!]" },
+    thumbnail: { __type: "String" },
     title: { __type: "String!" },
     updated_at: { __type: "DateTimeISO!" },
     url: { __type: "String!" },
   },
   CreateBookmarkInputInput: {
     description: { __type: "String" },
+    note: { __type: "String" },
     tagNames: { __type: "[String!]" },
+    thumbnail: { __type: "String" },
     title: { __type: "String!" },
     url: { __type: "String!" },
   },
@@ -113,7 +121,9 @@ export const generatedSchema = {
   Tag_1: { __typename: { __type: "String!" }, name: { __type: "String!" } },
   UpdateBookmarkInputInput: {
     description: { __type: "String" },
+    note: { __type: "String" },
     tagNames: { __type: "[String!]" },
+    thumbnail: { __type: "String" },
     title: { __type: "String" },
     url: { __type: "String" },
   },
@@ -161,7 +171,9 @@ export interface Bookmark {
   created_at: ScalarsEnums["DateTimeISO"];
   description?: Maybe<ScalarsEnums["String"]>;
   id: ScalarsEnums["String"];
+  note?: Maybe<ScalarsEnums["String"]>;
   tags?: Maybe<Array<Tag>>;
+  thumbnail?: Maybe<ScalarsEnums["String"]>;
   title: ScalarsEnums["String"];
   updated_at: ScalarsEnums["DateTimeISO"];
   url: ScalarsEnums["String"];

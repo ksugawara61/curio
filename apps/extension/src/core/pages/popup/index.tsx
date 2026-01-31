@@ -3,6 +3,7 @@ import { type FC, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "../../shared/components/ErrorFallback";
 import { Loading } from "../../shared/components/Loading";
+import { useBlockedDomains } from "../../shared/hooks/useBlockedDomains";
 import { useCurrentTab } from "../../shared/hooks/useCurrentTab";
 import { BookmarkQuery } from "../shared/graphql/BookmarkQuery";
 import { CreateBookmarkMutation } from "../shared/graphql/CreateBookmarkMutation";
@@ -104,13 +105,22 @@ export const Popup: FC<PopupProps> = ({ initialUrl, initialTitle }) => {
     initialUrl,
     initialTitle,
   });
+  const { isDomainBlocked, loading: blockedLoading } = useBlockedDomains();
+
+  const blocked = !blockedLoading && currentUrl && isDomainBlocked(currentUrl);
 
   return (
     <div className="w-80 bg-base-100 p-4">
       <h1 className="mb-3 font-bold text-lg">Curio</h1>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <Suspense fallback={<Loading />}>
-          {currentUrl ? (
+          {blockedLoading ? (
+            <Loading />
+          ) : blocked ? (
+            <p className="text-sm text-base-content/70">
+              Bookmarking is disabled for this domain.
+            </p>
+          ) : currentUrl ? (
             <BookmarkContent
               currentUrl={currentUrl}
               currentTitle={currentTitle}

@@ -138,6 +138,162 @@ describe("BookmarkList", () => {
     expect(screen.getByText("React Documentation")).toBeInTheDocument();
   });
 
+  describe("search", () => {
+    it("displays search input", async () => {
+      server.use(BookmarksListQueryMocks.Success);
+
+      await renderSuspense(<BookmarkList />);
+
+      await waitFor(() => {
+        expect(screen.getByText("React Documentation")).toBeInTheDocument();
+      });
+
+      expect(
+        screen.getByPlaceholderText(
+          "Search by title, description, note, or tag...",
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it("filters bookmarks by title", async () => {
+      const user = userEvent.setup();
+      server.use(BookmarksListQueryMocks.Success);
+
+      await renderSuspense(<BookmarkList />);
+
+      await waitFor(() => {
+        expect(screen.getByText("React Documentation")).toBeInTheDocument();
+      });
+
+      const searchInput = screen.getByPlaceholderText(
+        "Search by title, description, note, or tag...",
+      );
+      await user.type(searchInput, "TypeScript");
+
+      expect(screen.getByText("TypeScript Handbook")).toBeInTheDocument();
+      expect(screen.queryByText("React Documentation")).not.toBeInTheDocument();
+      expect(screen.queryByText("GitHub")).not.toBeInTheDocument();
+    });
+
+    it("filters bookmarks by description", async () => {
+      const user = userEvent.setup();
+      server.use(BookmarksListQueryMocks.Success);
+
+      await renderSuspense(<BookmarkList />);
+
+      await waitFor(() => {
+        expect(screen.getByText("React Documentation")).toBeInTheDocument();
+      });
+
+      const searchInput = screen.getByPlaceholderText(
+        "Search by title, description, note, or tag...",
+      );
+      await user.type(searchInput, "official handbook");
+
+      expect(screen.getByText("TypeScript Handbook")).toBeInTheDocument();
+      expect(screen.queryByText("React Documentation")).not.toBeInTheDocument();
+    });
+
+    it("filters bookmarks by note", async () => {
+      const user = userEvent.setup();
+      server.use(BookmarksListQueryMocks.Success);
+
+      await renderSuspense(<BookmarkList />);
+
+      await waitFor(() => {
+        expect(screen.getByText("React Documentation")).toBeInTheDocument();
+      });
+
+      const searchInput = screen.getByPlaceholderText(
+        "Search by title, description, note, or tag...",
+      );
+      await user.type(searchInput, "Hooks");
+
+      expect(screen.getByText("React Documentation")).toBeInTheDocument();
+      expect(screen.queryByText("TypeScript Handbook")).not.toBeInTheDocument();
+    });
+
+    it("filters bookmarks by tag name", async () => {
+      const user = userEvent.setup();
+      server.use(BookmarksListQueryMocks.Success);
+
+      await renderSuspense(<BookmarkList />);
+
+      await waitFor(() => {
+        expect(screen.getByText("React Documentation")).toBeInTheDocument();
+      });
+
+      const searchInput = screen.getByPlaceholderText(
+        "Search by title, description, note, or tag...",
+      );
+      await user.type(searchInput, "Tutorial");
+
+      expect(screen.getByText("TypeScript Handbook")).toBeInTheDocument();
+      expect(screen.queryByText("React Documentation")).not.toBeInTheDocument();
+    });
+
+    it("shows no results message when search has no matches", async () => {
+      const user = userEvent.setup();
+      server.use(BookmarksListQueryMocks.Success);
+
+      await renderSuspense(<BookmarkList />);
+
+      await waitFor(() => {
+        expect(screen.getByText("React Documentation")).toBeInTheDocument();
+      });
+
+      const searchInput = screen.getByPlaceholderText(
+        "Search by title, description, note, or tag...",
+      );
+      await user.type(searchInput, "nonexistent");
+
+      expect(screen.getByText(/No bookmarks matching/)).toBeInTheDocument();
+      expect(screen.queryByText("React Documentation")).not.toBeInTheDocument();
+    });
+
+    it("is case-insensitive", async () => {
+      const user = userEvent.setup();
+      server.use(BookmarksListQueryMocks.Success);
+
+      await renderSuspense(<BookmarkList />);
+
+      await waitFor(() => {
+        expect(screen.getByText("React Documentation")).toBeInTheDocument();
+      });
+
+      const searchInput = screen.getByPlaceholderText(
+        "Search by title, description, note, or tag...",
+      );
+      await user.type(searchInput, "react");
+
+      expect(screen.getByText("React Documentation")).toBeInTheDocument();
+    });
+
+    it("shows all bookmarks when search is cleared", async () => {
+      const user = userEvent.setup();
+      server.use(BookmarksListQueryMocks.Success);
+
+      await renderSuspense(<BookmarkList />);
+
+      await waitFor(() => {
+        expect(screen.getByText("React Documentation")).toBeInTheDocument();
+      });
+
+      const searchInput = screen.getByPlaceholderText(
+        "Search by title, description, note, or tag...",
+      );
+      await user.type(searchInput, "TypeScript");
+
+      expect(screen.queryByText("React Documentation")).not.toBeInTheDocument();
+
+      await user.clear(searchInput);
+
+      expect(screen.getByText("React Documentation")).toBeInTheDocument();
+      expect(screen.getByText("TypeScript Handbook")).toBeInTheDocument();
+      expect(screen.getByText("GitHub")).toBeInTheDocument();
+    });
+  });
+
   it("refetches bookmarks after successful deletion", async () => {
     const user = userEvent.setup();
     vi.spyOn(window, "confirm").mockReturnValue(true);

@@ -16,6 +16,7 @@
       "**/vitest.config.*",
       "**/manifest.json",
       "**/tests/vrt/**",
+      "**/drizzle.config.ts",
       "!**/*.css",
       "!package.json",
       "!**/src/**/generated/*",

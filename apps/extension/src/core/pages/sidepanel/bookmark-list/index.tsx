@@ -1,5 +1,5 @@
 import { useMutation, useSuspenseQuery } from "@curio/graphql-client";
-import type { FC } from "react";
+import { type FC, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { BookmarksQuery } from "./BookmarksQuery";
@@ -15,6 +15,23 @@ export const BookmarkList: FC = () => {
       },
     },
   );
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredBookmarks = useMemo(() => {
+    if (!data?.bookmarks) return [];
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return data.bookmarks;
+
+    return data.bookmarks.filter((bookmark) => {
+      const titleMatch = bookmark.title?.toLowerCase().includes(query);
+      const descMatch = bookmark.description?.toLowerCase().includes(query);
+      const noteMatch = bookmark.note?.toLowerCase().includes(query);
+      const tagMatch = bookmark.tags?.some((tag) =>
+        tag.name.toLowerCase().includes(query),
+      );
+      return titleMatch || descMatch || noteMatch || tagMatch;
+    });
+  }, [data?.bookmarks, searchQuery]);
 
   const handleDelete = (id: string, title: string) => {
     if (window.confirm(`Delete "${title}"?`)) {
@@ -44,7 +61,19 @@ export const BookmarkList: FC = () => {
         <span className="font-semibold text-lg">Bookmarks</span>
         <span className="badge badge-neutral">{data.bookmarks.length}</span>
       </div>
-      {data.bookmarks.map((bookmark) => (
+      <input
+        type="text"
+        placeholder="Search by title, description, note, or tag..."
+        className="input input-bordered input-sm w-full"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
+      {filteredBookmarks.length === 0 && searchQuery.trim() && (
+        <p className="text-sm text-base-content/50 text-center py-4">
+          No bookmarks matching &quot;{searchQuery.trim()}&quot;
+        </p>
+      )}
+      {filteredBookmarks.map((bookmark) => (
         <div key={bookmark.id} className="card bg-base-200 shadow-sm">
           <div className="card-body p-4">
             <h3 className="card-title text-base">

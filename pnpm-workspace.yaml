@@ -19,7 +19,7 @@ catalog:
   '@graphql-typed-document-node/core': ^3.2.0
   '@hookform/resolvers': ^5.1.0
   '@libsql/client': ^0.15.15
-  '@paralleldrive/cuid2': ^2.2.2
+  '@paralleldrive/cuid2': ^3.3.0
   '@playwright/test': ^1.57.0
   '@storybook/addon-links': 10.1.11
   '@storybook/addon-themes': ^10.1.11

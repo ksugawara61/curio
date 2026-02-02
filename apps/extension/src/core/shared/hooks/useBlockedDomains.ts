@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useSWRSuspense } from "../../../libs/swr";
 
 const STORAGE_KEY = "blockedDomains";

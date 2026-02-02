@@ -77,7 +77,13 @@ export const SidePanel: FC<Props> = ({ initialUrl, initialTitle }) => {
             </Suspense>
           </ErrorBoundary>
         )}
-        {activeTab === "settings" && <Settings />}
+        {activeTab === "settings" && (
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <Suspense fallback={<Loading />}>
+              <Settings />
+            </Suspense>
+          </ErrorBoundary>
+        )}
       </div>
     </div>
   );

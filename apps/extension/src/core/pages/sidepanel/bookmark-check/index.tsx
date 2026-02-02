@@ -20,8 +20,17 @@ const BookmarkCheckContent: FC<BookmarkCheckProps> = ({
   const { data, refetch } = useSuspenseQuery(BookmarkQuery, {
     variables: { uri: currentUrl },
   });
+  const { isDomainBlocked } = useBlockedDomains();
 
   const existingBookmark = data?.bookmark;
+
+  if (isDomainBlocked(currentUrl)) {
+    return (
+      <p className="text-sm text-base-content/70">
+        Bookmarking is disabled for this domain.
+      </p>
+    );
+  }
 
   if (existingBookmark) {
     return <BookmarkEditForm bookmark={existingBookmark} onSuccess={refetch} />;
@@ -42,18 +51,8 @@ export const BookmarkCheck: FC<BookmarkCheckProps> = ({
   currentTitle,
   currentThumbnail,
 }) => {
-  const { isDomainBlocked, loading } = useBlockedDomains();
-
-  if (!currentUrl || loading) {
+  if (!currentUrl) {
     return <Loading />;
-  }
-
-  if (isDomainBlocked(currentUrl)) {
-    return (
-      <p className="text-sm text-base-content/70">
-        Bookmarking is disabled for this domain.
-      </p>
-    );
   }
 
   return (

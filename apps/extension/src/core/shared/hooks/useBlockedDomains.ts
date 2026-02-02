@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { useSWRSuspense } from "../../../libs/swr";
 
 const STORAGE_KEY = "blockedDomains";
 
@@ -26,15 +27,10 @@ export const extractDomain = (url: string): string => {
 };
 
 export const useBlockedDomains = () => {
-  const [domains, setDomains] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getBlockedDomains().then((d) => {
-      setDomains(d);
-      setLoading(false);
-    });
-  }, []);
+  const { data: domains, mutate } = useSWRSuspense<string[]>(
+    STORAGE_KEY,
+    getBlockedDomains,
+  );
 
   const addDomain = useCallback(
     async (domain: string) => {
@@ -42,18 +38,18 @@ export const useBlockedDomains = () => {
       if (!trimmed || domains.includes(trimmed)) return;
       const updated = [...domains, trimmed];
       await setBlockedDomains(updated);
-      setDomains(updated);
+      mutate(updated, false);
     },
-    [domains],
+    [domains, mutate],
   );
 
   const removeDomain = useCallback(
     async (domain: string) => {
       const updated = domains.filter((d) => d !== domain);
       await setBlockedDomains(updated);
-      setDomains(updated);
+      mutate(updated, false);
     },
-    [domains],
+    [domains, mutate],
   );
 
   const isDomainBlocked = useCallback(
@@ -65,5 +61,5 @@ export const useBlockedDomains = () => {
     [domains],
   );
 
-  return { domains, loading, addDomain, removeDomain, isDomainBlocked };
+  return { domains, addDomain, removeDomain, isDomainBlocked };
 };

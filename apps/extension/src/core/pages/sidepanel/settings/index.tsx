@@ -2,7 +2,7 @@ import { type FC, useState } from "react";
 import { useBlockedDomains } from "../../../shared/hooks/useBlockedDomains";
 
 export const Settings: FC = () => {
-  const { domains, loading, addDomain, removeDomain } = useBlockedDomains();
+  const { domains, addDomain, removeDomain } = useBlockedDomains();
   const [input, setInput] = useState("");
 
   const handleAdd = async () => {
@@ -18,10 +18,6 @@ export const Settings: FC = () => {
       handleAdd();
     }
   };
-
-  if (loading) {
-    return <span className="loading loading-spinner loading-sm" />;
-  }
 
   return (
     <div className="flex flex-col gap-4">

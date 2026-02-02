@@ -22,6 +22,8 @@ const BookmarkContent: FC<BookmarkContentProps> = ({
   const { data, refetch } = useSuspenseQuery(BookmarkQuery, {
     variables: { uri: currentUrl },
   });
+  const { isDomainBlocked } = useBlockedDomains();
+  const blocked = isDomainBlocked(currentUrl);
 
   const [createBookmark, { loading: creating }] = useMutation(
     CreateBookmarkMutation,
@@ -45,6 +47,14 @@ const BookmarkContent: FC<BookmarkContentProps> = ({
       },
     });
   };
+
+  if (blocked) {
+    return (
+      <p className="text-sm text-base-content/70">
+        Bookmarking is disabled for this domain.
+      </p>
+    );
+  }
 
   if (existingBookmark) {
     return (
@@ -105,22 +115,12 @@ export const Popup: FC<PopupProps> = ({ initialUrl, initialTitle }) => {
     initialUrl,
     initialTitle,
   });
-  const { isDomainBlocked, loading: blockedLoading } = useBlockedDomains();
-
-  const blocked = !blockedLoading && currentUrl && isDomainBlocked(currentUrl);
-
   return (
     <div className="w-80 bg-base-100 p-4">
       <h1 className="mb-3 font-bold text-lg">Curio</h1>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <Suspense fallback={<Loading />}>
-          {blockedLoading ? (
-            <Loading />
-          ) : blocked ? (
-            <p className="text-sm text-base-content/70">
-              Bookmarking is disabled for this domain.
-            </p>
-          ) : currentUrl ? (
+          {currentUrl ? (
             <BookmarkContent
               currentUrl={currentUrl}
               currentTitle={currentTitle}

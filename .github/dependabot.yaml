@@ -18,3 +18,19 @@ updates:
       timezone: Asia/Tokyo
     cooldown:
       default-days: 3
+    groups:
+      storybook:
+        applies-to: version-updates
+        patterns:
+          - "@storybook/*"
+          - "storybook"
+      drizzle:
+        applies-to: version-updates
+        patterns:
+          - "drizzle-*"
+      eslint:
+        applies-to: version-updates
+        patterns:
+          - "eslint"
+          - "eslint-*"
+          - "@typescript-eslint/*"

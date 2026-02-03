@@ -1,7 +1,7 @@
-import { render, screen, waitFor } from "@curio/testing-library";
-import { act } from "react";
+import { renderSuspense, screen, waitFor } from "@curio/testing-library";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../libs/test/msw/server";
+import { BlockedDomainsMocks } from "../../shared/hooks/useBlockedDomains.mocks";
 import { BookmarkQueryMocks } from "../shared/graphql/BookmarkQuery.mocks";
 import { SidePanel } from ".";
 import { ArticlesListQueryMocks } from "./article-list/ArticlesQuery.mocks";
@@ -13,12 +13,9 @@ const defaultProps = {
 };
 
 const renderSidePanel = async (props = defaultProps) => {
-  let result: ReturnType<typeof render> | undefined;
-  await act(async () => {
-    result = render(<SidePanel {...props} />);
+  return renderSuspense(<SidePanel {...props} />, {
+    swrFallback: BlockedDomainsMocks.Empty,
   });
-  if (!result) throw new Error("render failed");
-  return result;
 };
 
 describe("SidePanel", () => {

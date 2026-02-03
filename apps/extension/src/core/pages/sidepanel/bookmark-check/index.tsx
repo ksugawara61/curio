@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@curio/graphql-client";
 import type { FC } from "react";
 import { Loading } from "../../../shared/components/Loading";
+import { useBlockedDomains } from "../../../shared/hooks/useBlockedDomains";
 import { BookmarkQuery } from "../../shared/graphql/BookmarkQuery";
 import { BookmarkAddForm } from "./BookmarkAddForm";
 import { BookmarkEditForm } from "./BookmarkEditForm";
@@ -19,8 +20,17 @@ const BookmarkCheckContent: FC<BookmarkCheckProps> = ({
   const { data, refetch } = useSuspenseQuery(BookmarkQuery, {
     variables: { uri: currentUrl },
   });
+  const { isDomainBlocked } = useBlockedDomains();
 
   const existingBookmark = data?.bookmark;
+
+  if (isDomainBlocked(currentUrl)) {
+    return (
+      <p className="text-sm text-base-content/70">
+        Bookmarking is disabled for this domain.
+      </p>
+    );
+  }
 
   if (existingBookmark) {
     return <BookmarkEditForm bookmark={existingBookmark} onSuccess={refetch} />;

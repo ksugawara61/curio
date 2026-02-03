@@ -1,8 +1,11 @@
 import { renderSuspense, screen, waitFor } from "@curio/testing-library";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../libs/test/msw/server";
+import { BlockedDomainsMocks } from "../../shared/hooks/useBlockedDomains.mocks";
 import { BookmarkQueryMocks } from "../shared/graphql/BookmarkQuery.mocks";
 import { Popup } from ".";
+
+const swrFallback = BlockedDomainsMocks.Empty;
 
 describe("Popup", () => {
   it("renders the title", async () => {
@@ -10,13 +13,14 @@ describe("Popup", () => {
 
     await renderSuspense(
       <Popup initialUrl="https://example.com" initialTitle="Example Page" />,
+      { swrFallback },
     );
 
     expect(screen.getByText("Curio")).toBeInTheDocument();
   });
 
   it("displays loading state when URL is not yet available", async () => {
-    await renderSuspense(<Popup />);
+    await renderSuspense(<Popup />, { swrFallback });
 
     expect(screen.getByText("Curio")).toBeInTheDocument();
     expect(screen.getByText("Loading...")).toBeInTheDocument();
@@ -27,6 +31,7 @@ describe("Popup", () => {
 
     await renderSuspense(
       <Popup initialUrl="https://example.com" initialTitle="Example Page" />,
+      { swrFallback },
     );
 
     await waitFor(() => {
@@ -43,6 +48,7 @@ describe("Popup", () => {
 
     await renderSuspense(
       <Popup initialUrl="https://example.com" initialTitle="Example Page" />,
+      { swrFallback },
     );
 
     await waitFor(() => {
@@ -55,6 +61,7 @@ describe("Popup", () => {
 
     await renderSuspense(
       <Popup initialUrl="https://example.com" initialTitle="Example Page" />,
+      { swrFallback },
     );
 
     await waitFor(() => {

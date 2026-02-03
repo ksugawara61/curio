@@ -6,8 +6,9 @@ import { useCurrentTab } from "../../shared/hooks/useCurrentTab";
 import { ArticleList } from "./article-list";
 import { BookmarkCheck } from "./bookmark-check";
 import { BookmarkList } from "./bookmark-list";
+import { Settings } from "./settings";
 
-type TabType = "current" | "bookmarks" | "articles";
+type TabType = "current" | "bookmarks" | "articles" | "settings";
 
 type Props = {
   initialUrl?: string;
@@ -25,6 +26,7 @@ export const SidePanel: FC<Props> = ({ initialUrl, initialTitle }) => {
     { id: "current", label: "Current Page" },
     { id: "bookmarks", label: "Bookmarks" },
     { id: "articles", label: "Articles" },
+    { id: "settings", label: "Settings" },
   ];
 
   return (
@@ -72,6 +74,13 @@ export const SidePanel: FC<Props> = ({ initialUrl, initialTitle }) => {
           <ErrorBoundary FallbackComponent={ErrorFallback}>
             <Suspense fallback={<Loading />}>
               <ArticleList />
+            </Suspense>
+          </ErrorBoundary>
+        )}
+        {activeTab === "settings" && (
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <Suspense fallback={<Loading />}>
+              <Settings />
             </Suspense>
           </ErrorBoundary>
         )}

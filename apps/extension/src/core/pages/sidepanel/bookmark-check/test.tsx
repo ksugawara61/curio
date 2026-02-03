@@ -2,6 +2,7 @@ import { renderSuspense, screen, waitFor } from "@curio/testing-library";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../../libs/test/msw/server";
+import { BlockedDomainsMocks } from "../../../shared/hooks/useBlockedDomains.mocks";
 import { BookmarkQueryMocks } from "../../shared/graphql/BookmarkQuery.mocks";
 import { CreateBookmarkMutationMocks } from "../../shared/graphql/CreateBookmarkMutation.mocks";
 import { BookmarkCheck } from ".";
@@ -16,7 +17,9 @@ describe("BookmarkCheck", () => {
   it("displays loading state initially", async () => {
     server.use(BookmarkQueryMocks.Loading);
 
-    await renderSuspense(<BookmarkCheck {...defaultProps} />);
+    await renderSuspense(<BookmarkCheck {...defaultProps} />, {
+      swrFallback: BlockedDomainsMocks.Empty,
+    });
 
     expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
@@ -24,7 +27,9 @@ describe("BookmarkCheck", () => {
   it("displays add bookmark form when URL is not bookmarked", async () => {
     server.use(BookmarkQueryMocks.NotFound);
 
-    await renderSuspense(<BookmarkCheck {...defaultProps} />);
+    await renderSuspense(<BookmarkCheck {...defaultProps} />, {
+      swrFallback: BlockedDomainsMocks.Empty,
+    });
 
     await waitFor(() => {
       expect(
@@ -44,7 +49,9 @@ describe("BookmarkCheck", () => {
   it("displays edit form when URL is already bookmarked", async () => {
     server.use(BookmarkQueryMocks.WithMatchingUrl(defaultProps.currentUrl));
 
-    await renderSuspense(<BookmarkCheck {...defaultProps} />);
+    await renderSuspense(<BookmarkCheck {...defaultProps} />, {
+      swrFallback: BlockedDomainsMocks.Empty,
+    });
 
     await waitFor(() => {
       expect(screen.getByText("Bookmarked")).toBeInTheDocument();
@@ -65,7 +72,9 @@ describe("BookmarkCheck", () => {
   it("pre-fills form with existing bookmark data", async () => {
     server.use(BookmarkQueryMocks.WithMatchingUrl(defaultProps.currentUrl));
 
-    await renderSuspense(<BookmarkCheck {...defaultProps} />);
+    await renderSuspense(<BookmarkCheck {...defaultProps} />, {
+      swrFallback: BlockedDomainsMocks.Empty,
+    });
 
     await waitFor(() => {
       expect(screen.getByText("Bookmarked")).toBeInTheDocument();
@@ -89,7 +98,9 @@ describe("BookmarkCheck", () => {
   it("displays error message when query fails", async () => {
     server.use(BookmarkQueryMocks.Error);
 
-    await renderSuspense(<BookmarkCheck {...defaultProps} />);
+    await renderSuspense(<BookmarkCheck {...defaultProps} />, {
+      swrFallback: BlockedDomainsMocks.Empty,
+    });
 
     await waitFor(() => {
       expect(screen.getByText(/Error:/)).toBeInTheDocument();
@@ -104,7 +115,9 @@ describe("BookmarkCheck", () => {
       CreateBookmarkMutationMocks.Success,
     );
 
-    await renderSuspense(<BookmarkCheck {...defaultProps} />);
+    await renderSuspense(<BookmarkCheck {...defaultProps} />, {
+      swrFallback: BlockedDomainsMocks.Empty,
+    });
 
     await waitFor(() => {
       expect(
@@ -132,7 +145,9 @@ describe("BookmarkCheck", () => {
       UpdateBookmarkMutationMocks.Success,
     );
 
-    await renderSuspense(<BookmarkCheck {...defaultProps} />);
+    await renderSuspense(<BookmarkCheck {...defaultProps} />, {
+      swrFallback: BlockedDomainsMocks.Empty,
+    });
 
     await waitFor(() => {
       expect(screen.getByText("Bookmarked")).toBeInTheDocument();
@@ -169,7 +184,9 @@ describe("BookmarkCheck", () => {
   it("displays update button for existing bookmarks", async () => {
     server.use(BookmarkQueryMocks.Success);
 
-    await renderSuspense(<BookmarkCheck {...defaultProps} />);
+    await renderSuspense(<BookmarkCheck {...defaultProps} />, {
+      swrFallback: BlockedDomainsMocks.Empty,
+    });
 
     await waitFor(() => {
       expect(screen.getByText("Bookmarked")).toBeInTheDocument();
@@ -186,7 +203,9 @@ describe("BookmarkCheck", () => {
   it("displays add button for new bookmarks", async () => {
     server.use(BookmarkQueryMocks.NotFound);
 
-    await renderSuspense(<BookmarkCheck {...defaultProps} />);
+    await renderSuspense(<BookmarkCheck {...defaultProps} />, {
+      swrFallback: BlockedDomainsMocks.Empty,
+    });
 
     await waitFor(() => {
       expect(

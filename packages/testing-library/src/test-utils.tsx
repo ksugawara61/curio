@@ -13,6 +13,7 @@ import { SWRConfig } from "swr";
 
 export type TestProviderProps = {
   children: React.ReactNode;
+  swrFallback?: Record<string, unknown>;
 };
 
 const createTestClient = () =>
@@ -25,12 +26,16 @@ const createTestClient = () =>
  * テスト用のプロバイダーコンポーネント
  * Apollo Client と SWR をテスト用の設定で提供する
  */
-export const TestProvider = ({ children }: TestProviderProps) => {
+export const TestProvider = ({
+  children,
+  swrFallback = {},
+}: TestProviderProps) => {
   const swrConfig = useMemo(
     () => ({
       provider: () => new Map(),
+      fallback: swrFallback,
     }),
-    [],
+    [swrFallback],
   );
 
   return (
@@ -40,7 +45,9 @@ export const TestProvider = ({ children }: TestProviderProps) => {
   );
 };
 
-export type CustomRenderOptions = Omit<RenderOptions, "wrapper">;
+export type CustomRenderOptions = Omit<RenderOptions, "wrapper"> & {
+  swrFallback?: Record<string, unknown>;
+};
 
 /**
  * Testing Library の render 関数のラッパー
@@ -50,10 +57,13 @@ export const render = (
   ui: ReactElement,
   options?: CustomRenderOptions,
 ): RenderResult & { user: ReturnType<typeof userEvent.setup> } => {
+  const { swrFallback, ...renderOptions } = options ?? {};
   const user = userEvent.setup();
   const res = rtlRender(ui, {
-    wrapper: ({ children }) => <TestProvider>{children}</TestProvider>,
-    ...options,
+    wrapper: ({ children }) => (
+      <TestProvider swrFallback={swrFallback}>{children}</TestProvider>
+    ),
+    ...renderOptions,
   });
   return { ...res, user };
 };
@@ -90,6 +100,7 @@ export const renderSuspense = async (
   const {
     loadingFallback = <DefaultLoadingFallback />,
     errorFallback: ErrorFallbackComponent = DefaultErrorFallback,
+    swrFallback,
     ...renderOptions
   } = options ?? {};
 
@@ -99,7 +110,7 @@ export const renderSuspense = async (
       <ErrorBoundary FallbackComponent={ErrorFallbackComponent}>
         <Suspense fallback={loadingFallback}>{ui}</Suspense>
       </ErrorBoundary>,
-      renderOptions,
+      { ...renderOptions, swrFallback },
     );
   });
   if (!result) throw new Error("render failed");

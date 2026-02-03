@@ -3,6 +3,7 @@ import { type FC, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "../../shared/components/ErrorFallback";
 import { Loading } from "../../shared/components/Loading";
+import { useBlockedDomains } from "../../shared/hooks/useBlockedDomains";
 import { useCurrentTab } from "../../shared/hooks/useCurrentTab";
 import { BookmarkQuery } from "../shared/graphql/BookmarkQuery";
 import { CreateBookmarkMutation } from "../shared/graphql/CreateBookmarkMutation";
@@ -21,6 +22,8 @@ const BookmarkContent: FC<BookmarkContentProps> = ({
   const { data, refetch } = useSuspenseQuery(BookmarkQuery, {
     variables: { uri: currentUrl },
   });
+  const { isDomainBlocked } = useBlockedDomains();
+  const blocked = isDomainBlocked(currentUrl);
 
   const [createBookmark, { loading: creating }] = useMutation(
     CreateBookmarkMutation,
@@ -44,6 +47,14 @@ const BookmarkContent: FC<BookmarkContentProps> = ({
       },
     });
   };
+
+  if (blocked) {
+    return (
+      <p className="text-sm text-base-content/70">
+        Bookmarking is disabled for this domain.
+      </p>
+    );
+  }
 
   if (existingBookmark) {
     return (
@@ -104,7 +115,6 @@ export const Popup: FC<PopupProps> = ({ initialUrl, initialTitle }) => {
     initialUrl,
     initialTitle,
   });
-
   return (
     <div className="w-80 bg-base-100 p-4">
       <h1 className="mb-3 font-bold text-lg">Curio</h1>

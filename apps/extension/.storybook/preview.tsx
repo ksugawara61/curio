@@ -28,14 +28,18 @@ const preview: Preview = {
       defaultTheme: "light",
       attributeName: "data-theme",
     }),
-    (Story: PartialStoryFn) => {
+    (Story: PartialStoryFn, context) => {
+      const swrFallback = context.parameters?.swr?.fallback as
+        | Record<string, unknown>
+        | undefined;
+
       useEffect(() => {
         // Story 切り替え後に msw のレスポンスを更新するためリロードする
         return () => window.location.reload();
       }, []);
 
       return (
-        <StorybookProvider>
+        <StorybookProvider swrFallback={swrFallback}>
           <Story />
         </StorybookProvider>
       );

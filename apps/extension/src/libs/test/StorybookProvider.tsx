@@ -1,15 +1,23 @@
 import { ApolloProvider, createGraphQLClient } from "@curio/graphql-client";
-import { type FC, type PropsWithChildren, Suspense } from "react";
+import type { FC, PropsWithChildren } from "react";
+import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { SWRConfig } from "swr";
 import { ErrorFallback } from "../../core/shared/components/ErrorFallback";
 import { Loading } from "../../core/shared/components/Loading";
 import { BlockedDomainsMocks } from "../../core/shared/hooks/useBlockedDomains.mocks";
 
-export const StorybookProvider: FC<PropsWithChildren> = ({ children }) => {
+type Props = PropsWithChildren<{
+  swrFallback?: Record<string, unknown>;
+}>;
+
+export const StorybookProvider: FC<Props> = ({ children, swrFallback }) => {
   return (
     <SWRConfig
-      value={{ provider: () => new Map(), fallback: BlockedDomainsMocks.Empty }}
+      value={{
+        provider: () => new Map(),
+        fallback: { ...BlockedDomainsMocks.Empty, ...swrFallback },
+      }}
     >
       <ApolloProvider
         client={createGraphQLClient({

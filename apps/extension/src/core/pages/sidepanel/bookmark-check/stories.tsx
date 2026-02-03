@@ -6,20 +6,11 @@ import { BookmarkCheck } from ".";
 
 const meta = {
   component: BookmarkCheck,
-  parameters: {
-    layout: "centered",
-  },
   args: {
     currentUrl: "https://example.com",
     currentTitle: "Example Page",
   },
-  decorators: [
-    (Story) => (
-      <div className="w-[400px]">
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [(Story) => <Story />],
 } satisfies Meta<typeof BookmarkCheck>;
 
 export default meta;

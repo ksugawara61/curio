@@ -29,7 +29,7 @@ const preview: Preview = {
       attributeName: "data-theme",
     }),
     (Story: PartialStoryFn, context) => {
-      const swrFallback = context.parameters?.swr?.fallback as
+      const swrMock = context.parameters?.swr?.mock as
         | Record<string, unknown>
         | undefined;
 
@@ -39,7 +39,7 @@ const preview: Preview = {
       }, []);
 
       return (
-        <StorybookProvider swrFallback={swrFallback}>
+        <StorybookProvider swrMock={swrMock}>
           <Story />
         </StorybookProvider>
       );

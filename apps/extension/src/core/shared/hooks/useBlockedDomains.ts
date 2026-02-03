@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useSWRSuspense } from "../../../libs/swr";
 
-const STORAGE_KEY = "blockedDomains";
+export const STORAGE_KEY = "blockedDomains";
 
 const getBlockedDomains = async (): Promise<string[]> => {
   if (typeof chrome === "undefined" || !chrome.storage) {

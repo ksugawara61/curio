@@ -9,7 +9,7 @@ export {
 
 // SWR utilities for testing
 export type { SWRHandler } from "./swr-utils";
-export { createSWRHandler } from "./swr-utils";
+export { createSWRHandler, createSWRMockMiddleware } from "./swr-utils";
 
 // Test utilities
 export type {

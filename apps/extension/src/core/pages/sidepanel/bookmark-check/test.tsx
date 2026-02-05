@@ -18,7 +18,7 @@ describe("BookmarkCheck", () => {
     server.use(BookmarkQueryMocks.Loading);
 
     await renderSuspense(<BookmarkCheck {...defaultProps} />, {
-      swrFallback: BlockedDomainsMocks.Empty,
+      swrHandlers: [BlockedDomainsMocks.Empty],
     });
 
     expect(screen.getByText("Loading...")).toBeInTheDocument();
@@ -28,7 +28,7 @@ describe("BookmarkCheck", () => {
     server.use(BookmarkQueryMocks.NotFound);
 
     await renderSuspense(<BookmarkCheck {...defaultProps} />, {
-      swrFallback: BlockedDomainsMocks.Empty,
+      swrHandlers: [BlockedDomainsMocks.Empty],
     });
 
     await waitFor(() => {
@@ -50,7 +50,7 @@ describe("BookmarkCheck", () => {
     server.use(BookmarkQueryMocks.WithMatchingUrl(defaultProps.currentUrl));
 
     await renderSuspense(<BookmarkCheck {...defaultProps} />, {
-      swrFallback: BlockedDomainsMocks.Empty,
+      swrHandlers: [BlockedDomainsMocks.Empty],
     });
 
     await waitFor(() => {
@@ -73,7 +73,7 @@ describe("BookmarkCheck", () => {
     server.use(BookmarkQueryMocks.WithMatchingUrl(defaultProps.currentUrl));
 
     await renderSuspense(<BookmarkCheck {...defaultProps} />, {
-      swrFallback: BlockedDomainsMocks.Empty,
+      swrHandlers: [BlockedDomainsMocks.Empty],
     });
 
     await waitFor(() => {
@@ -99,7 +99,7 @@ describe("BookmarkCheck", () => {
     server.use(BookmarkQueryMocks.Error);
 
     await renderSuspense(<BookmarkCheck {...defaultProps} />, {
-      swrFallback: BlockedDomainsMocks.Empty,
+      swrHandlers: [BlockedDomainsMocks.Empty],
     });
 
     await waitFor(() => {
@@ -116,7 +116,7 @@ describe("BookmarkCheck", () => {
     );
 
     await renderSuspense(<BookmarkCheck {...defaultProps} />, {
-      swrFallback: BlockedDomainsMocks.Empty,
+      swrHandlers: [BlockedDomainsMocks.Empty],
     });
 
     await waitFor(() => {
@@ -146,7 +146,7 @@ describe("BookmarkCheck", () => {
     );
 
     await renderSuspense(<BookmarkCheck {...defaultProps} />, {
-      swrFallback: BlockedDomainsMocks.Empty,
+      swrHandlers: [BlockedDomainsMocks.Empty],
     });
 
     await waitFor(() => {
@@ -185,7 +185,7 @@ describe("BookmarkCheck", () => {
     server.use(BookmarkQueryMocks.Success);
 
     await renderSuspense(<BookmarkCheck {...defaultProps} />, {
-      swrFallback: BlockedDomainsMocks.Empty,
+      swrHandlers: [BlockedDomainsMocks.Empty],
     });
 
     await waitFor(() => {
@@ -204,7 +204,7 @@ describe("BookmarkCheck", () => {
     server.use(BookmarkQueryMocks.NotFound);
 
     await renderSuspense(<BookmarkCheck {...defaultProps} />, {
-      swrFallback: BlockedDomainsMocks.Empty,
+      swrHandlers: [BlockedDomainsMocks.Empty],
     });
 
     await waitFor(() => {

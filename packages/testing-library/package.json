@@ -23,17 +23,23 @@
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@testing-library/user-event": "catalog:",
-    "msw": "catalog:",
-    "react-error-boundary": "catalog:",
-    "swr": "catalog:"
+    "msw": "catalog:"
   },
   "peerDependencies": {
     "@apollo/client": "catalog:",
     "react": "catalog:",
+    "react-error-boundary": "catalog:",
+    "swr": "catalog:",
     "vitest": "catalog:"
   },
   "peerDependenciesMeta": {
     "vitest": {
+      "optional": true
+    },
+    "swr": {
+      "optional": true
+    },
+    "react-error-boundary": {
       "optional": true
     }
   },

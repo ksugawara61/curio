@@ -29,6 +29,8 @@ export default defineConfig({
         "msw/node",
         "gql.tada",
         "vitest",
+        "swr",
+        "react-error-boundary",
       ],
     },
   },

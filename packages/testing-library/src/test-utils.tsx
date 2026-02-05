@@ -26,9 +26,10 @@ const createTestClient = () =>
   });
 
 /**
- * SWR ハンドラーからミドルウェアを作成（インライン版）
+ * SWR ハンドラーからミドルウェアを作成
+ * suspense モードでも正しく動作する
  */
-const createMiddlewares = (handlers?: SWRHandler[]): Middleware[] => {
+const createSWRMiddleware = (handlers?: SWRHandler[]): Middleware[] => {
   if (!handlers || handlers.length === 0) {
     return [];
   }
@@ -66,7 +67,7 @@ export const TestProvider = ({
     <SWRConfig
       value={{
         provider: () => new Map(),
-        use: createMiddlewares(swrHandlers),
+        use: createSWRMiddleware(swrHandlers),
       }}
     >
       <ApolloProvider client={createTestClient()}>{children}</ApolloProvider>
@@ -138,15 +139,18 @@ export const renderSuspense = async (
     ...renderOptions
   } = options ?? {};
 
-  let result: ReturnType<typeof render> | undefined;
+  const user = userEvent.setup();
+  let result: RenderResult | undefined;
   await act(async () => {
-    result = render(
-      <ErrorBoundary FallbackComponent={ErrorFallbackComponent}>
-        <Suspense fallback={loadingFallback}>{ui}</Suspense>
-      </ErrorBoundary>,
-      { ...renderOptions, swrFallback, swrHandlers },
+    result = rtlRender(
+      <TestProvider swrFallback={swrFallback} swrHandlers={swrHandlers}>
+        <ErrorBoundary FallbackComponent={ErrorFallbackComponent}>
+          <Suspense fallback={loadingFallback}>{ui}</Suspense>
+        </ErrorBoundary>
+      </TestProvider>,
+      renderOptions,
     );
   });
   if (!result) throw new Error("render failed");
-  return result;
+  return { ...result, user };
 };

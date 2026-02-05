@@ -1,3 +1,4 @@
+import type { SWRHandler } from "@curio/testing-library";
 import { withThemeByDataAttribute } from "@storybook/addon-themes";
 import type { Preview, ReactRenderer } from "@storybook/react";
 import { initialize, mswLoader } from "msw-storybook-addon";
@@ -29,8 +30,8 @@ const preview: Preview = {
       attributeName: "data-theme",
     }),
     (Story: PartialStoryFn, context) => {
-      const swrMock = context.parameters?.swr?.mock as
-        | Record<string, unknown>
+      const swrHandlers = context.parameters?.swr?.handlers as
+        | SWRHandler[]
         | undefined;
 
       useEffect(() => {
@@ -39,7 +40,7 @@ const preview: Preview = {
       }, []);
 
       return (
-        <StorybookProvider swrMock={swrMock}>
+        <StorybookProvider swrHandlers={swrHandlers}>
           <Story />
         </StorybookProvider>
       );

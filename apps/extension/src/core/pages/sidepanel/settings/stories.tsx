@@ -15,9 +15,7 @@ export const Default: Story = {};
 export const WithBlockedDomains: Story = {
   parameters: {
     swr: {
-      mock: {
-        ...BlockedDomainsMocks.WithDomains,
-      },
+      handlers: [BlockedDomainsMocks.WithDomains],
     },
   },
 };

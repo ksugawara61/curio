@@ -37,9 +37,7 @@ export const DomainBlocked: Story = {
       handlers: [BookmarkQueryMocks.NotFound],
     },
     swr: {
-      mock: {
-        ...BlockedDomainsMocks.WithDomains,
-      },
+      handlers: [BlockedDomainsMocks.WithDomains],
     },
   },
 };

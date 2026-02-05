@@ -60,7 +60,8 @@ const createSWRMiddleware = (handlers?: SWRHandler[]): Middleware[] => {
  */
 export const TestProvider = ({
   children,
-  swrFallback = {},
+  // Deprecated: kept for backwards compatibility
+  swrFallback: _swrFallback = {},
   swrHandlers,
 }: TestProviderProps) => {
   return (

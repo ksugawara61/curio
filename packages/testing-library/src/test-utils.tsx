@@ -7,13 +7,16 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ComponentType, ReactElement, ReactNode } from "react";
-import { act, Suspense, useMemo } from "react";
+import { act, Suspense } from "react";
 import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
-import { SWRConfig } from "swr";
+import { type Middleware, SWRConfig } from "swr";
+import type { SWRHandler } from "./swr-utils";
 
 export type TestProviderProps = {
   children: React.ReactNode;
+  /** @deprecated Use swrHandlers instead */
   swrFallback?: Record<string, unknown>;
+  swrHandlers?: SWRHandler[];
 };
 
 const createTestClient = () =>
@@ -23,30 +26,58 @@ const createTestClient = () =>
   });
 
 /**
+ * SWR ハンドラーからミドルウェアを作成（インライン版）
+ */
+const createMiddlewares = (handlers?: SWRHandler[]): Middleware[] => {
+  if (!handlers || handlers.length === 0) {
+    return [];
+  }
+
+  return handlers.map<Middleware>((handler) => {
+    return (useSWRNext) => {
+      return (k, fetcher, config) => {
+        if (k === handler.key) {
+          return {
+            // biome-ignore lint/suspicious/noExplicitAny: 汎用的な型としてanyを使用
+            data: handler.data as any,
+            error: undefined,
+            isValidating: false,
+            isLoading: false,
+            // biome-ignore lint/suspicious/noExplicitAny: 汎用的な型としてanyを使用
+            mutate: () => Promise.resolve(handler.data as any),
+          };
+        }
+        return useSWRNext(k, fetcher, config);
+      };
+    };
+  });
+};
+
+/**
  * テスト用のプロバイダーコンポーネント
  * Apollo Client と SWR をテスト用の設定で提供する
  */
 export const TestProvider = ({
   children,
   swrFallback = {},
+  swrHandlers,
 }: TestProviderProps) => {
-  const swrConfig = useMemo(
-    () => ({
-      provider: () => new Map(),
-      fallback: swrFallback,
-    }),
-    [swrFallback],
-  );
-
   return (
-    <SWRConfig value={swrConfig}>
+    <SWRConfig
+      value={{
+        provider: () => new Map(),
+        use: createMiddlewares(swrHandlers),
+      }}
+    >
       <ApolloProvider client={createTestClient()}>{children}</ApolloProvider>
     </SWRConfig>
   );
 };
 
 export type CustomRenderOptions = Omit<RenderOptions, "wrapper"> & {
+  /** @deprecated Use swrHandlers instead */
   swrFallback?: Record<string, unknown>;
+  swrHandlers?: SWRHandler[];
 };
 
 /**
@@ -57,11 +88,13 @@ export const render = (
   ui: ReactElement,
   options?: CustomRenderOptions,
 ): RenderResult & { user: ReturnType<typeof userEvent.setup> } => {
-  const { swrFallback, ...renderOptions } = options ?? {};
+  const { swrFallback, swrHandlers, ...renderOptions } = options ?? {};
   const user = userEvent.setup();
   const res = rtlRender(ui, {
     wrapper: ({ children }) => (
-      <TestProvider swrFallback={swrFallback}>{children}</TestProvider>
+      <TestProvider swrFallback={swrFallback} swrHandlers={swrHandlers}>
+        {children}
+      </TestProvider>
     ),
     ...renderOptions,
   });
@@ -101,6 +134,7 @@ export const renderSuspense = async (
     loadingFallback = <DefaultLoadingFallback />,
     errorFallback: ErrorFallbackComponent = DefaultErrorFallback,
     swrFallback,
+    swrHandlers,
     ...renderOptions
   } = options ?? {};
 
@@ -110,7 +144,7 @@ export const renderSuspense = async (
       <ErrorBoundary FallbackComponent={ErrorFallbackComponent}>
         <Suspense fallback={loadingFallback}>{ui}</Suspense>
       </ErrorBoundary>,
-      { ...renderOptions, swrFallback },
+      { ...renderOptions, swrFallback, swrHandlers },
     );
   });
   if (!result) throw new Error("render failed");

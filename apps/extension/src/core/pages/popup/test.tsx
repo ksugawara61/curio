@@ -1,11 +1,11 @@
 import { renderSuspense, screen, waitFor } from "@curio/testing-library";
+import { act, render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../libs/test/msw/server";
+import { StorybookProvider } from "../../../libs/test/StorybookProvider";
 import { BlockedDomainsMocks } from "../../shared/hooks/useBlockedDomains.mocks";
 import { BookmarkQueryMocks } from "../shared/graphql/BookmarkQuery.mocks";
 import { Popup } from ".";
-
-const swrFallback = BlockedDomainsMocks.Empty;
 
 describe("Popup", () => {
   it("renders the title", async () => {
@@ -13,14 +13,16 @@ describe("Popup", () => {
 
     await renderSuspense(
       <Popup initialUrl="https://example.com" initialTitle="Example Page" />,
-      { swrFallback },
+      { swrHandlers: [BlockedDomainsMocks.Empty] },
     );
 
     expect(screen.getByText("Curio")).toBeInTheDocument();
   });
 
   it("displays loading state when URL is not yet available", async () => {
-    await renderSuspense(<Popup />, { swrFallback });
+    await renderSuspense(<Popup />, {
+      swrHandlers: [BlockedDomainsMocks.Empty],
+    });
 
     expect(screen.getByText("Curio")).toBeInTheDocument();
     expect(screen.getByText("Loading...")).toBeInTheDocument();
@@ -31,7 +33,7 @@ describe("Popup", () => {
 
     await renderSuspense(
       <Popup initialUrl="https://example.com" initialTitle="Example Page" />,
-      { swrFallback },
+      { swrHandlers: [BlockedDomainsMocks.Empty] },
     );
 
     await waitFor(() => {
@@ -48,7 +50,7 @@ describe("Popup", () => {
 
     await renderSuspense(
       <Popup initialUrl="https://example.com" initialTitle="Example Page" />,
-      { swrFallback },
+      { swrHandlers: [BlockedDomainsMocks.Empty] },
     );
 
     await waitFor(() => {
@@ -61,11 +63,82 @@ describe("Popup", () => {
 
     await renderSuspense(
       <Popup initialUrl="https://example.com" initialTitle="Example Page" />,
-      { swrFallback },
+      { swrHandlers: [BlockedDomainsMocks.Empty] },
     );
 
     await waitFor(() => {
       expect(screen.getByText(/Error:/)).toBeInTheDocument();
+    });
+  });
+
+  describe("domain blocklist", () => {
+    it("displays blocked message when domain is in blocklist", async () => {
+      server.use(BookmarkQueryMocks.NotFound);
+
+      await act(async () => {
+        render(
+          <StorybookProvider swrHandlers={[BlockedDomainsMocks.WithDomains]}>
+            <Popup
+              initialUrl="https://example.com"
+              initialTitle="Example Page"
+            />
+          </StorybookProvider>,
+        );
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText("Bookmarking is disabled for this domain."),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it("does not show bookmark button when domain is blocked", async () => {
+      server.use(BookmarkQueryMocks.NotFound);
+
+      await act(async () => {
+        render(
+          <StorybookProvider swrHandlers={[BlockedDomainsMocks.WithDomains]}>
+            <Popup
+              initialUrl="https://example.com"
+              initialTitle="Example Page"
+            />
+          </StorybookProvider>,
+        );
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText("Bookmarking is disabled for this domain."),
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        screen.queryByRole("button", { name: "Bookmark this page" }),
+      ).not.toBeInTheDocument();
+    });
+
+    it("allows bookmarking when domain is not in blocklist", async () => {
+      server.use(BookmarkQueryMocks.NotFound);
+
+      await act(async () => {
+        render(
+          <StorybookProvider swrHandlers={[BlockedDomainsMocks.WithDomains]}>
+            <Popup
+              initialUrl="https://allowed-domain.com"
+              initialTitle="Allowed Page"
+            />
+          </StorybookProvider>,
+        );
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText("Allowed Page")).toBeInTheDocument();
+      });
+
+      expect(
+        screen.getByRole("button", { name: "Bookmark this page" }),
+      ).toBeInTheDocument();
     });
   });
 });

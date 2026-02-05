@@ -1,10 +1,11 @@
+import { createSWRHandler } from "@curio/testing-library";
 import { STORAGE_KEY } from "./useBlockedDomains";
 
 /**
- * SWR fallback mocks for useBlockedDomains hook
- * テストで Suspense の警告を防ぐために SWRConfig の fallback として使用する
+ * SWR mock handlers for useBlockedDomains hook
+ * MSW handlers と同様のパターンで SWR モックを定義
  */
 export const BlockedDomainsMocks = {
-  Empty: { [STORAGE_KEY]: [] },
-  WithDomains: { [STORAGE_KEY]: ["example.com", "test.com"] },
-} as const satisfies Record<string, Record<string, string[]>>;
+  Empty: createSWRHandler(STORAGE_KEY, [] as string[]),
+  WithDomains: createSWRHandler(STORAGE_KEY, ["example.com", "test.com"]),
+};

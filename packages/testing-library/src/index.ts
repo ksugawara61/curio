@@ -7,6 +7,10 @@ export {
   mockLoadingResolver,
 } from "./msw-utils";
 
+// SWR utilities for testing
+export type { SWRHandler } from "./swr-utils";
+export { createSWRHandler } from "./swr-utils";
+
 // Test utilities
 export type {
   CustomRenderOptions,

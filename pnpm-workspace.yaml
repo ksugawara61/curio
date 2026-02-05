@@ -21,10 +21,10 @@ catalog:
   '@libsql/client': ^0.17.0
   '@paralleldrive/cuid2': ^3.3.0
   '@playwright/test': ^1.57.0
-  '@storybook/addon-links': 10.2.2
+  '@storybook/addon-links': 10.2.4
   '@storybook/addon-themes': ^10.1.11
-  '@storybook/react': 10.2.2
-  '@storybook/react-vite': 10.2.2
+  '@storybook/react': 10.2.4
+  '@storybook/react-vite': 10.2.4
   '@tailwindcss/typography': 0.5.19
   '@tailwindcss/vite': ^4.1.18
   '@testing-library/jest-dom': ^6.9.1
@@ -65,7 +65,7 @@ catalog:
   react-markdown: ^10.1.0
   remark-gfm: ^4.0.1
   scaffdog: ^4.1.0
-  storybook: 10.2.2
+  storybook: 10.2.4
   swr: ^2.3.4
   tailwindcss: ^4.1.18
   textlint: 15.5.1

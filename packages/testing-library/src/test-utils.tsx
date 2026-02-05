@@ -14,8 +14,6 @@ import type { SWRHandler } from "./swr-utils";
 
 export type TestProviderProps = {
   children: React.ReactNode;
-  /** @deprecated Use swrHandlers instead */
-  swrFallback?: Record<string, unknown>;
   swrHandlers?: SWRHandler[];
 };
 
@@ -58,12 +56,7 @@ const createSWRMiddleware = (handlers?: SWRHandler[]): Middleware[] => {
  * テスト用のプロバイダーコンポーネント
  * Apollo Client と SWR をテスト用の設定で提供する
  */
-export const TestProvider = ({
-  children,
-  // Deprecated: kept for backwards compatibility
-  swrFallback: _swrFallback = {},
-  swrHandlers,
-}: TestProviderProps) => {
+export const TestProvider = ({ children, swrHandlers }: TestProviderProps) => {
   return (
     <SWRConfig
       value={{
@@ -77,8 +70,6 @@ export const TestProvider = ({
 };
 
 export type CustomRenderOptions = Omit<RenderOptions, "wrapper"> & {
-  /** @deprecated Use swrHandlers instead */
-  swrFallback?: Record<string, unknown>;
   swrHandlers?: SWRHandler[];
 };
 
@@ -90,13 +81,11 @@ export const render = (
   ui: ReactElement,
   options?: CustomRenderOptions,
 ): RenderResult & { user: ReturnType<typeof userEvent.setup> } => {
-  const { swrFallback, swrHandlers, ...renderOptions } = options ?? {};
+  const { swrHandlers, ...renderOptions } = options ?? {};
   const user = userEvent.setup();
   const res = rtlRender(ui, {
     wrapper: ({ children }) => (
-      <TestProvider swrFallback={swrFallback} swrHandlers={swrHandlers}>
-        {children}
-      </TestProvider>
+      <TestProvider swrHandlers={swrHandlers}>{children}</TestProvider>
     ),
     ...renderOptions,
   });
@@ -135,7 +124,6 @@ export const renderSuspense = async (
   const {
     loadingFallback = <DefaultLoadingFallback />,
     errorFallback: ErrorFallbackComponent = DefaultErrorFallback,
-    swrFallback,
     swrHandlers,
     ...renderOptions
   } = options ?? {};
@@ -144,7 +132,7 @@ export const renderSuspense = async (
   let result: RenderResult | undefined;
   await act(async () => {
     result = rtlRender(
-      <TestProvider swrFallback={swrFallback} swrHandlers={swrHandlers}>
+      <TestProvider swrHandlers={swrHandlers}>
         <ErrorBoundary FallbackComponent={ErrorFallbackComponent}>
           <Suspense fallback={loadingFallback}>{ui}</Suspense>
         </ErrorBoundary>

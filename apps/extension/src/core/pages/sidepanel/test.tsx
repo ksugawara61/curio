@@ -14,7 +14,7 @@ const defaultProps = {
 
 const renderSidePanel = async (props = defaultProps) => {
   return renderSuspense(<SidePanel {...props} />, {
-    swrFallback: BlockedDomainsMocks.Empty,
+    swrHandlers: [BlockedDomainsMocks.Empty],
   });
 };
 

@@ -1,8 +1,6 @@
 import { renderSuspense, screen, waitFor } from "@curio/testing-library";
-import { act, render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { server } from "../../../libs/test/msw/server";
-import { StorybookProvider } from "../../../libs/test/StorybookProvider";
 import { BlockedDomainsMocks } from "../../shared/hooks/useBlockedDomains.mocks";
 import { BookmarkQueryMocks } from "../shared/graphql/BookmarkQuery.mocks";
 import { Popup } from ".";
@@ -75,16 +73,10 @@ describe("Popup", () => {
     it("displays blocked message when domain is in blocklist", async () => {
       server.use(BookmarkQueryMocks.NotFound);
 
-      await act(async () => {
-        render(
-          <StorybookProvider swrHandlers={[BlockedDomainsMocks.WithDomains]}>
-            <Popup
-              initialUrl="https://example.com"
-              initialTitle="Example Page"
-            />
-          </StorybookProvider>,
-        );
-      });
+      await renderSuspense(
+        <Popup initialUrl="https://example.com" initialTitle="Example Page" />,
+        { swrHandlers: [BlockedDomainsMocks.WithDomains] },
+      );
 
       await waitFor(() => {
         expect(
@@ -96,16 +88,10 @@ describe("Popup", () => {
     it("does not show bookmark button when domain is blocked", async () => {
       server.use(BookmarkQueryMocks.NotFound);
 
-      await act(async () => {
-        render(
-          <StorybookProvider swrHandlers={[BlockedDomainsMocks.WithDomains]}>
-            <Popup
-              initialUrl="https://example.com"
-              initialTitle="Example Page"
-            />
-          </StorybookProvider>,
-        );
-      });
+      await renderSuspense(
+        <Popup initialUrl="https://example.com" initialTitle="Example Page" />,
+        { swrHandlers: [BlockedDomainsMocks.WithDomains] },
+      );
 
       await waitFor(() => {
         expect(
@@ -121,16 +107,13 @@ describe("Popup", () => {
     it("allows bookmarking when domain is not in blocklist", async () => {
       server.use(BookmarkQueryMocks.NotFound);
 
-      await act(async () => {
-        render(
-          <StorybookProvider swrHandlers={[BlockedDomainsMocks.WithDomains]}>
-            <Popup
-              initialUrl="https://allowed-domain.com"
-              initialTitle="Allowed Page"
-            />
-          </StorybookProvider>,
-        );
-      });
+      await renderSuspense(
+        <Popup
+          initialUrl="https://allowed-domain.com"
+          initialTitle="Allowed Page"
+        />,
+        { swrHandlers: [BlockedDomainsMocks.WithDomains] },
+      );
 
       await waitFor(() => {
         expect(screen.getByText("Allowed Page")).toBeInTheDocument();

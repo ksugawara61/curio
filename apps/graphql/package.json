@@ -26,6 +26,7 @@
     "@getcronit/pylon": "catalog:",
     "@libsql/client": "catalog:",
     "@paralleldrive/cuid2": "catalog:",
+    "better-auth": "catalog:",
     "drizzle-orm": "catalog:",
     "openapi-fetch": "catalog:",
     "zod": "catalog:"

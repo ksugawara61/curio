@@ -2,6 +2,7 @@ import { type FC, Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "../../shared/components/ErrorFallback";
 import { Loading } from "../../shared/components/Loading";
+import { SignOutButton } from "../../shared/components/sign-out-button";
 import { useCurrentTab } from "../../shared/hooks/useCurrentTab";
 import { ArticleList } from "./article-list";
 import { BookmarkCheck } from "./bookmark-check";
@@ -33,7 +34,10 @@ export const SidePanel: FC<Props> = ({ initialUrl, initialTitle }) => {
     <div className="min-h-screen bg-base-200">
       <div className="sticky top-0 z-10 bg-base-100 shadow-sm">
         <div className="p-4 pb-0">
-          <h1 className="mb-3 font-bold text-xl">Curio</h1>
+          <div className="mb-3 flex items-center justify-between">
+            <h1 className="font-bold text-xl">Curio</h1>
+            <SignOutButton />
+          </div>
           <div role="tablist" className="tabs tabs-bordered">
             {tabs.map((tab) => (
               <button

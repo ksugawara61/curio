@@ -22,10 +22,6 @@ export const AuthGuard: FC<PropsWithChildren> = ({ children }) => {
     window.location.reload();
   };
 
-  const handleSignOut = async () => {
-    await authClient.signOut();
-  };
-
   if (error) {
     throw error;
   }

@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@apollo/client": "catalog:",
+    "@clerk/chrome-extension": "catalog:",
     "@curio/graphql-client": "workspace:*",
     "@hookform/resolvers": "catalog:",
     "graphql": "catalog:",

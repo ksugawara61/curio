@@ -20,6 +20,7 @@
     "@apollo/client": "catalog:",
     "@curio/graphql-client": "workspace:*",
     "@hookform/resolvers": "catalog:",
+    "better-auth": "catalog:",
     "graphql": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",

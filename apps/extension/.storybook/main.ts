@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import type { StorybookConfig } from "@storybook/react-vite";
 
 const config: StorybookConfig = {
@@ -6,6 +7,17 @@ const config: StorybookConfig = {
   framework: {
     name: "@storybook/react-vite",
     options: {},
+  },
+  viteFinal: (config) => {
+    config.resolve = config.resolve ?? {};
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@clerk/chrome-extension": resolve(
+        import.meta.dirname,
+        "../src/libs/test/clerk-mock.tsx",
+      ),
+    };
+    return config;
   },
 };
 

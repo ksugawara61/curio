@@ -1,11 +1,11 @@
-import { createBookmark } from "./application/mutations/createBookmark";
-import { createTag } from "./application/mutations/createTag";
-import { deleteBookmark } from "./application/mutations/deleteBookmark";
-import { updateBookmark } from "./application/mutations/updateBookmark";
-import { articles } from "./application/queries/articles";
-import { bookmark } from "./application/queries/bookmark";
-import { bookmarks } from "./application/queries/bookmarks";
-import { tags } from "./application/queries/tags";
+import { articles } from "./application/article/queries/get-articles";
+import { createBookmark } from "./application/bookmark/mutations/create-bookmark";
+import { deleteBookmark } from "./application/bookmark/mutations/delete-bookmark";
+import { updateBookmark } from "./application/bookmark/mutations/update-bookmark";
+import { bookmark } from "./application/bookmark/queries/get-bookmark";
+import { bookmarks } from "./application/bookmark/queries/get-bookmarks";
+import { createTag } from "./application/tag/mutations/create-tag";
+import { tags } from "./application/tag/queries/get-tags";
 import { withAuth } from "./middleware/auth";
 
 export const server = {

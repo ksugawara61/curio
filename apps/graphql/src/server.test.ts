@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ArticleMocks } from "./application/queries/articles/mocks";
+import { ArticleMocks } from "./application/article/queries/get-articles/mocks";
 import { mockServer } from "./libs/test/mockServer";
 import { server } from "./server";
 

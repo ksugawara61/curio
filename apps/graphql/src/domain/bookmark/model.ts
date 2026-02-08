@@ -1,0 +1,31 @@
+import type { Tag } from "../tag/model";
+
+export type Bookmark = {
+  id: string;
+  title: string;
+  url: string;
+  description?: string | null;
+  note?: string | null;
+  thumbnail?: string | null;
+  created_at: Date;
+  updated_at: Date;
+  tags?: Tag[];
+};
+
+export type CreateBookmarkInput = {
+  title: string;
+  url: string;
+  description?: string;
+  note?: string;
+  thumbnail?: string;
+  tagNames?: string[];
+};
+
+export type UpdateBookmarkInput = {
+  title?: string;
+  url?: string;
+  description?: string;
+  note?: string;
+  thumbnail?: string;
+  tagNames?: string[];
+};

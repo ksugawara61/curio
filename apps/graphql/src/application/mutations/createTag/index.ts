@@ -8,7 +8,7 @@ export type { CreateTagInput };
 
 export const createTag = async (input: CreateTagInput): Promise<Tag> => {
   const db = createDb();
-  const { getUserId } = new ContextRepository();
+  const { getUserId } = ContextRepository.create();
   const userId = getUserId();
   try {
     return await db.transaction(async (tx) => {

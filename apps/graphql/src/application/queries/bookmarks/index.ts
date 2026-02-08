@@ -5,7 +5,7 @@ import { BookmarkRepository } from "../../../infrastructure/persistence/bookmark
 
 export const bookmarks = async (): Promise<Bookmark[]> => {
   try {
-    const { getUserId } = new ContextRepository();
+    const { getUserId } = ContextRepository.create();
     const userId = getUserId();
     const repository = new BookmarkRepository(userId);
     return await repository.findMany();

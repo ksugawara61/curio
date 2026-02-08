@@ -5,7 +5,7 @@ import { TagRepository } from "../../../infrastructure/persistence/tags";
 
 export const tags = async (): Promise<Tag[]> => {
   try {
-    const { getUserId } = new ContextRepository();
+    const { getUserId } = ContextRepository.create();
     const userId = getUserId();
     const repository = new TagRepository(userId);
     return await repository.findAll();

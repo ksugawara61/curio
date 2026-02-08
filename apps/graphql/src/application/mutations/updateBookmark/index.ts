@@ -14,7 +14,7 @@ export const updateBookmark = async (
   input: UpdateBookmarkInput,
 ): Promise<Bookmark> => {
   const db = createDb();
-  const { getUserId } = new ContextRepository();
+  const { getUserId } = ContextRepository.create();
   const userId = getUserId();
   try {
     return await db.transaction(async (tx) => {

@@ -43,7 +43,7 @@ const verifyAuth = async () => {
     ctx.env.NODE_ENV,
   );
   if (testUserId) {
-    const contextRepository = new ContextRepository();
+    const contextRepository = ContextRepository.create();
     contextRepository.setUserId(testUserId);
     return;
   }
@@ -63,7 +63,7 @@ const verifyAuth = async () => {
     throw new Error("Invalid token: missing subject claim");
   }
 
-  const contextRepository = new ContextRepository();
+  const contextRepository = ContextRepository.create();
   contextRepository.setUserId(payload.sub);
 };
 

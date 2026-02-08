@@ -5,6 +5,17 @@ import { getContext } from "@getcronit/pylon";
  * getUserIdはwithAuth内で呼び出されることを前提とする
  */
 export class ContextRepository {
+  private static instance: ContextRepository | null = null;
+
+  private constructor() {}
+
+  static create(): ContextRepository {
+    if (!ContextRepository.instance) {
+      ContextRepository.instance = new ContextRepository();
+    }
+    return ContextRepository.instance;
+  }
+
   getUserId(): string {
     const ctx = getContext();
     const userId = ctx.get("userId");

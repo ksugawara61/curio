@@ -17,7 +17,7 @@ export const bookmark = async (
   }
 
   try {
-    const { getUserId } = new ContextRepository();
+    const { getUserId } = ContextRepository.create();
     const userId = getUserId();
     const repository = new BookmarkRepository(userId);
 

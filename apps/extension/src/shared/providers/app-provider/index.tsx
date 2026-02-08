@@ -7,7 +7,10 @@ const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ?? "";
 
 export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+    <ClerkProvider
+      publishableKey={PUBLISHABLE_KEY}
+      afterSignOutUrl="/sidepanel/index.html"
+    >
       <AuthGuard>
         <ApolloProvider>{children}</ApolloProvider>
       </AuthGuard>

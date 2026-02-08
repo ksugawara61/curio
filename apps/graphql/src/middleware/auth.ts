@@ -1,4 +1,29 @@
+import { verifyToken } from "@clerk/backend";
 import { getContext } from "@getcronit/pylon";
+
+/**
+ * テスト用認証キーによるバイパスを試行する
+ * NODE_ENVがproductionの場合はバイパス不可
+ */
+const tryTestKeyAuth = (
+  testKey: string | undefined,
+  testAuthKey: string | undefined,
+  testUserId: string | undefined,
+  nodeEnv: string | undefined,
+): string | null => {
+  if (nodeEnv === "production") return null;
+  if (!testKey || !testAuthKey) return null;
+  if (testKey !== testAuthKey) return null;
+  return testUserId || "test-user";
+};
+
+/**
+ * AuthorizationヘッダーからBearerトークンを抽出する
+ */
+const extractBearerToken = (authHeader: string | undefined): string | null => {
+  if (!authHeader?.startsWith("Bearer ")) return null;
+  return authHeader.slice(7);
+};
 
 /**
  * Clerk認証ミドルウェア
@@ -9,10 +34,34 @@ import { getContext } from "@getcronit/pylon";
 const verifyAuth = async () => {
   const ctx = getContext();
 
-  console.log("Verifying authentication...", ctx.env.NODE_ENV);
+  // テスト用認証キーによるバイパス
+  const testUserId = tryTestKeyAuth(
+    ctx.req.header("X-Test-Key"),
+    ctx.env.TEST_AUTH_KEY,
+    ctx.req.header("X-Test-User-Id"),
+    ctx.env.NODE_ENV,
+  );
+  if (testUserId) {
+    ctx.set("userId", testUserId);
+    return;
+  }
 
-  // 認証されたユーザーIDをコンテキストに設定
-  ctx.set("userId", "dummy");
+  // AuthorizationヘッダーからBearerトークンを抽出
+  const token = extractBearerToken(ctx.req.header("Authorization"));
+  if (!token) {
+    throw new Error("Authorization header with Bearer token is required");
+  }
+
+  // Clerkトークンを検証
+  const payload = await verifyToken(token, {
+    secretKey: ctx.env.CLERK_SECRET_KEY,
+  });
+
+  if (!payload.sub) {
+    throw new Error("Invalid token: missing subject claim");
+  }
+
+  ctx.set("userId", payload.sub);
 };
 
 // biome-ignore lint/suspicious/noExplicitAny: 抽象化のためanyを許容

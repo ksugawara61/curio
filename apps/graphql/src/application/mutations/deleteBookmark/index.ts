@@ -1,10 +1,11 @@
 import { ServiceError } from "@getcronit/pylon";
+import { ContextRepository } from "../../../infrastructure/internal/context";
 import { BookmarkRepository } from "../../../infrastructure/persistence/bookmarks";
 import { createDb } from "../../../libs/drizzle/client";
-import { getUserId } from "../../../middleware/auth";
 
 export const deleteBookmark = async (id: string): Promise<boolean> => {
   const db = createDb();
+  const { getUserId } = new ContextRepository();
   const userId = getUserId();
   try {
     await db.transaction(async (tx) => {

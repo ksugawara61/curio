@@ -1,10 +1,11 @@
 import { ServiceError } from "@getcronit/pylon";
 import type { Bookmark } from "../../../infrastructure/domain/Bookmark";
+import { ContextRepository } from "../../../infrastructure/internal/context";
 import { BookmarkRepository } from "../../../infrastructure/persistence/bookmarks";
-import { getUserId } from "../../../middleware/auth";
 
 export const bookmarks = async (): Promise<Bookmark[]> => {
   try {
+    const { getUserId } = new ContextRepository();
     const userId = getUserId();
     const repository = new BookmarkRepository(userId);
     return await repository.findMany();

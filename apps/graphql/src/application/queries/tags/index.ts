@@ -1,10 +1,11 @@
 import { ServiceError } from "@getcronit/pylon";
 import type { Tag } from "../../../infrastructure/domain/Tag";
+import { ContextRepository } from "../../../infrastructure/internal/context";
 import { TagRepository } from "../../../infrastructure/persistence/tags";
-import { getUserId } from "../../../middleware/auth";
 
 export const tags = async (): Promise<Tag[]> => {
   try {
+    const { getUserId } = new ContextRepository();
     const userId = getUserId();
     const repository = new TagRepository(userId);
     return await repository.findAll();

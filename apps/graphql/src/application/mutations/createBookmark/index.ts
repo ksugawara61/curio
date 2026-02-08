@@ -3,9 +3,9 @@ import type {
   Bookmark,
   CreateBookmarkInput,
 } from "../../../infrastructure/domain/Bookmark";
+import { ContextRepository } from "../../../infrastructure/internal/context";
 import { BookmarkRepository } from "../../../infrastructure/persistence/bookmarks";
 import { createDb } from "../../../libs/drizzle/client";
-import { getUserId } from "../../../middleware/auth";
 
 export type { CreateBookmarkInput };
 
@@ -13,6 +13,7 @@ export const createBookmark = async (
   input: CreateBookmarkInput,
 ): Promise<Bookmark> => {
   const db = createDb();
+  const { getUserId } = new ContextRepository();
   const userId = getUserId();
   try {
     return await db.transaction(async (tx) => {

@@ -24,6 +24,9 @@ export const mockAuthContext = (options?: MockAuthContextOptions): void => {
   const testKey = options?.testKey || "test-key";
   const nodeEnv = options?.nodeEnv || "test";
 
+  // コンテキストの値を保持するストア（userIdを事前設定）
+  const store = new Map<string, unknown>([["userId", userId]]);
+
   // getContextをモック
   vi.mocked(getContext).mockReturnValue({
     req: {
@@ -41,6 +44,9 @@ export const mockAuthContext = (options?: MockAuthContextOptions): void => {
       TURSO_DATABASE_URL: "test-url",
       TURSO_AUTH_TOKEN: "test-token",
     },
-    set: vi.fn(),
+    set: vi.fn((key: string, value: unknown) => {
+      store.set(key, value);
+    }),
+    get: vi.fn((key: string) => store.get(key)),
   } as unknown as Context);
 };

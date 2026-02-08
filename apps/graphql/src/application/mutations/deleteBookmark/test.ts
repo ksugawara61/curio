@@ -8,7 +8,7 @@ describe("deleteBookmark", () => {
     it("should delete a bookmark successfully", async () => {
       const db = createDb();
       const bookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(tx);
+        const repository = new BookmarkRepository("test-user", tx);
         return await repository.create({
           title: "Test Bookmark",
           url: "https://example.com",
@@ -20,7 +20,7 @@ describe("deleteBookmark", () => {
 
       expect(result).toBe(true);
 
-      const repository = new BookmarkRepository();
+      const repository = new BookmarkRepository("test-user");
       const deletedBookmark = await repository.findById(bookmark.id);
       expect(deletedBookmark).toBeNull();
     });

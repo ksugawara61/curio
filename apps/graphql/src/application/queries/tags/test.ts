@@ -8,7 +8,7 @@ describe("tags", () => {
     it("should return array of tags", async () => {
       const db = createDb();
       await db.transaction(async (tx) => {
-        const repository = new TagRepository(tx);
+        const repository = new TagRepository("test-user", tx);
         await repository.create({ name: "Frontend" });
         await repository.create({ name: "Backend" });
         await repository.create({ name: "Database" });

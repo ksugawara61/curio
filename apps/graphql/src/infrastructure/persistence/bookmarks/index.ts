@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { createDb } from "../../../libs/drizzle/client";
 import type * as schema from "../../../libs/drizzle/schema";
@@ -18,10 +18,15 @@ type Transaction = Parameters<
 export class BookmarkRepository {
   private db: LibSQLDatabase<typeof schema> | Transaction;
   private tagRepository: TagRepository;
+  private userId: string;
 
-  constructor(dbOrTx?: LibSQLDatabase<typeof schema> | Transaction) {
+  constructor(
+    userId: string,
+    dbOrTx?: LibSQLDatabase<typeof schema> | Transaction,
+  ) {
+    this.userId = userId;
     this.db = dbOrTx ?? createDb();
-    this.tagRepository = new TagRepository(this.db);
+    this.tagRepository = new TagRepository(userId, this.db);
   }
 
   async findMany(): Promise<Bookmark[]> {
@@ -43,6 +48,7 @@ export class BookmarkRepository {
       .from(bookmarks)
       .leftJoin(bookmarkTags, eq(bookmarks.id, bookmarkTags.bookmark_id))
       .leftJoin(tags, eq(bookmarkTags.tag_id, tags.id))
+      .where(eq(bookmarks.user_id, this.userId))
       .orderBy(bookmarks.created_at);
 
     // Group bookmarks with their tags
@@ -100,7 +106,7 @@ export class BookmarkRepository {
       .from(bookmarks)
       .leftJoin(bookmarkTags, eq(bookmarks.id, bookmarkTags.bookmark_id))
       .leftJoin(tags, eq(bookmarkTags.tag_id, tags.id))
-      .where(eq(bookmarks.id, id));
+      .where(and(eq(bookmarks.id, id), eq(bookmarks.user_id, this.userId)));
 
     if (result.length === 0) {
       return null;
@@ -153,7 +159,7 @@ export class BookmarkRepository {
       .from(bookmarks)
       .leftJoin(bookmarkTags, eq(bookmarks.id, bookmarkTags.bookmark_id))
       .leftJoin(tags, eq(bookmarkTags.tag_id, tags.id))
-      .where(eq(bookmarks.url, url));
+      .where(and(eq(bookmarks.url, url), eq(bookmarks.user_id, this.userId)));
 
     if (result.length === 0) {
       return null;
@@ -210,6 +216,7 @@ export class BookmarkRepository {
       .insert(bookmarks)
       .values({
         id: createId(),
+        user_id: this.userId,
         title: input.title,
         url: input.url,
         description: input.description,
@@ -265,7 +272,7 @@ export class BookmarkRepository {
     const [updatedBookmark] = await this.db
       .update(bookmarks)
       .set(updateData)
-      .where(eq(bookmarks.id, id))
+      .where(and(eq(bookmarks.id, id), eq(bookmarks.user_id, this.userId)))
       .returning();
 
     if (!updatedBookmark) {
@@ -334,7 +341,7 @@ export class BookmarkRepository {
   async deleteBookmark(id: string): Promise<void> {
     const result = await this.db
       .delete(bookmarks)
-      .where(eq(bookmarks.id, id))
+      .where(and(eq(bookmarks.id, id), eq(bookmarks.user_id, this.userId)))
       .returning();
 
     if (result.length === 0) {

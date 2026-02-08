@@ -73,3 +73,16 @@ export const withAuth =
     await verifyAuth();
     return fn(...args);
   };
+
+/**
+ * 認証済みユーザーのIDをコンテキストから取得する
+ * withAuth内で呼び出されることを前提とする
+ */
+export const getUserId = (): string => {
+  const ctx = getContext();
+  const userId = ctx.get("userId");
+  if (!userId) {
+    throw new Error("User ID not found in context");
+  }
+  return userId as string;
+};

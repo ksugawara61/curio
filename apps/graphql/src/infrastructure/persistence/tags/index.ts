@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { createDb } from "../../../libs/drizzle/client";
 import type * as schema from "../../../libs/drizzle/schema";
@@ -12,13 +12,22 @@ type Transaction = Parameters<
 
 export class TagRepository {
   private db: LibSQLDatabase<typeof schema> | Transaction;
+  private userId: string;
 
-  constructor(dbOrTx?: LibSQLDatabase<typeof schema> | Transaction) {
+  constructor(
+    userId: string,
+    dbOrTx?: LibSQLDatabase<typeof schema> | Transaction,
+  ) {
+    this.userId = userId;
     this.db = dbOrTx ?? createDb();
   }
 
   async findAll(): Promise<Tag[]> {
-    const result = await this.db.select().from(tags).orderBy(tags.name);
+    const result = await this.db
+      .select()
+      .from(tags)
+      .where(eq(tags.user_id, this.userId))
+      .orderBy(tags.name);
 
     return result.map((tag) => ({
       id: tag.id,
@@ -32,7 +41,7 @@ export class TagRepository {
     const result = await this.db
       .select()
       .from(tags)
-      .where(eq(tags.id, id))
+      .where(and(eq(tags.id, id), eq(tags.user_id, this.userId)))
       .limit(1);
 
     if (result.length === 0) {
@@ -52,7 +61,7 @@ export class TagRepository {
     const result = await this.db
       .select()
       .from(tags)
-      .where(eq(tags.name, name))
+      .where(and(eq(tags.name, name), eq(tags.user_id, this.userId)))
       .limit(1);
 
     if (result.length === 0) {
@@ -71,7 +80,7 @@ export class TagRepository {
   async create(input: CreateTagInput): Promise<Tag> {
     const [tag] = await this.db
       .insert(tags)
-      .values({ id: createId(), name: input.name })
+      .values({ id: createId(), user_id: this.userId, name: input.name })
       .returning();
 
     return {
@@ -96,7 +105,7 @@ export class TagRepository {
     const [tag] = await this.db
       .update(tags)
       .set(updateData)
-      .where(eq(tags.id, id))
+      .where(and(eq(tags.id, id), eq(tags.user_id, this.userId)))
       .returning();
 
     return {
@@ -108,6 +117,8 @@ export class TagRepository {
   }
 
   async remove(id: string): Promise<void> {
-    await this.db.delete(tags).where(eq(tags.id, id));
+    await this.db
+      .delete(tags)
+      .where(and(eq(tags.id, id), eq(tags.user_id, this.userId)));
   }
 }

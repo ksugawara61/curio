@@ -8,7 +8,7 @@ describe("bookmarks", () => {
     it("should return array of bookmarks", async () => {
       const db = createDb();
       await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(tx);
+        const repository = new BookmarkRepository("test-user", tx);
         return await repository.create({
           title: "Test Bookmark 1",
           url: "https://example1.com",
@@ -17,7 +17,7 @@ describe("bookmarks", () => {
       });
 
       await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(tx);
+        const repository = new BookmarkRepository("test-user", tx);
         return await repository.create({
           title: "Test Bookmark 2",
           url: "https://example2.com",

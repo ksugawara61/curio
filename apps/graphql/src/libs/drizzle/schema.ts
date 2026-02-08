@@ -1,23 +1,37 @@
 import { sql } from "drizzle-orm";
-import { primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { primaryKey, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 
-export const bookmarks = sqliteTable("bookmarks", {
-  id: text("id").primaryKey(),
-  title: text("title").notNull(),
-  url: text("url").unique().notNull(),
-  description: text("description"),
-  note: text("note"),
-  thumbnail: text("thumbnail"),
-  created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
-  updated_at: text("updated_at").default(sql`(datetime('now'))`).notNull(),
-});
+export const bookmarks = sqliteTable(
+  "bookmarks",
+  {
+    id: text("id").primaryKey(),
+    user_id: text("user_id").notNull(),
+    title: text("title").notNull(),
+    url: text("url").notNull(),
+    description: text("description"),
+    note: text("note"),
+    thumbnail: text("thumbnail"),
+    created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
+    updated_at: text("updated_at").default(sql`(datetime('now'))`).notNull(),
+  },
+  (table) => ({
+    uniqueUserUrl: unique().on(table.user_id, table.url),
+  }),
+);
 
-export const tags = sqliteTable("tags", {
-  id: text("id").primaryKey(),
-  name: text("name").unique().notNull(),
-  created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
-  updated_at: text("updated_at").default(sql`(datetime('now'))`).notNull(),
-});
+export const tags = sqliteTable(
+  "tags",
+  {
+    id: text("id").primaryKey(),
+    user_id: text("user_id").notNull(),
+    name: text("name").notNull(),
+    created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
+    updated_at: text("updated_at").default(sql`(datetime('now'))`).notNull(),
+  },
+  (table) => ({
+    uniqueUserName: unique().on(table.user_id, table.name),
+  }),
+);
 
 export const bookmarkTags = sqliteTable(
   "bookmark_tags",

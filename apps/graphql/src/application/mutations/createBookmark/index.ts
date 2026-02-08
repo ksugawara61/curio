@@ -5,6 +5,7 @@ import type {
 } from "../../../infrastructure/domain/Bookmark";
 import { BookmarkRepository } from "../../../infrastructure/persistence/bookmarks";
 import { createDb } from "../../../libs/drizzle/client";
+import { getUserId } from "../../../middleware/auth";
 
 export type { CreateBookmarkInput };
 
@@ -12,9 +13,10 @@ export const createBookmark = async (
   input: CreateBookmarkInput,
 ): Promise<Bookmark> => {
   const db = createDb();
+  const userId = getUserId();
   try {
     return await db.transaction(async (tx) => {
-      const repository = new BookmarkRepository(tx);
+      const repository = new BookmarkRepository(userId, tx);
       return await repository.create(input);
     });
   } catch (error) {

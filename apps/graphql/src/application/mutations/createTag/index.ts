@@ -2,14 +2,16 @@ import { ServiceError } from "@getcronit/pylon";
 import type { CreateTagInput, Tag } from "../../../infrastructure/domain/Tag";
 import { TagRepository } from "../../../infrastructure/persistence/tags";
 import { createDb } from "../../../libs/drizzle/client";
+import { getUserId } from "../../../middleware/auth";
 
 export type { CreateTagInput };
 
 export const createTag = async (input: CreateTagInput): Promise<Tag> => {
   const db = createDb();
+  const userId = getUserId();
   try {
     return await db.transaction(async (tx) => {
-      const repository = new TagRepository(tx);
+      const repository = new TagRepository(userId, tx);
       return await repository.create(input);
     });
   } catch (error) {

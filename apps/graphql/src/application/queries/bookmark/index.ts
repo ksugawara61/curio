@@ -1,6 +1,7 @@
 import { ServiceError } from "@getcronit/pylon";
 import type { Bookmark } from "../../../infrastructure/domain/Bookmark";
 import { BookmarkRepository } from "../../../infrastructure/persistence/bookmarks";
+import { getUserId } from "../../../middleware/auth";
 import { bookmarkQuerySchema } from "./validate";
 
 export const bookmark = async (
@@ -16,7 +17,8 @@ export const bookmark = async (
   }
 
   try {
-    const repository = new BookmarkRepository();
+    const userId = getUserId();
+    const repository = new BookmarkRepository(userId);
 
     if (id) {
       return await repository.findById(id);

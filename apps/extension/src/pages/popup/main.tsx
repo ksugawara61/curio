@@ -1,8 +1,8 @@
 import { ClerkProvider } from "@clerk/chrome-extension";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { Popup } from "../../core/features/popup";
 import { AuthGuard } from "../../core/shared/components/auth-guard";
+import { Popup } from "../../features/popup";
 import { ApolloProviderWithAuth } from "../../libs/apollo-provider-with-auth";
 import "../style.css";
 

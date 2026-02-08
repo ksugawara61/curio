@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { BlockedDomainsMocks } from "../../../shared/hooks/useBlockedDomains.mocks";
+import { BlockedDomainsMocks } from "../../../core/shared/hooks/useBlockedDomains.mocks";
 import { BookmarkQueryMocks } from "../../shared/graphql/BookmarkQuery.mocks";
 import { CreateBookmarkMutationMocks } from "../../shared/graphql/CreateBookmarkMutation.mocks";
 import { BookmarkCheck } from ".";

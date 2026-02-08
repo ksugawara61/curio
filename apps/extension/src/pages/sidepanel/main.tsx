@@ -1,8 +1,8 @@
 import { ClerkProvider } from "@clerk/chrome-extension";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { SidePanel } from "../../core/features/sidepanel";
 import { AuthGuard } from "../../core/shared/components/auth-guard";
+import { SidePanel } from "../../features/sidepanel";
 import { ApolloProviderWithAuth } from "../../libs/apollo-provider-with-auth";
 import "../style.css";
 

@@ -1,6 +1,6 @@
 import { renderSuspense, screen, waitFor } from "@curio/testing-library";
 import { describe, expect, it } from "vitest";
-import { server } from "../../../../libs/test/msw/server";
+import { server } from "../../../libs/test/msw/server";
 import { ArticleList } from ".";
 import { ArticlesListQueryMocks } from "./ArticlesQuery.mocks";
 

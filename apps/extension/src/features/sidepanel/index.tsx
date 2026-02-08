@@ -1,9 +1,9 @@
 import { type FC, Suspense, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { ErrorFallback } from "../../shared/components/ErrorFallback";
-import { Loading } from "../../shared/components/Loading";
-import { SignOutButton } from "../../shared/components/sign-out-button";
-import { useCurrentTab } from "../../shared/hooks/useCurrentTab";
+import { ErrorFallback } from "../../core/shared/components/ErrorFallback";
+import { Loading } from "../../core/shared/components/Loading";
+import { SignOutButton } from "../../core/shared/components/sign-out-button";
+import { useCurrentTab } from "../../core/shared/hooks/useCurrentTab";
 import { ArticleList } from "./article-list";
 import { BookmarkCheck } from "./bookmark-check";
 import { BookmarkList } from "./bookmark-list";

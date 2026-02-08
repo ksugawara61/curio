@@ -13,7 +13,7 @@ export const createBookmark = async (
   input: CreateBookmarkInput,
 ): Promise<Bookmark> => {
   const db = createDb();
-  const { getUserId } = new ContextRepository();
+  const { getUserId } = ContextRepository.create();
   const userId = getUserId();
   try {
     return await db.transaction(async (tx) => {

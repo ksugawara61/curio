@@ -1,5 +1,6 @@
 import { verifyToken } from "@clerk/backend";
 import { getContext } from "@getcronit/pylon";
+import { ContextRepository } from "../infrastructure/internal/context";
 
 /**
  * テスト用認証キーによるバイパスを試行する
@@ -42,7 +43,8 @@ const verifyAuth = async () => {
     ctx.env.NODE_ENV,
   );
   if (testUserId) {
-    ctx.set("userId", testUserId);
+    const contextRepository = ContextRepository.create();
+    contextRepository.setUserId(testUserId);
     return;
   }
 
@@ -61,7 +63,8 @@ const verifyAuth = async () => {
     throw new Error("Invalid token: missing subject claim");
   }
 
-  ctx.set("userId", payload.sub);
+  const contextRepository = ContextRepository.create();
+  contextRepository.setUserId(payload.sub);
 };
 
 // biome-ignore lint/suspicious/noExplicitAny: 抽象化のためanyを許容

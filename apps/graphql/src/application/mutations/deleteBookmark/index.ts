@@ -5,7 +5,7 @@ import { createDb } from "../../../libs/drizzle/client";
 
 export const deleteBookmark = async (id: string): Promise<boolean> => {
   const db = createDb();
-  const { getUserId } = new ContextRepository();
+  const { getUserId } = ContextRepository.create();
   const userId = getUserId();
   try {
     await db.transaction(async (tx) => {

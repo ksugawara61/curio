@@ -4,8 +4,8 @@ import type { FC, PropsWithChildren } from "react";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { type Middleware, SWRConfig } from "swr";
-import { ErrorFallback } from "../../core/shared/components/ErrorFallback";
-import { Loading } from "../../core/shared/components/Loading";
+import { ErrorFallback } from "../../shared/components/ErrorFallback";
+import { Loading } from "../../shared/components/Loading";
 
 type Props = PropsWithChildren<{
   swrHandlers?: SWRHandler[];

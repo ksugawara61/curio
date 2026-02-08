@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createTag } from "./create-tag";
+import { createTag } from ".";
 
 describe("createTag", () => {
   describe("正常系", () => {

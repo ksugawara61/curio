@@ -1,6 +1,6 @@
 import { verifyToken } from "@clerk/backend";
 import { getContext } from "@getcronit/pylon";
-import { ContextRepository } from "../../shared/context";
+import { ContextRepository } from "../shared/context";
 
 /**
  * テスト用認証キーによるバイパスを試行する

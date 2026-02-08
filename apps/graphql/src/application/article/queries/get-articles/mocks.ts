@@ -1,4 +1,4 @@
-import { openApiMockClient } from "../../../libs/test/client";
+import { openApiMockClient } from "../../../../libs/test/client";
 
 const mockData = [
   {

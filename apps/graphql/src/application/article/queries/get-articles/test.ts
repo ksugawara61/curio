@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { mockServer } from "../../../libs/test/mockServer";
-import { articles } from "./get-articles";
-import { ArticleMocks } from "./get-articles.mocks";
+import { mockServer } from "../../../../libs/test/mockServer";
+import { articles } from ".";
+import { ArticleMocks } from "./mocks";
 
 describe("articles", () => {
   it("should return an array of articles", async () => {

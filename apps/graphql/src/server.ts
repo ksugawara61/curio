@@ -6,7 +6,7 @@ import { bookmark } from "./application/bookmark/queries/get-bookmark";
 import { bookmarks } from "./application/bookmark/queries/get-bookmarks";
 import { createTag } from "./application/tag/mutations/create-tag";
 import { tags } from "./application/tag/queries/get-tags";
-import { withAuth } from "./infrastructure/middleware/auth";
+import { withAuth } from "./middleware/auth";
 
 export const server = {
   Query: {

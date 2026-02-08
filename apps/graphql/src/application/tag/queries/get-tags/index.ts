@@ -1,7 +1,7 @@
 import { ServiceError } from "@getcronit/pylon";
-import type { Tag } from "../../../domain/tag/model";
-import { TagRepository } from "../../../domain/tag/repository.persistence";
-import { ContextRepository } from "../../../shared/context";
+import type { Tag } from "../../../../domain/tag/model";
+import { TagRepository } from "../../../../domain/tag/repository.persistence";
+import { ContextRepository } from "../../../../shared/context";
 
 export const tags = async (): Promise<Tag[]> => {
   try {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { TagRepository } from "../../../domain/tag/repository.persistence";
-import { createDb } from "../../../libs/drizzle/client";
-import { tags } from "./get-tags";
+import { TagRepository } from "../../../../domain/tag/repository.persistence";
+import { createDb } from "../../../../libs/drizzle/client";
+import { tags } from ".";
 
 describe("tags", () => {
   describe("正常系", () => {

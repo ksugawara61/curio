@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createBookmark } from "./create-bookmark";
+import { createBookmark } from ".";
 
 describe("createBookmark", () => {
   describe("正常系", () => {

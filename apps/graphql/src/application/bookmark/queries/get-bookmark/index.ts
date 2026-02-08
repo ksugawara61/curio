@@ -1,7 +1,7 @@
 import { ServiceError } from "@getcronit/pylon";
-import type { Bookmark } from "../../../domain/bookmark/model";
-import { BookmarkRepository } from "../../../domain/bookmark/repository.persistence";
-import { ContextRepository } from "../../../shared/context";
+import type { Bookmark } from "../../../../domain/bookmark/model";
+import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
+import { ContextRepository } from "../../../../shared/context";
 import { bookmarkQuerySchema } from "./validate";
 
 export const bookmark = async (

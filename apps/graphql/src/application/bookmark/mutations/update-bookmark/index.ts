@@ -2,10 +2,10 @@ import { ServiceError } from "@getcronit/pylon";
 import type {
   Bookmark,
   UpdateBookmarkInput,
-} from "../../../domain/bookmark/model";
-import { BookmarkRepository } from "../../../domain/bookmark/repository.persistence";
-import { createDb } from "../../../libs/drizzle/client";
-import { ContextRepository } from "../../../shared/context";
+} from "../../../../domain/bookmark/model";
+import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
+import { createDb } from "../../../../libs/drizzle/client";
+import { ContextRepository } from "../../../../shared/context";
 
 export type { UpdateBookmarkInput };
 

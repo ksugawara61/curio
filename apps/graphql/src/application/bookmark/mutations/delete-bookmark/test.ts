@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { BookmarkRepository } from "../../../domain/bookmark/repository.persistence";
-import { createDb } from "../../../libs/drizzle/client";
-import { deleteBookmark } from "./delete-bookmark";
+import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
+import { createDb } from "../../../../libs/drizzle/client";
+import { deleteBookmark } from ".";
 
 describe("deleteBookmark", () => {
   describe("正常系", () => {

@@ -1,6 +1,6 @@
 import { ServiceError } from "@getcronit/pylon";
-import type { Article } from "../../../domain/article/model";
-import { ArticleRepository } from "../../../domain/article/repository.external";
+import type { Article } from "../../../../domain/article/model";
+import { ArticleRepository } from "../../../../domain/article/repository.external";
 
 export const articles = async (offset = 0, limit = 20): Promise<Article[]> => {
   try {

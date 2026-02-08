@@ -1,9 +1,9 @@
 import { ClerkProvider } from "@clerk/chrome-extension";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { AuthGuard } from "../../core/shared/components/auth-guard";
 import { Popup } from "../../features/popup";
 import { ApolloProviderWithAuth } from "../../libs/apollo-provider-with-auth";
+import { AuthGuard } from "../../shared/components/auth-guard";
 import "../style.css";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ?? "";

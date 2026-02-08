@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useSWRSuspense } from "../../../libs/swr";
+import { useSWRSuspense } from "../../libs/swr";
 
 export const STORAGE_KEY = "blockedDomains";
 

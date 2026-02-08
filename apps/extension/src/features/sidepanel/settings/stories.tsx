@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { BlockedDomainsMocks } from "../../../core/shared/hooks/useBlockedDomains.mocks";
+import { BlockedDomainsMocks } from "../../../shared/hooks/useBlockedDomains.mocks";
 import { Settings } from ".";
 
 const meta = {

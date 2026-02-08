@@ -1,10 +1,10 @@
 import { useMutation, useSuspenseQuery } from "@curio/graphql-client";
 import { type FC, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { ErrorFallback } from "../../core/shared/components/ErrorFallback";
-import { Loading } from "../../core/shared/components/Loading";
-import { useBlockedDomains } from "../../core/shared/hooks/useBlockedDomains";
-import { useCurrentTab } from "../../core/shared/hooks/useCurrentTab";
+import { ErrorFallback } from "../../shared/components/ErrorFallback";
+import { Loading } from "../../shared/components/Loading";
+import { useBlockedDomains } from "../../shared/hooks/useBlockedDomains";
+import { useCurrentTab } from "../../shared/hooks/useCurrentTab";
 import { BookmarkQuery } from "../shared/graphql/BookmarkQuery";
 import { CreateBookmarkMutation } from "../shared/graphql/CreateBookmarkMutation";
 

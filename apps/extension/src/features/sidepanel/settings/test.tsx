@@ -1,6 +1,6 @@
 import { renderSuspense, screen } from "@curio/testing-library";
 import { describe, expect, it } from "vitest";
-import { BlockedDomainsMocks } from "../../../core/shared/hooks/useBlockedDomains.mocks";
+import { BlockedDomainsMocks } from "../../../shared/hooks/useBlockedDomains.mocks";
 import { Settings } from ".";
 
 describe("Settings", () => {

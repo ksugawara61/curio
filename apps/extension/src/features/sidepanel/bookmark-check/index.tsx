@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@curio/graphql-client";
 import type { FC } from "react";
-import { Loading } from "../../../core/shared/components/Loading";
-import { useBlockedDomains } from "../../../core/shared/hooks/useBlockedDomains";
+import { Loading } from "../../../shared/components/Loading";
+import { useBlockedDomains } from "../../../shared/hooks/useBlockedDomains";
 import { BookmarkQuery } from "../../shared/graphql/BookmarkQuery";
 import { BookmarkAddForm } from "./BookmarkAddForm";
 import { BookmarkEditForm } from "./BookmarkEditForm";

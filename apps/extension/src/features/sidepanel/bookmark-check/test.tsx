@@ -1,8 +1,8 @@
 import { renderSuspense, screen, waitFor } from "@curio/testing-library";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
-import { BlockedDomainsMocks } from "../../../core/shared/hooks/useBlockedDomains.mocks";
 import { server } from "../../../libs/test/msw/server";
+import { BlockedDomainsMocks } from "../../../shared/hooks/useBlockedDomains.mocks";
 import { BookmarkQueryMocks } from "../../shared/graphql/BookmarkQuery.mocks";
 import { CreateBookmarkMutationMocks } from "../../shared/graphql/CreateBookmarkMutation.mocks";
 import { BookmarkCheck } from ".";

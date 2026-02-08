@@ -1,5 +1,5 @@
 import { type FC, useState } from "react";
-import { useBlockedDomains } from "../../../core/shared/hooks/useBlockedDomains";
+import { useBlockedDomains } from "../../../shared/hooks/useBlockedDomains";
 
 export const Settings: FC = () => {
   const { domains, addDomain, removeDomain } = useBlockedDomains();

@@ -1,0 +1,1 @@
+ALTER TABLE `bookmarks` ADD `test_ci_column` text;

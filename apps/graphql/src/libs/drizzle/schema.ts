@@ -11,6 +11,8 @@ export const bookmarks = sqliteTable(
     description: text("description"),
     note: text("note"),
     thumbnail: text("thumbnail"),
+    // Test column for CI migration check - will be removed after verification
+    test_ci_column: text("test_ci_column"),
     created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
     updated_at: text("updated_at").default(sql`(datetime('now'))`).notNull(),
   },

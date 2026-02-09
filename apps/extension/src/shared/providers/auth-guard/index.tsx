@@ -9,7 +9,7 @@ export const AuthGuard: FC<PropsWithChildren> = ({ children }) => {
         <div className="flex min-h-screen items-center justify-center bg-base-200">
           <div className="w-full max-w-sm">
             <h1 className="mb-6 text-center font-bold text-2xl">Curio</h1>
-            <SignIn routing="virtual" />
+            <SignIn routing="virtual" oauthFlow="popup" />
           </div>
         </div>
       </SignedOut>

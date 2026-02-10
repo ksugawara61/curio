@@ -6,13 +6,11 @@ Curio is a full-stack monorepo project that provides a powerful bookmarking syst
 
 ## Features
 
-- 📚 **Bookmark Management**: Create, read, update, and delete bookmarks with ease
-- 🔍 **Article Search**: Fetch and browse articles from Qiita
-- 🔌 **Chrome Extension**: Convenient browser extension for quick bookmarking
-- 🚀 **GraphQL API**: Modern, type-safe API built with Pylon
-- 🌐 **Edge Deployment**: Serverless architecture on Cloudflare Workers
-- 🎨 **Modern UI**: Built with React, TailwindCSS, and DaisyUI
-- 🧪 **Comprehensive Testing**: Unit tests, integration tests, and visual regression tests
+- Bookmark Management: Create, read, update, and delete bookmarks with tagging
+- Article Search: Fetch and browse articles from Qiita
+- Chrome Extension: Popup and SidePanel UI for quick bookmarking
+- GraphQL API: Type-safe API built with Pylon on Cloudflare Workers
+- Edge Deployment: Serverless architecture on Cloudflare Workers + Turso (SQLite)
 
 ## Tech Stack
 
@@ -21,6 +19,7 @@ Curio is a full-stack monorepo project that provides a powerful bookmarking syst
 - **Framework**: [Pylon](https://pylon.cronit.io/) - GraphQL framework for Cloudflare Workers
 - **Database**: Turso (libSQL) with Drizzle ORM
 - **API Integration**: Qiita API via OpenAPI
+- **Authentication**: Clerk JWT
 - **Testing**: Vitest with MSW for API mocking
 
 ### Frontend (`apps/extension`)
@@ -29,21 +28,18 @@ Curio is a full-stack monorepo project that provides a powerful bookmarking syst
 - **Styling**: TailwindCSS + DaisyUI
 - **GraphQL Client**: Apollo Client with gql.tada for type-safe queries
 - **Form Handling**: React Hook Form with Zod validation
-- **Testing**: 
-  - Unit Tests: Vitest + Testing Library
-  - Visual Regression: Playwright
-  - Storybook: Component development and documentation
+- **Testing**: Vitest + Testing Library, Playwright (VRT), Storybook
 
 ### Shared Packages
-- `@curio/graphql-client`: Shared GraphQL client and type definitions
-- `@curio/eslint-config`: Shared ESLint configuration
-- `@curio/testing-library`: Shared testing utilities
+- `@curio/graphql-client`: Shared Apollo Client and type-safe GraphQL query definitions
+- `@curio/eslint-config`: Shared ESLint configurations (base, react, testing, graphql)
+- `@curio/testing-library`: Shared testing utilities (custom render, MSW helpers)
 
 ### Development Tools
-- **Package Manager**: pnpm with workspace support
+- **Package Manager**: pnpm 10.29.2 (strict catalog mode)
 - **Monorepo**: Turborepo for build orchestration
-- **Code Quality**: Biome for linting and formatting
-- **Git Hooks**: Lefthook for pre-commit checks
+- **Code Quality**: Biome (formatter/linter) + ESLint
+- **Git Hooks**: Lefthook (pre-commit: biome + eslint, pre-push: staged file check)
 - **Documentation**: textlint for Japanese technical writing
 
 ## Repository Structure
@@ -51,23 +47,25 @@ Curio is a full-stack monorepo project that provides a powerful bookmarking syst
 ```
 curio/
 ├── apps/
-│   ├── extension/       # Chrome extension
+│   ├── extension/          # Chrome extension (Popup + SidePanel)
 │   │   ├── src/
-│   │   │   ├── core/    # Core components and logic
-│   │   │   └── pages/   # Extension pages (popup, sidepanel)
-│   │   ├── .storybook/  # Storybook configuration
-│   │   └── tests/       # Playwright tests
-│   └── graphql/         # GraphQL API server
-│       ├── src/
-│       │   ├── application/      # Use cases
-│       │   ├── infrastructure/   # Repositories and external services
-│       │   └── generated/        # Generated types (OpenAPI, GraphQL)
-│       └── openapi/              # OpenAPI specifications
+│   │   │   ├── pages/         # Entry points (popup/, sidepanel/)
+│   │   │   ├── features/      # Feature modules per page/tab
+│   │   │   ├── shared/        # Shared components, hooks, providers
+│   │   │   └── libs/          # Test utilities, SWR config
+│   │   └── tests/             # Playwright VRT tests
+│   └── graphql/            # GraphQL API server
+│       └── src/
+│           ├── application/   # Use cases (queries, mutations per entity)
+│           ├── domain/        # Entities, repository interfaces & implementations
+│           ├── middleware/     # Auth middleware
+│           ├── shared/        # User context management
+│           └── libs/          # DB client (Drizzle), API client (OpenAPI), test utils
 ├── packages/
-│   ├── graphql-client/  # Shared GraphQL client
-│   ├── eslint-config/   # Shared ESLint config
-│   └── testing-library/ # Shared testing utilities
-└── scripts/             # Development scripts
+│   ├── graphql-client/     # Shared GraphQL client (Apollo + gql.tada)
+│   ├── eslint-config/      # Shared ESLint configs
+│   └── testing-library/    # Shared testing utilities
+└── .github/workflows/      # CI/CD pipelines
 ```
 
 ## Getting Started
@@ -75,8 +73,7 @@ curio/
 ### Prerequisites
 
 - Node.js >= 22 (v22.22.0 recommended)
-- pnpm >= 10.28
-- Docker (optional, for local database)
+- pnpm >= 10.29
 
 ### Installation
 
@@ -100,8 +97,6 @@ cp .env.sample .env
 
 ### Development
 
-Start the development servers:
-
 ```bash
 # Start all development servers
 pnpm dev
@@ -113,105 +108,39 @@ cd apps/extension && pnpm dev
 
 ### Building
 
-Build all packages and apps:
-
 ```bash
 pnpm build
 ```
 
 ### Testing
 
-Run all tests:
-
 ```bash
+# Run all tests
 pnpm test
-```
 
-Run tests for specific packages:
-
-```bash
+# Run tests for specific packages
 cd apps/extension && pnpm test
 cd apps/graphql && pnpm test
 ```
 
-## Development Workflow
-
-### Code Quality
-
-The project uses several tools to maintain code quality:
-
-```bash
-# Run linting
-pnpm lint
-
-# Format code
-pnpm fmt
-
-# Type checking
-pnpm typecheck
-```
-
-### Database Management (GraphQL API)
-
-```bash
-cd apps/graphql
-
-# Start local database
-pnpm db:local
-
-# Generate migrations
-pnpm db:generate
-
-# Run migrations
-pnpm db:migrate
-
-# Open Drizzle Studio
-pnpm db:studio
-```
-
-### Code Generation
-
-```bash
-# Generate GraphQL client types
-pnpm codegen
-
-# Generate OpenAPI types (GraphQL API)
-cd apps/graphql && pnpm generate:openapi
-```
-
 ## Available Commands
-
-Root level commands:
 
 | Command | Description |
 |---------|-------------|
 | `pnpm dev` | Start all development servers |
 | `pnpm build` | Build all packages and apps |
 | `pnpm test` | Run all tests |
-| `pnpm lint` | Run linting |
-| `pnpm fmt` | Format code |
+| `pnpm lint` | Run linting (Biome + ESLint) |
+| `pnpm fmt` | Format code (Biome) |
 | `pnpm typecheck` | Run type checking |
-| `pnpm codegen` | Generate code |
+| `pnpm codegen` | Generate GraphQL client types |
 | `pnpm clean` | Clean node_modules |
 
-## Contributing
+## Architecture
 
-Contributions are welcome! Please follow these steps:
-
-1. Create your feature branch (`git checkout -b feature/amazing-feature`)
-2. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-3. Push to the branch (`git push origin feature/amazing-feature`)
-4. Open a Pull Request
-
-## Project Architecture
-
-This project follows Clean Architecture principles with clear separation of concerns:
-
-- **Application Layer**: Use cases and business logic
-- **Infrastructure Layer**: Data access, external APIs, and persistence
-- **Interface Layer**: GraphQL resolvers and API endpoints
-
-See [apps/graphql/README.md](apps/graphql/README.md) for detailed architecture documentation.
+This project follows Clean Architecture principles. See individual README files for details:
+- [apps/graphql/README.md](apps/graphql/README.md) - Backend architecture
+- [apps/extension/README.md](apps/extension/README.md) - Frontend architecture
 
 ## License
 

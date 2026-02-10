@@ -1,7 +1,7 @@
 import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
-import { mockServer } from "../test/mockServer";
-import { validateRssFeed } from "./validator";
+import { mockServer } from "../../../../libs/test/mockServer";
+import { fetchAndValidateRssFeed, rssFeedUrlSchema } from "./validate";
 
 const createRssXml = (title: string, description: string) => `
 <?xml version="1.0" encoding="UTF-8"?>
@@ -29,7 +29,37 @@ const createAtomXml = (title: string, subtitle: string) => `
 </feed>
 `;
 
-describe("validateRssFeed", () => {
+describe("rssFeedUrlSchema", () => {
+  it("should accept a valid https URL", () => {
+    const result = rssFeedUrlSchema.safeParse("https://example.com/rss.xml");
+    expect(result.success).toBe(true);
+  });
+
+  it("should accept a valid http URL", () => {
+    const result = rssFeedUrlSchema.safeParse("http://example.com/rss.xml");
+    expect(result.success).toBe(true);
+  });
+
+  it("should reject non-http(s) URLs", () => {
+    const result = rssFeedUrlSchema.safeParse("ftp://example.com/rss.xml");
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.errors[0].message).toBe(
+        "URL must use http or https protocol",
+      );
+    }
+  });
+
+  it("should reject invalid URL format", () => {
+    const result = rssFeedUrlSchema.safeParse("not-a-url");
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.errors[0].message).toBe("Invalid URL format");
+    }
+  });
+});
+
+describe("fetchAndValidateRssFeed", () => {
   describe("正常系", () => {
     it("should parse a valid RSS 2.0 feed", async () => {
       mockServer.use(
@@ -38,7 +68,9 @@ describe("validateRssFeed", () => {
         ),
       );
 
-      const result = await validateRssFeed("https://example.com/rss.xml");
+      const result = await fetchAndValidateRssFeed(
+        "https://example.com/rss.xml",
+      );
 
       expect(result).toEqual({
         title: "My Blog",
@@ -53,7 +85,9 @@ describe("validateRssFeed", () => {
         ),
       );
 
-      const result = await validateRssFeed("https://example.com/atom.xml");
+      const result = await fetchAndValidateRssFeed(
+        "https://example.com/atom.xml",
+      );
 
       expect(result).toEqual({
         title: "My Atom Blog",
@@ -75,7 +109,9 @@ describe("validateRssFeed", () => {
         ),
       );
 
-      const result = await validateRssFeed("https://example.com/no-desc.xml");
+      const result = await fetchAndValidateRssFeed(
+        "https://example.com/no-desc.xml",
+      );
 
       expect(result.title).toBe("No Desc Blog");
       expect(result.description).toBeUndefined();
@@ -83,16 +119,6 @@ describe("validateRssFeed", () => {
   });
 
   describe("異常系", () => {
-    it("should reject non-http(s) URLs", async () => {
-      await expect(
-        validateRssFeed("ftp://example.com/rss.xml"),
-      ).rejects.toThrow("URL must use http or https protocol");
-    });
-
-    it("should reject invalid URLs", async () => {
-      await expect(validateRssFeed("not-a-url")).rejects.toThrow();
-    });
-
     it("should throw on HTTP error responses", async () => {
       mockServer.use(
         http.get(
@@ -102,7 +128,7 @@ describe("validateRssFeed", () => {
       );
 
       await expect(
-        validateRssFeed("https://example.com/not-found.xml"),
+        fetchAndValidateRssFeed("https://example.com/not-found.xml"),
       ).rejects.toThrow("Failed to fetch RSS feed: HTTP 404");
     });
 
@@ -113,9 +139,9 @@ describe("validateRssFeed", () => {
         ),
       );
 
-      await expect(validateRssFeed("https://example.com/page")).rejects.toThrow(
-        "The URL does not point to a valid RSS or Atom feed",
-      );
+      await expect(
+        fetchAndValidateRssFeed("https://example.com/page"),
+      ).rejects.toThrow("The URL does not point to a valid RSS or Atom feed");
     });
   });
 });

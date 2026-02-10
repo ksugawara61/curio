@@ -1,18 +1,22 @@
 import { describe, expect, it, vi } from "vitest";
 import { createRssFeed } from ".";
 
-vi.mock("../../../../libs/rss/validator", () => ({
-  validateRssFeed: vi.fn(),
-}));
+vi.mock("./validate", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./validate")>();
+  return {
+    ...actual,
+    fetchAndValidateRssFeed: vi.fn(),
+  };
+});
 
-import { validateRssFeed } from "../../../../libs/rss/validator";
+import { fetchAndValidateRssFeed } from "./validate";
 
-const mockValidateRssFeed = vi.mocked(validateRssFeed);
+const mockFetchAndValidate = vi.mocked(fetchAndValidateRssFeed);
 
 describe("createRssFeed", () => {
   describe("正常系", () => {
     it("should create an RSS feed successfully", async () => {
-      mockValidateRssFeed.mockResolvedValue({
+      mockFetchAndValidate.mockResolvedValue({
         title: "Test Blog",
         description: "A test blog feed",
       });
@@ -28,7 +32,7 @@ describe("createRssFeed", () => {
     });
 
     it("should create an RSS feed without description", async () => {
-      mockValidateRssFeed.mockResolvedValue({
+      mockFetchAndValidate.mockResolvedValue({
         title: "No Desc Blog",
       });
 
@@ -42,8 +46,14 @@ describe("createRssFeed", () => {
   });
 
   describe("異常系", () => {
+    it("should throw on invalid URL format", async () => {
+      await expect(createRssFeed("not-a-url")).rejects.toThrow(
+        "Invalid URL format",
+      );
+    });
+
     it("should throw on invalid RSS URL", async () => {
-      mockValidateRssFeed.mockRejectedValue(
+      mockFetchAndValidate.mockRejectedValue(
         new Error("The URL does not point to a valid RSS or Atom feed"),
       );
 
@@ -53,7 +63,7 @@ describe("createRssFeed", () => {
     });
 
     it("should throw on duplicate URL registration", async () => {
-      mockValidateRssFeed.mockResolvedValue({
+      mockFetchAndValidate.mockResolvedValue({
         title: "Duplicate Blog",
       });
 

@@ -2,14 +2,21 @@ import { ServiceError } from "@getcronit/pylon";
 import type { RssFeed } from "../../../../domain/rss-feed/model";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
 import { createDb } from "../../../../libs/drizzle/client";
-import { validateRssFeed } from "../../../../libs/rss/validator";
 import { ContextRepository } from "../../../../shared/context";
+import { fetchAndValidateRssFeed, rssFeedUrlSchema } from "./validate";
 
 export const createRssFeed = async (url: string): Promise<RssFeed> => {
-  let meta: { title: string; description?: string };
+  const urlResult = rssFeedUrlSchema.safeParse(url);
+  if (!urlResult.success) {
+    throw new ServiceError(urlResult.error.errors[0].message, {
+      statusCode: 400,
+      code: "BAD_REQUEST",
+    });
+  }
 
+  let meta: { title: string; description?: string };
   try {
-    meta = await validateRssFeed(url);
+    meta = await fetchAndValidateRssFeed(urlResult.data);
   } catch (error) {
     throw new ServiceError(
       `Invalid RSS feed URL: ${error instanceof Error ? error.message : "Unknown error"}`,
@@ -28,7 +35,7 @@ export const createRssFeed = async (url: string): Promise<RssFeed> => {
     return await db.transaction(async (tx) => {
       const repository = new RssFeedRepository(userId, tx);
       return await repository.create({
-        url,
+        url: urlResult.data,
         title: meta.title,
         description: meta.description,
       });

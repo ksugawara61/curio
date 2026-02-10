@@ -56,6 +56,7 @@ describe("rssArticles", () => {
         link: "https://example.com/1",
         description: "Description 1",
         pubDate: "Mon, 01 Jan 2024 00:00:00 GMT",
+        thumbnailUrl: undefined,
       });
       expect(result[1].title).toBe("Article 2");
     });

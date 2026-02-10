@@ -18,4 +18,5 @@ export type RssArticle = {
   link: string;
   description?: string | null;
   pubDate?: string | null;
+  thumbnailUrl?: string | null;
 };

@@ -9,10 +9,11 @@ const createRssXml = (
     link: string;
     description?: string;
     pubDate?: string;
+    thumbnail?: string;
   }[],
 ) => `
 <?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Test Feed</title>
     <description>A test feed</description>
@@ -24,6 +25,7 @@ const createRssXml = (
       <link>${item.link}</link>
       ${item.description ? `<description>${item.description}</description>` : ""}
       ${item.pubDate ? `<pubDate>${item.pubDate}</pubDate>` : ""}
+      ${item.thumbnail ? `<media:thumbnail url="${item.thumbnail}"/>` : ""}
     </item>`,
       )
       .join("")}
@@ -37,10 +39,11 @@ const createAtomXml = (
     link: string;
     summary?: string;
     published?: string;
+    thumbnail?: string;
   }[],
 ) => `
 <?xml version="1.0" encoding="UTF-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
   <title>Test Atom Feed</title>
   ${entries
     .map(
@@ -50,6 +53,7 @@ const createAtomXml = (
     <link href="${entry.link}"/>
     ${entry.summary ? `<summary>${entry.summary}</summary>` : ""}
     ${entry.published ? `<published>${entry.published}</published>` : ""}
+    ${entry.thumbnail ? `<media:thumbnail url="${entry.thumbnail}"/>` : ""}
   </entry>`,
     )
     .join("")}
@@ -70,6 +74,7 @@ describe("RssFeedExternalRepository", () => {
                 link: "https://example.com/1",
                 description: "Description 1",
                 pubDate: "Mon, 01 Jan 2024 00:00:00 GMT",
+                thumbnail: "https://example.com/img1.jpg",
               },
               {
                 title: "Article 2",
@@ -92,12 +97,14 @@ describe("RssFeedExternalRepository", () => {
         link: "https://example.com/1",
         description: "Description 1",
         pubDate: "Mon, 01 Jan 2024 00:00:00 GMT",
+        thumbnailUrl: "https://example.com/img1.jpg",
       });
       expect(articles[1]).toEqual({
         title: "Article 2",
         link: "https://example.com/2",
         description: "Description 2",
         pubDate: "Tue, 02 Jan 2024 00:00:00 GMT",
+        thumbnailUrl: undefined,
       });
     });
 
@@ -111,6 +118,7 @@ describe("RssFeedExternalRepository", () => {
                 link: "https://example.com/entry/1",
                 summary: "Summary 1",
                 published: "2024-01-01T00:00:00Z",
+                thumbnail: "https://example.com/thumb1.png",
               },
             ]),
           ),
@@ -127,6 +135,7 @@ describe("RssFeedExternalRepository", () => {
         link: "https://example.com/entry/1",
         description: "Summary 1",
         pubDate: "2024-01-01T00:00:00Z",
+        thumbnailUrl: "https://example.com/thumb1.png",
       });
     });
 
@@ -153,6 +162,61 @@ describe("RssFeedExternalRepository", () => {
       expect(articles[0].link).toBe("https://example.com/minimal");
       expect(articles[0].description).toBeUndefined();
       expect(articles[0].pubDate).toBeUndefined();
+      expect(articles[0].thumbnailUrl).toBeUndefined();
+    });
+
+    it("should extract thumbnailUrl from enclosure", async () => {
+      mockServer.use(
+        http.get("https://example.com/enclosure.xml", () =>
+          HttpResponse.xml(`
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Enclosure Feed</title>
+    <item>
+      <title>With Enclosure</title>
+      <link>https://example.com/enc</link>
+      <enclosure url="https://example.com/photo.jpg" type="image/jpeg" length="12345"/>
+    </item>
+  </channel>
+</rss>
+          `),
+        ),
+      );
+
+      const articles = await repository.fetchArticles(
+        "https://example.com/enclosure.xml",
+      );
+
+      expect(articles).toHaveLength(1);
+      expect(articles[0].thumbnailUrl).toBe("https://example.com/photo.jpg");
+    });
+
+    it("should extract thumbnailUrl from media:content", async () => {
+      mockServer.use(
+        http.get("https://example.com/media-content.xml", () =>
+          HttpResponse.xml(`
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>Media Content Feed</title>
+    <item>
+      <title>With Media Content</title>
+      <link>https://example.com/mc</link>
+      <media:content url="https://example.com/media.png" medium="image" width="600" height="400"/>
+    </item>
+  </channel>
+</rss>
+          `),
+        ),
+      );
+
+      const articles = await repository.fetchArticles(
+        "https://example.com/media-content.xml",
+      );
+
+      expect(articles).toHaveLength(1);
+      expect(articles[0].thumbnailUrl).toBe("https://example.com/media.png");
     });
 
     it("should return empty array for feed with no items", async () => {

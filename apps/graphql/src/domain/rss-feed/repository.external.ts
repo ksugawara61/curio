@@ -11,9 +11,42 @@ const getAllTagContents = (xml: string, tagName: string): string[] => {
   return xml.match(regex) ?? [];
 };
 
+const getAttributeValue = (
+  xml: string,
+  tagName: string,
+  attrName: string,
+): string | undefined => {
+  const regex = new RegExp(
+    `<${tagName}[^>]*${attrName}="([^"]*)"[^>]*/?>`,
+    "i",
+  );
+  const match = xml.match(regex);
+  return match?.[1]?.trim();
+};
+
 const getAtomLink = (entry: string): string | undefined => {
   const linkMatch = entry.match(/<link[^>]*href="([^"]*)"[^>]*\/?>/);
   return linkMatch?.[1]?.trim();
+};
+
+const getThumbnailUrl = (xml: string): string | undefined => {
+  // <media:thumbnail url="..."/>
+  const mediaThumbnail = getAttributeValue(xml, "media:thumbnail", "url");
+  if (mediaThumbnail) return mediaThumbnail;
+
+  // <media:content url="..." medium="image"/> or <media:content url="..." type="image/..."/>
+  const mediaContentMatch = xml.match(
+    /<media:content[^>]*url="([^"]*)"[^>]*(?:medium="image"|type="image\/[^"]*")[^>]*\/?>/i,
+  );
+  if (mediaContentMatch?.[1]) return mediaContentMatch[1].trim();
+
+  // <enclosure url="..." type="image/..."/>
+  const enclosureMatch = xml.match(
+    /<enclosure[^>]*url="([^"]*)"[^>]*type="image\/[^"]*"[^>]*\/?>/i,
+  );
+  if (enclosureMatch?.[1]) return enclosureMatch[1].trim();
+
+  return undefined;
 };
 
 const parseRssItems = (xml: string): RssArticle[] => {
@@ -26,6 +59,7 @@ const parseRssItems = (xml: string): RssArticle[] => {
     link: getTagContent(item, "link") ?? "",
     description: getTagContent(item, "description"),
     pubDate: getTagContent(item, "pubDate"),
+    thumbnailUrl: getThumbnailUrl(item),
   }));
 };
 
@@ -38,6 +72,7 @@ const parseAtomEntries = (xml: string): RssArticle[] => {
       getTagContent(entry, "summary") ?? getTagContent(entry, "content"),
     pubDate:
       getTagContent(entry, "published") ?? getTagContent(entry, "updated"),
+    thumbnailUrl: getThumbnailUrl(entry),
   }));
 };
 

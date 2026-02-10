@@ -48,9 +48,27 @@ export const bookmarkTags = sqliteTable(
   }),
 );
 
+export const rssFeeds = sqliteTable(
+  "rss_feeds",
+  {
+    id: text("id").primaryKey(),
+    user_id: text("user_id").notNull(),
+    url: text("url").notNull(),
+    title: text("title").notNull(),
+    description: text("description"),
+    created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
+    updated_at: text("updated_at").default(sql`(datetime('now'))`).notNull(),
+  },
+  (table) => ({
+    uniqueUserUrl: unique().on(table.user_id, table.url),
+  }),
+);
+
 export type InsertBookmark = typeof bookmarks.$inferInsert;
 export type SelectBookmark = typeof bookmarks.$inferSelect;
 export type InsertTag = typeof tags.$inferInsert;
 export type SelectTag = typeof tags.$inferSelect;
 export type InsertBookmarkTag = typeof bookmarkTags.$inferInsert;
 export type SelectBookmarkTag = typeof bookmarkTags.$inferSelect;
+export type InsertRssFeed = typeof rssFeeds.$inferInsert;
+export type SelectRssFeed = typeof rssFeeds.$inferSelect;

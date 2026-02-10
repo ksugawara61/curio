@@ -6,6 +6,7 @@ import { bookmark } from "./application/bookmark/queries/get-bookmark";
 import { bookmarks } from "./application/bookmark/queries/get-bookmarks";
 import { createRssFeed } from "./application/rss-feed/mutations/create-rss-feed";
 import { deleteRssFeed } from "./application/rss-feed/mutations/delete-rss-feed";
+import { rssArticles } from "./application/rss-feed/queries/get-rss-articles";
 import { rssFeeds } from "./application/rss-feed/queries/get-rss-feeds";
 import { createTag } from "./application/tag/mutations/create-tag";
 import { tags } from "./application/tag/queries/get-tags";
@@ -17,6 +18,7 @@ export const server = {
     bookmarks: withAuth(bookmarks),
     bookmark: withAuth(bookmark),
     tags: withAuth(tags),
+    rssArticles: withAuth(rssArticles),
     rssFeeds: withAuth(rssFeeds),
   },
   Mutation: {

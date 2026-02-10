@@ -12,3 +12,11 @@ export type CreateRssFeedInput = {
   title: string;
   description?: string;
 };
+
+export type RssArticle = {
+  title: string;
+  link: string;
+  description?: string | null;
+  pubDate?: string | null;
+  thumbnailUrl?: string | null;
+};

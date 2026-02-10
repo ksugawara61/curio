@@ -59,73 +59,27 @@ Chrome Manifest V3 に準拠したブラウザ拡張機能です。Popup と Sid
 
 ```
 src/
-  pages/                             # HTMLエントリポイント
-    popup/
-      index.html                     #   Popup HTML
-      main.tsx                       #   Popup Reactエントリポイント
-    sidepanel/
-      index.html                     #   SidePanel HTML
-      main.tsx                       #   SidePanel Reactエントリポイント
-  features/                          # 機能モジュール
-    popup/                           #   Popup機能
-      index.tsx                      #     メインコンポーネント
-      test.tsx                       #     テスト
-      stories.tsx                    #     Storybookストーリー
-    sidepanel/                       #   SidePanel機能（タブルーター）
-      index.tsx                      #     メインコンポーネント
-      test.tsx
-      stories.tsx
-      bookmark-check/                #     現在のページのブックマーク確認・編集
-        index.tsx
-        BookmarkAddForm.tsx          #       ブックマーク追加フォーム
-        BookmarkEditForm.tsx         #       ブックマーク編集フォーム
-        schema.ts                    #       Zodバリデーションスキーマ
-        UpdateBookmarkMutation.ts    #       GraphQLミューテーション
-        test.tsx
-        stories.tsx
-      bookmark-list/                 #     ブックマーク一覧
-        index.tsx
-        BookmarksQuery.ts            #       GraphQLクエリ
-        DeleteBookmarkMutation.ts    #       GraphQLミューテーション
-        test.tsx
-        stories.tsx
-      article-list/                  #     Qiita記事一覧
-        index.tsx
-        ArticlesQuery.ts             #       GraphQLクエリ
-        test.tsx
-        stories.tsx
-      settings/                      #     設定（ドメインブロックリスト）
-        index.tsx
-        test.tsx
-        stories.tsx
-    shared/graphql/                  #   共有GraphQLクエリ/ミューテーション
-      BookmarkQuery.ts
-      CreateBookmarkMutation.ts
-  shared/                            # 共有モジュール
-    components/
-      ErrorFallback.tsx              #   エラーバウンダリフォールバック
-      Loading.tsx                    #   ローディングスケルトン
-      sign-out-button/
-        index.tsx                    #   サインアウトボタン
-    hooks/
-      useCurrentTab.ts               #   現在のタブ情報取得
-      useBlockedDomains.ts           #   ドメインブロックリスト管理
-    providers/
-      app-provider/
-        index.tsx                    #   ルートプロバイダー (Clerk → AuthGuard → Apollo)
-      auth-guard/
-        index.tsx                    #   認証ガード（未認証時リダイレクト）
-      apollo-provider/
-        index.tsx                    #   Apollo Client セットアップ
-  libs/
-    swr.ts                           # SWR設定
-    test/
-      setup.ts                       #   Vitestセットアップ (MSW, Clerkモック)
-      msw/
-        server.ts                    #   MSWサーバー設定
-      StorybookProvider.tsx          #   Storybook用プロバイダー
-      clerk-mock.tsx                 #   Storybook用Clerkモック
+  pages/                  # HTMLエントリポイント
+    popup/                #   Popup (main.tsx, index.html)
+    sidepanel/            #   SidePanel (main.tsx, index.html)
+  features/               # 機能モジュール（ページ/タブ単位）
+    popup/                #   Popup機能 (index.tsx, test.tsx, stories.tsx)
+    sidepanel/            #   SidePanel機能（タブルーター）
+      bookmark-check/     #     現在のページのブックマーク確認・編集
+      bookmark-list/      #     ブックマーク一覧
+      article-list/       #     Qiita記事一覧
+      settings/           #     設定（ドメインブロックリスト）
+    shared/graphql/       #   共有GraphQLクエリ/ミューテーション
+  shared/                 # 共有モジュール
+    components/           #   ErrorFallback, Loading, SignOutButton など
+    hooks/                #   useCurrentTab, useBlockedDomains など
+    providers/            #   AppProvider (Clerk → AuthGuard → Apollo)
+  libs/                   # 技術基盤
+    swr.ts                #   SWR設定
+    test/                 #   Vitestセットアップ, MSWサーバー, Clerkモック
 ```
+
+各 feature ディレクトリは `index.tsx`（コンポーネント）、`test.tsx`（テスト）、`stories.tsx`（Storybook）をコロケーションしています。GraphQL クエリ/ミューテーション定義やモックも同梱されます。
 
 ### UIエントリポイント
 
@@ -215,22 +169,6 @@ graph TD
     class GraphQLAPI,ClerkAuth,ChromeAPI external
 ```
 
-### 各層の責務
-
-#### Features (`src/features/`)
-- **ページ単位の機能モジュール**: Popup と SidePanel の各タブに対応
-- 各 feature は `index.tsx`（コンポーネント）、`test.tsx`（テスト）、`stories.tsx`（Storybook）をコロケーション
-- GraphQL のクエリ/ミューテーション定義とモックも同梱
-
-#### Shared (`src/shared/`)
-- **共有コンポーネント**: ErrorFallback、Loading、SignOutButton
-- **共有 Hooks**: `useCurrentTab`（Chrome Tabs API + SWR）、`useBlockedDomains`（Chrome Storage API）
-- **プロバイダー**: Clerk 認証 → AuthGuard → Apollo Client のネスト構造
-
-#### Libs (`src/libs/`)
-- **SWR 設定**: データフェッチングライブラリの共通設定
-- **テストユーティリティ**: Vitest セットアップ、MSW サーバー、Clerk モック、Storybook プロバイダー
-
 ### 設計の特徴
 
 1. **Feature-based 構成**: ページ/タブ単位で機能をディレクトリ分割
@@ -259,19 +197,7 @@ Chrome Manifest V3 に準拠。`public/manifest.json` で定義。
 
 ### Build Output
 
-ビルド後の `dist/` ディレクトリが Chrome 拡張機能としてロード可能な構造になります：
-
-```
-dist/
-├── manifest.json
-├── popup/
-│   └── index.html
-├── sidepanel/
-│   └── index.html
-└── assets/
-    ├── *.js
-    └── *.css
-```
+ビルド後の `dist/` ディレクトリが Chrome 拡張機能としてロード可能な構造になります。
 
 ## Testing
 

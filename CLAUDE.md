@@ -18,11 +18,11 @@ packages/
 
 ## Tech Stack
 
-- **Package manager**: pnpm 10.28.2 (strict catalog mode)
-- **Build orchestration**: Turborepo
+- **Package manager**: pnpm 10.29.2 (strict catalog mode)
+- **Build orchestration**: Turborepo 2.8.0
 - **Node**: v22.22.0
 - **Language**: TypeScript 5.9 (strict mode)
-- **Formatting/Linting**: Biome + ESLint
+- **Formatting/Linting**: Biome 2.3 + ESLint 9
 - **Git hooks**: Lefthook (pre-commit: biome check + eslint, pre-push: staged file check)
 
 ## Common Commands
@@ -75,19 +75,34 @@ pnpm scaffold         # Code generation via scaffdog
 
 ```
 src/
-  server.ts                    # GraphQL resolvers (entry point)
-  middleware/                   # Auth middleware (Clerk / test key)
-  application/
-    queries/                    # Read use cases (articles, bookmarks, tags)
-    mutations/                  # Write use cases (create/update/delete bookmark, create tag)
-  infrastructure/
-    domain/                     # Entity types (Bookmark, Article, Tag)
-    persistence/                # DB repositories (Drizzle ORM)
-    external/                   # External API clients (Qiita)
-  libs/drizzle/schema.ts        # Database schema definition
+  server.ts              # GraphQL resolvers (entry point)
+  middleware/             # Auth middleware (Clerk / test key)
+  application/           # Use cases organized by entity
+    {entity}/queries/    #   e.g. bookmark/queries/get-bookmarks/
+    {entity}/mutations/  #   e.g. bookmark/mutations/create-bookmark/
+  domain/                # Domain layer organized by entity
+    {entity}/model.ts          # Entity type definitions
+    {entity}/interface.ts      # Repository interface
+    {entity}/repository.*.ts   # Repository implementations (persistence / external)
+  shared/context/        # User context management (Pylon getContext)
+  libs/
+    drizzle/             # DB client, schema, migrations
+    openapi/             # Qiita API client
+    test/                # Test utilities (auth helper, MSW mock server)
 ```
 
 ### Frontend (apps/extension)
+
+```
+src/
+  pages/              # HTML entry points (popup, sidepanel)
+  features/           # Feature modules organized by page/tab
+    popup/            #   e.g. Popup feature
+    sidepanel/        #   e.g. SidePanel tabs (bookmark-check, bookmark-list, article-list, settings)
+    shared/graphql/   #   Shared GraphQL queries/mutations
+  shared/             # Shared components, hooks, providers
+  libs/               # SWR config, test utilities (MSW, Clerk mock)
+```
 
 - React 19 with Suspense for data loading
 - Apollo Client + gql.tada for type-safe GraphQL queries
@@ -97,9 +112,9 @@ src/
 ## Database
 
 SQLite (Turso in production, local SQLite for dev) with three tables:
-- `bookmarks` — id (cuid2), title, url (unique), description, note, thumbnail, timestamps
-- `tags` — id (cuid2), name (unique), timestamps
-- `bookmark_tags` — junction table with cascade deletes
+- `bookmarks` — id (cuid2), user_id, title, url, description, note, thumbnail, timestamps. UNIQUE: (user_id, url)
+- `tags` — id (cuid2), user_id, name, timestamps. UNIQUE: (user_id, name)
+- `bookmark_tags` — junction table (bookmark_id, tag_id) with cascade deletes
 
 ## Testing
 
@@ -115,4 +130,4 @@ SQLite (Turso in production, local SQLite for dev) with three tables:
 
 ## CI
 
-GitHub Actions runs on PRs and pushes to main: test, lint, typecheck, and VRT workflows.
+GitHub Actions runs on PRs and pushes to main: test, lint, typecheck, VRT, GraphQL deploy, and migration deploy workflows.

@@ -71,12 +71,14 @@ pnpm test
 
 - `pnpm dev` - Start development server
 - `pnpm build` - Build for production
+- `pnpm deploy` - Build and deploy to Cloudflare Workers
 - `pnpm test` - Run tests
-- `pnpm test:ui` - Run tests with UI
+- `pnpm test:changed` - Run tests for files changed since main
 - `pnpm typecheck` - TypeScript type checking
 - `pnpm lint` - Run ESLint
 - `pnpm codegen` - Build and generate GraphQL schema for client
 - `pnpm db:local` - Start local SQLite dev database
+- `pnpm db:push` - Push schema to database
 - `pnpm db:generate` - Generate Drizzle migrations
 - `pnpm db:migrate` - Run database migrations
 - `pnpm db:studio` - Open Drizzle Studio UI
@@ -91,79 +93,29 @@ pnpm test
 
 ```
 src/
-  server.ts                  # GraphQLリゾルバー（エントリポイント）
-  index.ts                   # アプリケーションエントリポイント
-  domain/                    # ドメイン層
-    article/
-      model.ts               #   エンティティ型定義
-      interface.ts            #   リポジトリインターフェース (IArticleRepository)
-      repository.external.ts  #   外部API実装 (Qiita API)
-    bookmark/
-      model.ts                #   エンティティ型定義
-      interface.ts            #   リポジトリインターフェース (IBookmarkRepository)
-      repository.persistence.ts  # DB実装 (Drizzle ORM)
-    tag/
-      model.ts                #   エンティティ型定義
-      interface.ts            #   リポジトリインターフェース (ITagRepository)
-      repository.persistence.ts  # DB実装 (Drizzle ORM)
-  application/               # アプリケーション層（ユースケース）
-    article/
-      queries/
-        get-articles/         #   記事一覧取得
-          index.ts
-          test.ts
-          mocks.ts
-    bookmark/
-      queries/
-        get-bookmark/         #   ブックマーク取得（ID/URL指定）
-          index.ts
-          test.ts
-          validate.ts
-        get-bookmarks/        #   ブックマーク一覧取得
-          index.ts
-          test.ts
-      mutations/
-        create-bookmark/      #   ブックマーク作成
-          index.ts
-          test.ts
-        update-bookmark/      #   ブックマーク更新
-          index.ts
-          test.ts
-        delete-bookmark/      #   ブックマーク削除
-          index.ts
-          test.ts
-    tag/
-      queries/
-        get-tags/             #   タグ一覧取得
-          index.ts
-          test.ts
-      mutations/
-        create-tag/           #   タグ作成
-          index.ts
-          test.ts
-  middleware/                 # ミドルウェア層
-    auth.ts                   #   認証ミドルウェア (Clerk / テストキー)
-    auth.test.ts
-  shared/                    # 共有層
-    context/
-      index.ts                #   ContextRepository（ユーザーコンテキスト管理）
-  libs/                      # 技術基盤ライブラリ
-    drizzle/
-      client.ts               #   DBクライアント (Turso/ローカルSQLite)
-      schema.ts               #   スキーマ定義
-      migrations/              #   マイグレーションファイル
-    openapi/
-      client.ts               #   Qiita APIクライアント
-    test/
-      authHelper.ts            #   テスト用認証ヘルパー
-      client.ts                #   テスト用HTTPクライアント
-      mockServer.ts            #   MSWモックサーバー
-      globalSetup.ts           #   グローバルセットアップ
-      vitest.setup.ts          #   Vitestセットアップ
-  generated/                 # 自動生成コード
-    gqty/                     #   GQty GraphQLクライアント
-    openapi/                  #   OpenAPI型定義
+  server.ts             # GraphQLリゾルバー（エントリポイント）
+  index.ts              # アプリケーションエントリポイント
+  domain/               # ドメイン層（エンティティ単位で整理）
+    {entity}/
+      model.ts          #   エンティティ型定義
+      interface.ts      #   リポジトリインターフェース
+      repository.*.ts   #   リポジトリ実装 (persistence / external)
+  application/          # アプリケーション層（ユースケース）
+    {entity}/
+      queries/          #   読み取りユースケース (e.g. get-bookmarks/)
+      mutations/        #   書き込みユースケース (e.g. create-bookmark/)
+  middleware/            # ミドルウェア層
+    auth.ts             #   認証ミドルウェア (Clerk / テストキー)
+  shared/               # 共有層
+    context/            #   ContextRepository（ユーザーコンテキスト管理）
+  libs/                 # 技術基盤ライブラリ
+    drizzle/            #   DBクライアント, スキーマ定義, マイグレーション
+    openapi/            #   Qiita APIクライアント
+    test/               #   テストユーティリティ（認証ヘルパー, MSWモックサーバー等）
+  generated/            # 自動生成コード (GQty, OpenAPI型定義)
 ```
+
+各 query/mutation ディレクトリは `index.ts`（実装）と `test.ts`（テスト）をコロケーションしています。
 
 ### 依存関係
 
@@ -252,7 +204,7 @@ graph TD
   - `tag`: Drizzle ORMによるタグCRUD
 
 #### Application Layer (`src/application/`)
-- **ユースケース**: GraphQLスキーマ単位（エンティティ別）に整理
+- **ユースケース**: エンティティ単位（article, bookmark, tag）で整理
 - 各query/mutationは独立したディレクトリで、`index.ts`（実装）と`test.ts`（テスト）を配置
 - ドメイン層のリポジトリを利用してビジネスロジックを実装
 
@@ -271,7 +223,7 @@ graph TD
 ### 設計の特徴
 
 1. **Clean Architecture**: domain / application / middleware / shared の明確な層分離
-2. **エンティティ単位の整理**: application層はGraphQLスキーマに対応するエンティティ単位でディレクトリを構成
+2. **エンティティ単位の整理**: application層・domain層ともにエンティティ単位でディレクトリを構成
 3. **コロケーション**: 各query/mutationにテストファイルを同梱し、関連ファイルを近くに配置
 4. **TypeScript関数ベース**: クラスではなくアロー関数を使用したシンプルな実装
 5. **type定義**: `interface`ではなく`type`を使用（Biomeルール準拠）

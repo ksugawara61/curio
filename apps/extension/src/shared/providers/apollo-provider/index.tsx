@@ -1,7 +1,8 @@
-import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
-import { ApolloProvider as OriginalApolloProvider } from "@apollo/client/react";
 import { useAuth } from "@clerk/chrome-extension";
+import {
+  createGraphQLClient,
+  ApolloProvider as OriginalApolloProvider,
+} from "@curio/graphql-client";
 import type { FC, PropsWithChildren } from "react";
 import { useMemo } from "react";
 
@@ -11,31 +12,14 @@ const GRAPHQL_URI =
 export const ApolloProvider: FC<PropsWithChildren> = ({ children }) => {
   const { getToken } = useAuth();
 
-  const client = useMemo(() => {
-    const httpLink = new HttpLink({
-      uri: GRAPHQL_URI,
-    });
-
-    const authLink = setContext(async (_, { headers }) => {
-      const token = await getToken();
-      return {
-        headers: {
-          ...headers,
-          ...(token ? { authorization: `Bearer ${token}` } : {}),
-        },
-      };
-    });
-
-    return new ApolloClient({
-      link: authLink.concat(httpLink),
-      cache: new InMemoryCache(),
-      defaultOptions: {
-        watchQuery: {
-          fetchPolicy: "cache-and-network",
-        },
-      },
-    });
-  }, [getToken]);
+  const client = useMemo(
+    () =>
+      createGraphQLClient({
+        uri: GRAPHQL_URI,
+        getToken,
+      }),
+    [getToken],
+  );
 
   return (
     <OriginalApolloProvider client={client}>{children}</OriginalApolloProvider>

@@ -21,11 +21,11 @@
     "codegen": "gql.tada generate-output --output src/graphql/graphql-env.d.ts"
   },
   "dependencies": {
-    "@apollo/client": "catalog:",
     "gql.tada": "catalog:",
     "graphql": "catalog:"
   },
   "peerDependencies": {
+    "@apollo/client": "catalog:",
     "react": "catalog:"
   },
   "devDependencies": {

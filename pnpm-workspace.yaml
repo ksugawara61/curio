@@ -7,7 +7,7 @@ catalog:
   '@apollo/client': ^4.1.1
   '@apollo/server': ^5.2.0
   '@as-integrations/express5': ^1.1.2
-  '@biomejs/biome': 2.3.13
+  '@biomejs/biome': 2.3.14
   '@clerk/backend': ^2.30.0
   '@clerk/chrome-extension': ^2.9.0
   '@cloudflare/workers-types': ^4.20251011.0

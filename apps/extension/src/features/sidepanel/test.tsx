@@ -5,6 +5,7 @@ import { BlockedDomainsMocks } from "../../shared/hooks/useBlockedDomains.mocks"
 import { BookmarkQueryMocks } from "../shared/graphql/BookmarkQuery.mocks";
 import { SidePanel } from ".";
 import { ArticlesListQueryMocks } from "./article-list/ArticlesQuery.mocks";
+import { ArchivedBookmarksQueryMocks } from "./bookmark-list/ArchivedBookmarksQuery.mocks";
 import { BookmarksListQueryMocks } from "./bookmark-list/BookmarksQuery.mocks";
 
 const defaultProps = {
@@ -51,7 +52,11 @@ describe("SidePanel", () => {
   });
 
   it("switches to Bookmarks tab when clicked", async () => {
-    server.use(BookmarkQueryMocks.NotFound, BookmarksListQueryMocks.Empty);
+    server.use(
+      BookmarkQueryMocks.NotFound,
+      BookmarksListQueryMocks.Empty,
+      ArchivedBookmarksQueryMocks.Empty,
+    );
 
     const { user } = await renderSidePanel();
     // Wait for initial load

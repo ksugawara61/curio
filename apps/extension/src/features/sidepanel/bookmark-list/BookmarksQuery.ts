@@ -4,6 +4,7 @@ export const BookmarksQuery = graphql(`
   query BookmarksList {
     bookmarks {
       __typename
+      archived_at
       created_at
       description
       id

@@ -36,6 +36,13 @@
       "when": 1770704146708,
       "tag": "0004_chemical_hercules",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1771053351998,
+      "tag": "0005_pink_maximus",
+      "breakpoints": true
     }
   ]
 }

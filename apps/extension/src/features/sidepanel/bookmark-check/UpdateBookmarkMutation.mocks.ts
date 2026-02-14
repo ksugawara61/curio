@@ -32,6 +32,7 @@ export const UpdateBookmarkMutationMocks = {
           description: input?.description ?? null,
           note: input?.note ?? null,
           thumbnail: input?.thumbnail ?? null,
+          archived_at: null,
           created_at: "2024-01-01T00:00:00Z",
           updated_at: new Date().toISOString(),
           tags:

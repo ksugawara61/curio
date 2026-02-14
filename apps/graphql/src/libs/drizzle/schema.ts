@@ -11,6 +11,7 @@ export const bookmarks = sqliteTable(
     description: text("description"),
     note: text("note"),
     thumbnail: text("thumbnail"),
+    archived_at: text("archived_at"),
     created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
     updated_at: text("updated_at").default(sql`(datetime('now'))`).notNull(),
   },

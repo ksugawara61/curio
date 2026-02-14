@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNotNull, isNull } from "drizzle-orm";
 import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { createDb } from "../../libs/drizzle/client";
 import type * as schema from "../../libs/drizzle/schema";
@@ -14,6 +14,45 @@ import type {
 type Transaction = Parameters<
   Parameters<LibSQLDatabase<typeof schema>["transaction"]>[0]
 >[0];
+
+const bookmarkSelectFields = {
+  id: bookmarks.id,
+  title: bookmarks.title,
+  url: bookmarks.url,
+  description: bookmarks.description,
+  note: bookmarks.note,
+  thumbnail: bookmarks.thumbnail,
+  archived_at: bookmarks.archived_at,
+  created_at: bookmarks.created_at,
+  updated_at: bookmarks.updated_at,
+  tag_id: tags.id,
+  tag_name: tags.name,
+  tag_created_at: tags.created_at,
+  tag_updated_at: tags.updated_at,
+};
+
+const rowToBookmark = (row: {
+  id: string;
+  title: string;
+  url: string;
+  description: string | null;
+  note: string | null;
+  thumbnail: string | null;
+  archived_at: string | null;
+  created_at: string;
+  updated_at: string;
+}): Bookmark => ({
+  id: row.id,
+  title: row.title,
+  url: row.url,
+  description: row.description,
+  note: row.note,
+  thumbnail: row.thumbnail,
+  archived_at: row.archived_at ? new Date(row.archived_at) : null,
+  created_at: new Date(row.created_at),
+  updated_at: new Date(row.updated_at),
+  tags: [],
+});
 
 export class BookmarkRepository {
   private db: LibSQLDatabase<typeof schema> | Transaction;
@@ -31,78 +70,38 @@ export class BookmarkRepository {
 
   async findMany(): Promise<Bookmark[]> {
     const result = await this.db
-      .select({
-        id: bookmarks.id,
-        title: bookmarks.title,
-        url: bookmarks.url,
-        description: bookmarks.description,
-        note: bookmarks.note,
-        thumbnail: bookmarks.thumbnail,
-        created_at: bookmarks.created_at,
-        updated_at: bookmarks.updated_at,
-        tag_id: tags.id,
-        tag_name: tags.name,
-        tag_created_at: tags.created_at,
-        tag_updated_at: tags.updated_at,
-      })
+      .select(bookmarkSelectFields)
       .from(bookmarks)
       .leftJoin(bookmarkTags, eq(bookmarks.id, bookmarkTags.bookmark_id))
       .leftJoin(tags, eq(bookmarkTags.tag_id, tags.id))
-      .where(eq(bookmarks.user_id, this.userId))
+      .where(
+        and(eq(bookmarks.user_id, this.userId), isNull(bookmarks.archived_at)),
+      )
       .orderBy(bookmarks.created_at);
 
-    // Group bookmarks with their tags
-    const bookmarkMap = new Map<string, Bookmark>();
+    return this.groupBookmarksWithTags(result);
+  }
 
-    for (const row of result) {
-      if (!bookmarkMap.has(row.id)) {
-        bookmarkMap.set(row.id, {
-          id: row.id,
-          title: row.title,
-          url: row.url,
-          description: row.description,
-          note: row.note,
-          thumbnail: row.thumbnail,
-          created_at: new Date(row.created_at),
-          updated_at: new Date(row.updated_at),
-          tags: [],
-        });
-      }
+  async findManyArchived(): Promise<Bookmark[]> {
+    const result = await this.db
+      .select(bookmarkSelectFields)
+      .from(bookmarks)
+      .leftJoin(bookmarkTags, eq(bookmarks.id, bookmarkTags.bookmark_id))
+      .leftJoin(tags, eq(bookmarkTags.tag_id, tags.id))
+      .where(
+        and(
+          eq(bookmarks.user_id, this.userId),
+          isNotNull(bookmarks.archived_at),
+        ),
+      )
+      .orderBy(bookmarks.created_at);
 
-      if (row.tag_id) {
-        const bookmark = bookmarkMap.get(row.id);
-        if (!bookmark) {
-          throw new Error(`Bookmark with id ${row.id} not found in map`);
-        }
-        bookmark.tags = bookmark.tags || [];
-        bookmark.tags.push({
-          id: row.tag_id,
-          name: row.tag_name ?? "",
-          created_at: new Date(row.tag_created_at ?? 0),
-          updated_at: new Date(row.tag_updated_at ?? 0),
-        });
-      }
-    }
-
-    return Array.from(bookmarkMap.values()).reverse(); // Reverse for desc order
+    return this.groupBookmarksWithTags(result);
   }
 
   async findById(id: string): Promise<Bookmark | null> {
     const result = await this.db
-      .select({
-        id: bookmarks.id,
-        title: bookmarks.title,
-        url: bookmarks.url,
-        description: bookmarks.description,
-        note: bookmarks.note,
-        thumbnail: bookmarks.thumbnail,
-        created_at: bookmarks.created_at,
-        updated_at: bookmarks.updated_at,
-        tag_id: tags.id,
-        tag_name: tags.name,
-        tag_created_at: tags.created_at,
-        tag_updated_at: tags.updated_at,
-      })
+      .select(bookmarkSelectFields)
       .from(bookmarks)
       .leftJoin(bookmarkTags, eq(bookmarks.id, bookmarkTags.bookmark_id))
       .leftJoin(tags, eq(bookmarkTags.tag_id, tags.id))
@@ -113,17 +112,7 @@ export class BookmarkRepository {
     }
 
     const firstRow = result[0];
-    const bookmark: Bookmark = {
-      id: firstRow.id,
-      title: firstRow.title,
-      url: firstRow.url,
-      description: firstRow.description,
-      note: firstRow.note,
-      thumbnail: firstRow.thumbnail,
-      created_at: new Date(firstRow.created_at),
-      updated_at: new Date(firstRow.updated_at),
-      tags: [],
-    };
+    const bookmark = rowToBookmark(firstRow);
 
     for (const row of result) {
       if (row.tag_id) {
@@ -142,20 +131,7 @@ export class BookmarkRepository {
 
   async findByUrl(url: string): Promise<Bookmark | null> {
     const result = await this.db
-      .select({
-        id: bookmarks.id,
-        title: bookmarks.title,
-        url: bookmarks.url,
-        description: bookmarks.description,
-        note: bookmarks.note,
-        thumbnail: bookmarks.thumbnail,
-        created_at: bookmarks.created_at,
-        updated_at: bookmarks.updated_at,
-        tag_id: tags.id,
-        tag_name: tags.name,
-        tag_created_at: tags.created_at,
-        tag_updated_at: tags.updated_at,
-      })
+      .select(bookmarkSelectFields)
       .from(bookmarks)
       .leftJoin(bookmarkTags, eq(bookmarks.id, bookmarkTags.bookmark_id))
       .leftJoin(tags, eq(bookmarkTags.tag_id, tags.id))
@@ -166,17 +142,7 @@ export class BookmarkRepository {
     }
 
     const firstRow = result[0];
-    const bookmark: Bookmark = {
-      id: firstRow.id,
-      title: firstRow.title,
-      url: firstRow.url,
-      description: firstRow.description,
-      note: firstRow.note,
-      thumbnail: firstRow.thumbnail,
-      created_at: new Date(firstRow.created_at),
-      updated_at: new Date(firstRow.updated_at),
-      tags: [],
-    };
+    const bookmark = rowToBookmark(firstRow);
 
     for (const row of result) {
       if (row.tag_id) {
@@ -242,6 +208,7 @@ export class BookmarkRepository {
       description: bookmark.description,
       note: bookmark.note,
       thumbnail: bookmark.thumbnail,
+      archived_at: bookmark.archived_at ? new Date(bookmark.archived_at) : null,
       created_at: new Date(bookmark.created_at),
       updated_at: new Date(bookmark.updated_at),
       tags: tagEntities,
@@ -332,10 +299,61 @@ export class BookmarkRepository {
       description: updatedBookmark.description,
       note: updatedBookmark.note,
       thumbnail: updatedBookmark.thumbnail,
+      archived_at: updatedBookmark.archived_at
+        ? new Date(updatedBookmark.archived_at)
+        : null,
       created_at: new Date(updatedBookmark.created_at),
       updated_at: new Date(updatedBookmark.updated_at),
       tags: tagEntities,
     };
+  }
+
+  async archive(id: string): Promise<Bookmark> {
+    const now = new Date().toISOString();
+
+    const [updatedBookmark] = await this.db
+      .update(bookmarks)
+      .set({
+        archived_at: now,
+        updated_at: now,
+      })
+      .where(and(eq(bookmarks.id, id), eq(bookmarks.user_id, this.userId)))
+      .returning();
+
+    if (!updatedBookmark) {
+      throw new Error("No record was found");
+    }
+
+    const bookmark = await this.findById(id);
+    if (!bookmark) {
+      throw new Error("No record was found");
+    }
+
+    return bookmark;
+  }
+
+  async unarchive(id: string): Promise<Bookmark> {
+    const now = new Date().toISOString();
+
+    const [updatedBookmark] = await this.db
+      .update(bookmarks)
+      .set({
+        archived_at: null,
+        updated_at: now,
+      })
+      .where(and(eq(bookmarks.id, id), eq(bookmarks.user_id, this.userId)))
+      .returning();
+
+    if (!updatedBookmark) {
+      throw new Error("No record was found");
+    }
+
+    const bookmark = await this.findById(id);
+    if (!bookmark) {
+      throw new Error("No record was found");
+    }
+
+    return bookmark;
   }
 
   async deleteBookmark(id: string): Promise<void> {
@@ -347,5 +365,47 @@ export class BookmarkRepository {
     if (result.length === 0) {
       throw new Error("No record was found");
     }
+  }
+
+  private groupBookmarksWithTags(
+    result: {
+      id: string;
+      title: string;
+      url: string;
+      description: string | null;
+      note: string | null;
+      thumbnail: string | null;
+      archived_at: string | null;
+      created_at: string;
+      updated_at: string;
+      tag_id: string | null;
+      tag_name: string | null;
+      tag_created_at: string | null;
+      tag_updated_at: string | null;
+    }[],
+  ): Bookmark[] {
+    const bookmarkMap = new Map<string, Bookmark>();
+
+    for (const row of result) {
+      if (!bookmarkMap.has(row.id)) {
+        bookmarkMap.set(row.id, rowToBookmark(row));
+      }
+
+      if (row.tag_id) {
+        const bookmark = bookmarkMap.get(row.id);
+        if (!bookmark) {
+          throw new Error(`Bookmark with id ${row.id} not found in map`);
+        }
+        bookmark.tags = bookmark.tags || [];
+        bookmark.tags.push({
+          id: row.tag_id,
+          name: row.tag_name ?? "",
+          created_at: new Date(row.tag_created_at ?? 0),
+          updated_at: new Date(row.tag_updated_at ?? 0),
+        });
+      }
+    }
+
+    return Array.from(bookmarkMap.values()).reverse(); // Reverse for desc order
   }
 }

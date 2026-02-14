@@ -1,12 +1,17 @@
 import { renderSuspense, screen, waitFor } from "@curio/testing-library";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { server } from "../../../libs/test/msw/server";
 import { BookmarkList } from ".";
+import { ArchivedBookmarksQueryMocks } from "./ArchivedBookmarksQuery.mocks";
 import { BookmarksListQueryMocks } from "./BookmarksQuery.mocks";
 import { DeleteBookmarkMutationMocks } from "./DeleteBookmarkMutation.mocks";
 
 describe("BookmarkList", () => {
+  beforeEach(() => {
+    server.use(ArchivedBookmarksQueryMocks.Empty);
+  });
+
   afterEach(() => {
     vi.restoreAllMocks();
   });

@@ -4,6 +4,7 @@ export const CreateBookmarkMutation = graphql(`
   mutation CreateBookmark($input: CreateBookmarkInputInput!) {
     createBookmark(input: $input) {
       __typename
+      archived_at
       created_at
       description
       id

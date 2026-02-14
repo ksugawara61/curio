@@ -20,6 +20,7 @@ input CreateTagInputInput {
 type Query {
   articles(offset: Number, limit: Number): [Article!]!
   bookmarks: [Bookmark!]!
+  archivedBookmarks: [Bookmark!]!
   bookmark(id: String, uri: String): Bookmark
   tags: [Tag!]!
   rssArticles(id: String!): [RssArticle!]!
@@ -48,6 +49,7 @@ type Bookmark {
   description: String
   note: String
   thumbnail: String
+  archived_at: Date
   created_at: Date!
   updated_at: Date!
   tags: [Tag!]
@@ -76,6 +78,8 @@ type RssFeed {
 type Mutation {
   createBookmark(input: CreateBookmarkInputInput!): Bookmark!
   updateBookmark(id: String!, input: UpdateBookmarkInputInput!): Bookmark!
+  archiveBookmark(id: String!): Bookmark!
+  unarchiveBookmark(id: String!): Bookmark!
   deleteBookmark(id: String!): Boolean!
   createTag(input: CreateTagInputInput!): Tag!
   createRssFeed(url: String!): RssFeed!

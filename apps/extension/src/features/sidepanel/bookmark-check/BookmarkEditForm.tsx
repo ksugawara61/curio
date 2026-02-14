@@ -2,7 +2,9 @@ import { useMutation } from "@curio/graphql-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type FC, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { ArchiveBookmarkMutation } from "./ArchiveBookmarkMutation";
 import { type BookmarkFormValues, bookmarkFormSchema } from "./schema";
+import { UnarchiveBookmarkMutation } from "./UnarchiveBookmarkMutation";
 import { UpdateBookmarkMutation } from "./UpdateBookmarkMutation";
 
 type Bookmark = {
@@ -12,6 +14,7 @@ type Bookmark = {
   description: string | null;
   note: string | null;
   thumbnail: string | null;
+  archived_at: string | null;
   created_at: string;
   tags: Array<{ id: string; name: string }> | null;
 };
@@ -34,6 +37,24 @@ export const BookmarkEditForm: FC<Props> = ({ bookmark, onSuccess }) => {
 
   const [updateBookmark, { loading: updating }] = useMutation(
     UpdateBookmarkMutation,
+    {
+      onCompleted: () => {
+        onSuccess();
+      },
+    },
+  );
+
+  const [archiveBookmark, { loading: archivingBookmark }] = useMutation(
+    ArchiveBookmarkMutation,
+    {
+      onCompleted: () => {
+        onSuccess();
+      },
+    },
+  );
+
+  const [unarchiveBookmark, { loading: unarchivingBookmark }] = useMutation(
+    UnarchiveBookmarkMutation,
     {
       onCompleted: () => {
         onSuccess();
@@ -71,11 +92,15 @@ export const BookmarkEditForm: FC<Props> = ({ bookmark, onSuccess }) => {
     });
   };
 
+  const isArchived = bookmark.archived_at !== null;
+  const mutating = updating || archivingBookmark || unarchivingBookmark;
+
   return (
     <div className="card bg-base-200">
       <form className="card-body" onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-2 flex items-center gap-2">
           <span className="badge badge-success">Bookmarked</span>
+          {isArchived && <span className="badge badge-warning">Archived</span>}
         </div>
         <h2 className="card-title text-lg">{bookmark.title}</h2>
         <a
@@ -143,7 +168,44 @@ export const BookmarkEditForm: FC<Props> = ({ bookmark, onSuccess }) => {
         </div>
 
         <div className="card-actions mt-4 justify-end">
-          <button type="submit" className="btn btn-primary" disabled={updating}>
+          {isArchived ? (
+            <button
+              type="button"
+              className="btn btn-outline btn-sm"
+              disabled={mutating}
+              onClick={() =>
+                unarchiveBookmark({ variables: { id: bookmark.id } })
+              }
+            >
+              {unarchivingBookmark ? (
+                <>
+                  <span className="loading loading-spinner loading-sm" />
+                  Unarchiving...
+                </>
+              ) : (
+                "Unarchive"
+              )}
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-outline btn-sm"
+              disabled={mutating}
+              onClick={() =>
+                archiveBookmark({ variables: { id: bookmark.id } })
+              }
+            >
+              {archivingBookmark ? (
+                <>
+                  <span className="loading loading-spinner loading-sm" />
+                  Archiving...
+                </>
+              ) : (
+                "Archive"
+              )}
+            </button>
+          )}
+          <button type="submit" className="btn btn-primary" disabled={mutating}>
             {updating ? (
               <>
                 <span className="loading loading-spinner loading-sm" />

@@ -11,6 +11,7 @@ const mockBookmarks = [
     description: "Official React documentation",
     note: "## Key Features\n\n- **Hooks**: Use state and other React features\n- **Components**: Build encapsulated components",
     thumbnail: "https://react.dev/images/og-home.png",
+    archived_at: null,
     created_at: "2024-01-01T00:00:00Z",
     updated_at: "2024-01-01T00:00:00Z",
     tags: [
@@ -27,6 +28,7 @@ const mockBookmarks = [
     note: null,
     thumbnail:
       "https://www.typescriptlang.org/images/branding/ts-lettermark-blue.png",
+    archived_at: null,
     created_at: "2024-01-02T00:00:00Z",
     updated_at: "2024-01-02T00:00:00Z",
     tags: [
@@ -42,6 +44,7 @@ const mockBookmarks = [
     description: null,
     note: null,
     thumbnail: null,
+    archived_at: null,
     created_at: "2024-01-03T00:00:00Z",
     updated_at: "2024-01-03T00:00:00Z",
     tags: [],

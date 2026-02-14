@@ -7,9 +7,10 @@ import { useCurrentTab } from "../../shared/hooks/useCurrentTab";
 import { ArticleList } from "./article-list";
 import { BookmarkCheck } from "./bookmark-check";
 import { BookmarkList } from "./bookmark-list";
+import { RssFeedList } from "./rss-feed-list";
 import { Settings } from "./settings";
 
-type TabType = "current" | "bookmarks" | "articles" | "settings";
+type TabType = "current" | "bookmarks" | "articles" | "feeds" | "settings";
 
 type Props = {
   initialUrl?: string;
@@ -27,6 +28,7 @@ export const SidePanel: FC<Props> = ({ initialUrl, initialTitle }) => {
     { id: "current", label: "Current Page" },
     { id: "bookmarks", label: "Bookmarks" },
     { id: "articles", label: "Articles" },
+    { id: "feeds", label: "Feeds" },
     { id: "settings", label: "Settings" },
   ];
 
@@ -78,6 +80,13 @@ export const SidePanel: FC<Props> = ({ initialUrl, initialTitle }) => {
           <ErrorBoundary FallbackComponent={ErrorFallback}>
             <Suspense fallback={<Loading />}>
               <ArticleList />
+            </Suspense>
+          </ErrorBoundary>
+        )}
+        {activeTab === "feeds" && (
+          <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <Suspense fallback={<Loading />}>
+              <RssFeedList />
             </Suspense>
           </ErrorBoundary>
         )}

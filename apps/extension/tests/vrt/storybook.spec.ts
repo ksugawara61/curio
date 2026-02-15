@@ -45,7 +45,7 @@ test.describe("Visual Regression Tests", () => {
         await page.goto(storyUrl);
 
         // ストーリーの読み込みを待つ
-        await page.waitForLoadState("networkidle");
+        await page.waitForLoadState("load");
 
         // 少し待ってアニメーションなどが完了するのを待つ
         await page.waitForTimeout(500);

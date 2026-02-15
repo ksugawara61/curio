@@ -3,6 +3,7 @@ import {
   filterTestableStories,
   getStories,
   getStoryUrl,
+  waitForStoryReady,
 } from "./utils/storybook";
 
 const STORYBOOK_URL = "http://localhost:6006";
@@ -40,12 +41,9 @@ test.describe("Visual Regression Tests", () => {
       }
 
       for (const story of stories) {
-        // ストーリーページに移動
+        // ストーリーページに移動し、ネットワークが安定するまで待つ
         const storyUrl = getStoryUrl(STORYBOOK_URL, story.id);
-        await page.goto(storyUrl);
-
-        // ストーリーの読み込みを待つ
-        await page.waitForLoadState("load");
+        await waitForStoryReady(page, storyUrl);
 
         // 少し待ってアニメーションなどが完了するのを待つ
         await page.waitForTimeout(500);

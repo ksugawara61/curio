@@ -2,6 +2,8 @@
  * Storybook のストーリー情報を取得するユーティリティ
  */
 
+import type { Page } from "@playwright/test";
+
 export type StoryEntry = {
   id: string;
   title: string;
@@ -59,3 +61,57 @@ export function filterTestableStories(stories: StoryEntry[]): StoryEntry[] {
 export function getStoryUrl(baseURL: string, storyId: string): string {
   return `${baseURL}/iframe.html?id=${storyId}&viewMode=story`;
 }
+
+/**
+ * ストーリーに移動し、HTTP リクエストが完了するまで待機する
+ * Storybook の HMR WebSocket が永続的に接続されるため、
+ * Playwright 標準の waitForLoadState("networkidle") は使用できない。
+ * WebSocket を除外して HTTP リクエストのみで networkidle を判定する。
+ */
+export const waitForStoryReady = (page: Page, url: string): Promise<void> => {
+  let pending = 0;
+  let idleTimer: ReturnType<typeof setTimeout> | undefined;
+  let safetyTimer: ReturnType<typeof setTimeout> | undefined;
+  let settled = false;
+
+  return new Promise<void>((resolve) => {
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      page.off("request", onRequest);
+      page.off("requestfinished", onRequestDone);
+      page.off("requestfailed", onRequestDone);
+      if (idleTimer) clearTimeout(idleTimer);
+      if (safetyTimer) clearTimeout(safetyTimer);
+      resolve();
+    };
+
+    const checkIdle = () => {
+      if (idleTimer) clearTimeout(idleTimer);
+      if (pending <= 0) {
+        idleTimer = setTimeout(finish, 500);
+      }
+    };
+
+    const onRequest = (req: { resourceType: () => string }) => {
+      if (req.resourceType() !== "websocket") {
+        pending++;
+        if (idleTimer) clearTimeout(idleTimer);
+      }
+    };
+
+    const onRequestDone = () => {
+      pending--;
+      checkIdle();
+    };
+
+    safetyTimer = setTimeout(finish, 10_000);
+
+    // ナビゲーション前にリスナーを設定し、すべてのリクエストを捕捉する
+    page.on("request", onRequest);
+    page.on("requestfinished", onRequestDone);
+    page.on("requestfailed", onRequestDone);
+
+    page.goto(url).then(() => checkIdle());
+  });
+};

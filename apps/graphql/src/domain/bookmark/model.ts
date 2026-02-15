@@ -7,6 +7,7 @@ export type Bookmark = {
   description?: string | null;
   note?: string | null;
   thumbnail?: string | null;
+  archived_at?: Date | null;
   created_at: Date;
   updated_at: Date;
   tags?: Tag[];

@@ -1,7 +1,10 @@
 import { articles } from "./application/article/queries/get-articles";
+import { archiveBookmark } from "./application/bookmark/mutations/archive-bookmark";
 import { createBookmark } from "./application/bookmark/mutations/create-bookmark";
 import { deleteBookmark } from "./application/bookmark/mutations/delete-bookmark";
+import { unarchiveBookmark } from "./application/bookmark/mutations/unarchive-bookmark";
 import { updateBookmark } from "./application/bookmark/mutations/update-bookmark";
+import { archivedBookmarks } from "./application/bookmark/queries/get-archived-bookmarks";
 import { bookmark } from "./application/bookmark/queries/get-bookmark";
 import { bookmarks } from "./application/bookmark/queries/get-bookmarks";
 import { createRssFeed } from "./application/rss-feed/mutations/create-rss-feed";
@@ -16,6 +19,7 @@ export const server = {
   Query: {
     articles: withAuth(articles),
     bookmarks: withAuth(bookmarks),
+    archivedBookmarks: withAuth(archivedBookmarks),
     bookmark: withAuth(bookmark),
     tags: withAuth(tags),
     rssArticles: withAuth(rssArticles),
@@ -24,6 +28,8 @@ export const server = {
   Mutation: {
     createBookmark: withAuth(createBookmark),
     updateBookmark: withAuth(updateBookmark),
+    archiveBookmark: withAuth(archiveBookmark),
+    unarchiveBookmark: withAuth(unarchiveBookmark),
     deleteBookmark: withAuth(deleteBookmark),
     createTag: withAuth(createTag),
     createRssFeed: withAuth(createRssFeed),

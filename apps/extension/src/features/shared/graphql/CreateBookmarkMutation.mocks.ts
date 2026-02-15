@@ -30,6 +30,7 @@ export const CreateBookmarkMutationMocks = {
           description: input?.description ?? null,
           note: input?.note ?? null,
           thumbnail: input?.thumbnail ?? null,
+          archived_at: null,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
           tags: [],

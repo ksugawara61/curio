@@ -26,6 +26,26 @@ export const extractDomain = (url: string): string => {
   }
 };
 
+const matchesEntry = (
+  entry: string,
+  hostname: string,
+  pathname: string,
+): boolean => {
+  const slashIdx = entry.indexOf("/");
+  if (slashIdx === -1) {
+    // Domain-only entry: exact match or subdomain match
+    return hostname === entry || hostname.endsWith(`.${entry}`);
+  }
+  // Domain+path entry
+  const entryDomain = entry.substring(0, slashIdx);
+  const entryPath = entry.substring(slashIdx); // includes leading /
+  const domainMatches =
+    hostname === entryDomain || hostname.endsWith(`.${entryDomain}`);
+  const pathMatches =
+    pathname === entryPath || pathname.startsWith(`${entryPath}/`);
+  return domainMatches && pathMatches;
+};
+
 export const useBlockedDomains = () => {
   const { data: domains, mutate } = useSWRSuspense<string[]>(
     STORAGE_KEY,
@@ -54,9 +74,13 @@ export const useBlockedDomains = () => {
 
   const isDomainBlocked = useCallback(
     (url: string): boolean => {
-      const hostname = extractDomain(url);
-      if (!hostname) return false;
-      return domains.some((d) => hostname === d || hostname.endsWith(`.${d}`));
+      try {
+        const { hostname, pathname } = new URL(url);
+        if (!hostname) return false;
+        return domains.some((entry) => matchesEntry(entry, hostname, pathname));
+      } catch {
+        return false;
+      }
     },
     [domains],
   );

@@ -123,5 +123,45 @@ describe("Popup", () => {
         screen.getByRole("button", { name: "Bookmark this page" }),
       ).toBeInTheDocument();
     });
+
+    it("blocks a URL whose path matches a blocked path entry", async () => {
+      server.use(BookmarkQueryMocks.NotFound);
+
+      // WithDomains has "other-domain.com/private" — path-only block (domain itself is allowed)
+      await renderSuspense(
+        <Popup
+          initialUrl="https://other-domain.com/private/secret"
+          initialTitle="Secret Page"
+        />,
+        { swrHandlers: [BlockedDomainsMocks.WithDomains] },
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByText("Bookmarking is disabled for this domain."),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it("allows bookmarking when path does not match any blocked path entry", async () => {
+      server.use(BookmarkQueryMocks.NotFound);
+
+      // other-domain.com/private is blocked but other-domain.com/public should be allowed
+      await renderSuspense(
+        <Popup
+          initialUrl="https://other-domain.com/public/page"
+          initialTitle="Public Page"
+        />,
+        { swrHandlers: [BlockedDomainsMocks.WithDomains] },
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText("Public Page")).toBeInTheDocument();
+      });
+
+      expect(
+        screen.getByRole("button", { name: "Bookmark this page" }),
+      ).toBeInTheDocument();
+    });
   });
 });

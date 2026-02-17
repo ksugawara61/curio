@@ -239,6 +239,62 @@ describe("RssFeedExternalRepository", () => {
 
       expect(articles).toEqual([]);
     });
+
+    it("should strip CDATA wrappers from RSS item fields", async () => {
+      mockServer.use(
+        http.get("https://example.com/cdata-rss.xml", () =>
+          HttpResponse.xml(`
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title><![CDATA[CDATA Feed]]></title>
+    <item>
+      <title><![CDATA[CDATA Article Title]]></title>
+      <link>https://example.com/cdata</link>
+      <description><![CDATA[CDATA description text]]></description>
+      <pubDate>Mon, 01 Jan 2024 00:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>
+          `),
+        ),
+      );
+
+      const articles = await repository.fetchArticles(
+        "https://example.com/cdata-rss.xml",
+      );
+
+      expect(articles).toHaveLength(1);
+      expect(articles[0].title).toBe("CDATA Article Title");
+      expect(articles[0].description).toBe("CDATA description text");
+    });
+
+    it("should strip CDATA wrappers from Atom entry fields", async () => {
+      mockServer.use(
+        http.get("https://example.com/cdata-atom.xml", () =>
+          HttpResponse.xml(`
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[CDATA Atom Feed]]></title>
+  <entry>
+    <title><![CDATA[CDATA Entry Title]]></title>
+    <link href="https://example.com/cdata-entry"/>
+    <summary><![CDATA[CDATA summary text]]></summary>
+    <published>2024-01-01T00:00:00Z</published>
+  </entry>
+</feed>
+          `),
+        ),
+      );
+
+      const articles = await repository.fetchArticles(
+        "https://example.com/cdata-atom.xml",
+      );
+
+      expect(articles).toHaveLength(1);
+      expect(articles[0].title).toBe("CDATA Entry Title");
+      expect(articles[0].description).toBe("CDATA summary text");
+    });
   });
 
   describe("異常系", () => {

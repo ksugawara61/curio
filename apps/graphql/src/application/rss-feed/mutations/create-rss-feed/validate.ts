@@ -1,9 +1,13 @@
 import { z } from "zod";
 
+const removeCdata = (content: string): string =>
+  content.replace(/<!\[CDATA\[([\s\S]*?)]]>/g, "$1").trim();
+
 const getTagContent = (xml: string, tagName: string): string | undefined => {
   const regex = new RegExp(`<${tagName}[^>]*>([\\s\\S]*?)<\\/${tagName}>`);
   const match = xml.match(regex);
-  return match?.[1]?.trim();
+  const content = match?.[1]?.trim();
+  return content !== undefined ? removeCdata(content) : undefined;
 };
 
 const parseRss = (xml: string) => {

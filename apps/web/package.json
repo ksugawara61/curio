@@ -20,7 +20,9 @@
     "graphql": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-error-boundary": "catalog:"
+    "react-error-boundary": "catalog:",
+    "react-markdown": "catalog:",
+    "remark-gfm": "catalog:"
   },
   "devDependencies": {
     "@curio/eslint-config": "workspace:*",

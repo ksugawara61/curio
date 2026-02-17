@@ -13,9 +13,14 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@apollo/client": "catalog:",
+    "@clerk/clerk-react": "catalog:",
+    "@curio/graphql-client": "workspace:*",
     "@tanstack/react-router": "^1.120.2",
+    "graphql": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "react-error-boundary": "catalog:"
   },
   "devDependencies": {
     "@curio/eslint-config": "workspace:*",

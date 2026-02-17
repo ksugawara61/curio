@@ -3,6 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./style.css";
 import { routeTree } from "./routeTree.gen";
+import { AppProvider } from "./shared/providers/app-provider";
 
 const router = createRouter({ routeTree });
 
@@ -16,6 +17,8 @@ declare module "@tanstack/react-router" {
 // biome-ignore lint/style/noNonNullAssertion: root element is guaranteed to exist
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AppProvider>
+      <RouterProvider router={router} />
+    </AppProvider>
   </React.StrictMode>,
 );

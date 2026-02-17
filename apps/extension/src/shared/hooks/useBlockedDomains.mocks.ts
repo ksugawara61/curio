@@ -7,5 +7,9 @@ import { STORAGE_KEY } from "./useBlockedDomains";
  */
 export const BlockedDomainsMocks = {
   Empty: createSWRHandler(STORAGE_KEY, [] as string[]),
-  WithDomains: createSWRHandler(STORAGE_KEY, ["example.com", "test.com"]),
+  WithDomains: createSWRHandler(STORAGE_KEY, [
+    "example.com",
+    "test.com",
+    "other-domain.com/private",
+  ]),
 };

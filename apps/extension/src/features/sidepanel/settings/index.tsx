@@ -21,16 +21,18 @@ export const Settings: FC = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="font-bold text-lg">Blocked Domains</h2>
+      <h2 className="font-bold text-lg">Blocked Domains / Paths</h2>
       <p className="text-sm text-base-content/70">
-        Bookmarking is disabled for pages on these domains.
+        Bookmarking is disabled for pages on these domains or paths. You can
+        block an entire domain (e.g. <code>example.com</code>) or a specific
+        path (e.g. <code>example.com/private</code>).
       </p>
 
       <div className="flex gap-2">
         <input
           type="text"
           className="input input-bordered input-sm flex-1"
-          placeholder="example.com"
+          placeholder="example.com or example.com/path"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -47,7 +49,7 @@ export const Settings: FC = () => {
 
       {domains.length === 0 ? (
         <p className="text-sm text-base-content/50">
-          No blocked domains registered.
+          No blocked domains or paths registered.
         </p>
       ) : (
         <ul className="flex flex-col gap-1">

@@ -1,4 +1,4 @@
-import { renderSuspense, screen } from "@curio/testing-library";
+import { renderSuspense, screen, within } from "@curio/testing-library";
 import { describe, expect, it } from "vitest";
 import { BlockedDomainsMocks } from "../../../shared/hooks/useBlockedDomains.mocks";
 import { Settings } from ".";
@@ -9,8 +9,12 @@ describe("Settings", () => {
       swrHandlers: [BlockedDomainsMocks.WithDomains],
     });
 
-    expect(screen.getByText("example.com")).toBeInTheDocument();
-    expect(screen.getByText("test.com")).toBeInTheDocument();
+    const list = screen.getByRole("list");
+    expect(within(list).getByText("example.com")).toBeInTheDocument();
+    expect(within(list).getByText("test.com")).toBeInTheDocument();
+    expect(
+      within(list).getByText("other-domain.com/private"),
+    ).toBeInTheDocument();
   });
 
   it("displays empty state when no domains are blocked", async () => {
@@ -19,7 +23,7 @@ describe("Settings", () => {
     });
 
     expect(
-      screen.getByText("No blocked domains registered."),
+      screen.getByText("No blocked domains or paths registered."),
     ).toBeInTheDocument();
   });
 });

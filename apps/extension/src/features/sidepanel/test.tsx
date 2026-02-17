@@ -4,7 +4,6 @@ import { server } from "../../libs/test/msw/server";
 import { BlockedDomainsMocks } from "../../shared/hooks/useBlockedDomains.mocks";
 import { BookmarkQueryMocks } from "../shared/graphql/BookmarkQuery.mocks";
 import { SidePanel } from ".";
-import { ArticlesListQueryMocks } from "./article-list/ArticlesQuery.mocks";
 import { ArchivedBookmarksQueryMocks } from "./bookmark-list/ArchivedBookmarksQuery.mocks";
 import { BookmarksListQueryMocks } from "./bookmark-list/BookmarksQuery.mocks";
 
@@ -31,7 +30,6 @@ describe("SidePanel", () => {
       ).toBeInTheDocument();
     });
     expect(screen.getByRole("tab", { name: "Bookmarks" })).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: "Articles" })).toBeInTheDocument();
   });
 
   it("shows Current Page tab by default", async () => {
@@ -73,30 +71,6 @@ describe("SidePanel", () => {
 
     await waitFor(() => {
       expect(screen.getByText("No bookmarks yet")).toBeInTheDocument();
-    });
-  });
-
-  it("switches to Articles tab when clicked", async () => {
-    server.use(BookmarkQueryMocks.NotFound, ArticlesListQueryMocks.Success);
-
-    const { user } = await renderSidePanel();
-
-    // Wait for initial load
-    await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "Add Bookmark" }),
-      ).toBeInTheDocument();
-    });
-
-    const articlesTab = screen.getByRole("tab", { name: "Articles" });
-    await user.click(articlesTab);
-
-    expect(articlesTab).toHaveAttribute("aria-selected", "true");
-
-    await waitFor(() => {
-      expect(
-        screen.getByText("Getting Started with React"),
-      ).toBeInTheDocument();
     });
   });
 

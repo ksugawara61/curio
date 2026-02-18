@@ -8,9 +8,9 @@ const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ?? "";
 export const AppProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-      <ApolloProvider>
-        <AuthGuard>{children}</AuthGuard>
-      </ApolloProvider>
+      <AuthGuard>
+        <ApolloProvider>{children}</ApolloProvider>
+      </AuthGuard>
     </ClerkProvider>
   );
 };

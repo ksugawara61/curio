@@ -13,6 +13,7 @@ import { rssArticles } from "./application/rss-feed/queries/get-rss-articles";
 import { rssFeeds } from "./application/rss-feed/queries/get-rss-feeds";
 import { createTag } from "./application/tag/mutations/create-tag";
 import { tags } from "./application/tag/queries/get-tags";
+import { fetchUrlMetadata } from "./application/url-metadata/queries/fetch-url-metadata";
 import { withAuth } from "./middleware/auth";
 
 export const server = {
@@ -24,6 +25,7 @@ export const server = {
     tags: withAuth(tags),
     rssArticles: withAuth(rssArticles),
     rssFeeds: withAuth(rssFeeds),
+    fetchUrlMetadata: withAuth(fetchUrlMetadata),
   },
   Mutation: {
     createBookmark: withAuth(createBookmark),

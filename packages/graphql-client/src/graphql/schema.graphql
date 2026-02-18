@@ -25,6 +25,7 @@ type Query {
   tags: [Tag!]!
   rssArticles(id: String!): [RssArticle!]!
   rssFeeds: [RssFeed!]!
+  fetchUrlMetadata(url: String!): UrlMetadata!
 }
 type Article {
   id: String!
@@ -74,6 +75,11 @@ type RssFeed {
   description: String
   created_at: Date!
   updated_at: Date!
+}
+type UrlMetadata {
+  title: String
+  description: String
+  thumbnail: String
 }
 type Mutation {
   createBookmark(input: CreateBookmarkInputInput!): Bookmark!

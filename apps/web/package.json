@@ -10,7 +10,8 @@
     "fmt": "eslint --fix .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "release": "pnpm build && wrangler pages deploy dist"
   },
   "dependencies": {
     "@apollo/client": "catalog:",
@@ -48,6 +49,7 @@
     "typescript": "catalog:",
     "typescript-eslint": "catalog:",
     "vite": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "wrangler": "catalog:"
   }
 }

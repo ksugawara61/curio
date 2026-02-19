@@ -1,0 +1,13 @@
+# Expo
+.expo/
+dist/
+
+# Native build artifacts
+android/
+ios/
+
+# Storybook build output
+storybook-static/
+
+# Dependencies
+node_modules/

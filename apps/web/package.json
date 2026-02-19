@@ -11,6 +11,11 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "storybook": "storybook dev -p 6006",
+    "vrt": "playwright install chromium && playwright test",
+    "vrt:dry-run": "playwright install chromium && playwright test --ignore-snapshots",
+    "vrt:html": "playwright install chromium && playwright test --reporter=html",
+    "vrt:approve": "playwright install chromium && playwright test --update-snapshots all",
     "release": "pnpm build && wrangler pages deploy dist"
   },
   "dependencies": {
@@ -30,6 +35,12 @@
   },
   "devDependencies": {
     "@curio/eslint-config": "workspace:*",
+    "@curio/testing-library": "workspace:*",
+    "@playwright/test": "catalog:",
+    "@storybook/addon-links": "catalog:",
+    "@storybook/addon-themes": "catalog:",
+    "@storybook/react": "catalog:",
+    "@storybook/react-vite": "catalog:",
     "@tailwindcss/typography": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/router-devtools": "^1.120.2",
@@ -40,16 +51,25 @@
     "@vitejs/plugin-react": "catalog:",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
     "daisyui": "catalog:",
     "eslint": "catalog:",
     "jsdom": "catalog:",
     "eslint-plugin-prefer-arrow-functions": "catalog:",
     "eslint-plugin-react-hooks": "catalog:",
+    "msw": "catalog:",
+    "msw-storybook-addon": "catalog:",
+    "storybook": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "typescript-eslint": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:",
     "wrangler": "catalog:"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

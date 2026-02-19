@@ -1,0 +1,10 @@
+# Expo
+.expo/
+dist/
+
+# Native build artifacts
+android/
+ios/
+
+# Dependencies
+node_modules/

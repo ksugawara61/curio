@@ -90,6 +90,15 @@ hoistWorkspacePackages: false
 
 minimumReleaseAge: 4320
 
+minimumReleaseAgeExclude:
+  - expo
+  - expo-*
+  - react-native
+  - react-native-*
+  - babel-preset-expo
+  - "@expo/*"
+  - "@react-navigation/*"
+
 nodeLinker: hoisted
 
 sharedWorkspaceLockfile: false

@@ -10,6 +10,7 @@
       "**/eslint.config.mjs",
       "**/.storybook/**",
       "**/apps/*/src/**",
+      "**/apps/mobile/app/**",
       "**/packages/*/src/**",
       "**/scripts/**",
       "**/vite.config.*",

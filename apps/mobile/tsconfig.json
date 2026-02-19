@@ -3,7 +3,7 @@
   "compilerOptions": {
     "jsx": "react-native",
     "lib": ["ES2022"],
-    "types": [],
+    "types": ["vitest/globals"],
     "paths": {
       "@/*": ["./*"]
     }

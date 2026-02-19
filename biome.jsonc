@@ -11,6 +11,8 @@
       "**/.storybook/**",
       "**/apps/*/src/**",
       "**/apps/mobile/app/**",
+      "**/apps/mobile/vitest.config.ts",
+      "**/apps/mobile/vitest.setup.ts",
       "**/packages/*/src/**",
       "**/scripts/**",
       "**/vite.config.*",

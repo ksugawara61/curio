@@ -8,6 +8,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
+    "storybook": "storybook dev -p 6006",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
@@ -32,7 +33,13 @@
       "react-refresh": "^0.18.0"
     }
   },
+  "msw": {
+    "workerDirectory": ["public"]
+  },
   "devDependencies": {
+    "@storybook/addon-links": "catalog:",
+    "@storybook/react": "catalog:",
+    "@storybook/react-vite": "catalog:",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@testing-library/user-event": "catalog:",
@@ -41,6 +48,8 @@
     "babel-preset-expo": "~55.0.5",
     "jsdom": "catalog:",
     "msw": "catalog:",
+    "msw-storybook-addon": "catalog:",
+    "storybook": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }

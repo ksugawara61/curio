@@ -6,5 +6,8 @@ dist/
 android/
 ios/
 
+# Storybook build output
+storybook-static/
+
 # Dependencies
 node_modules/

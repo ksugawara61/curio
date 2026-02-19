@@ -58,7 +58,7 @@ catalog:
   msw: ^2.12.7
   msw-storybook-addon: ^2.0.6
   npkill: 0.12.2
-  openapi-fetch: ^0.14.0
+  openapi-fetch: ^0.17.0
   openapi-msw: ^2.0.0
   openapi-typescript: ^7.9.1
   react: ^19.2.3

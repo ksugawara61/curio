@@ -82,7 +82,7 @@ catalog:
   vite-plugin-dts: ^4.5.0
   vitest: ^4.0.17
   wrangler: ^4.43.0
-  zod: ^3.25.51
+  zod: ^4.3.6
 
 catalogMode: strict
 

@@ -20,3 +20,24 @@ export type RssArticle = {
   pubDate?: string | null;
   thumbnailUrl?: string | null;
 };
+
+export type PersistedArticle = {
+  id: string;
+  rss_feed_id: string;
+  title: string;
+  url: string;
+  description?: string | null;
+  thumbnail_url?: string | null;
+  pub_date?: string | null;
+  created_at: Date;
+  updated_at: Date;
+};
+
+export type UpsertArticleInput = {
+  rss_feed_id: string;
+  title: string;
+  url: string;
+  description?: string | null;
+  thumbnail_url?: string | null;
+  pub_date?: string | null;
+};

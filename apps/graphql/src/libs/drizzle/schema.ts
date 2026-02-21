@@ -65,6 +65,26 @@ export const rssFeeds = sqliteTable(
   }),
 );
 
+export const articles = sqliteTable(
+  "articles",
+  {
+    id: text("id").primaryKey(),
+    rss_feed_id: text("rss_feed_id")
+      .notNull()
+      .references(() => rssFeeds.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    url: text("url").notNull(),
+    description: text("description"),
+    thumbnail_url: text("thumbnail_url"),
+    pub_date: text("pub_date"),
+    created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
+    updated_at: text("updated_at").default(sql`(datetime('now'))`).notNull(),
+  },
+  (table) => ({
+    uniqueFeedUrl: unique().on(table.rss_feed_id, table.url),
+  }),
+);
+
 export type InsertBookmark = typeof bookmarks.$inferInsert;
 export type SelectBookmark = typeof bookmarks.$inferSelect;
 export type InsertTag = typeof tags.$inferInsert;
@@ -73,3 +93,5 @@ export type InsertBookmarkTag = typeof bookmarkTags.$inferInsert;
 export type SelectBookmarkTag = typeof bookmarkTags.$inferSelect;
 export type InsertRssFeed = typeof rssFeeds.$inferInsert;
 export type SelectRssFeed = typeof rssFeeds.$inferSelect;
+export type InsertArticle = typeof articles.$inferInsert;
+export type SelectArticle = typeof articles.$inferSelect;

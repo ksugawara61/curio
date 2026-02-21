@@ -43,6 +43,13 @@
       "when": 1771053351998,
       "tag": "0005_pink_maximus",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1771672766660,
+      "tag": "0006_confused_ego",
+      "breakpoints": true
     }
   ]
 }

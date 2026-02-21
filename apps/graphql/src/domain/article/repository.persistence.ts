@@ -6,7 +6,7 @@ import type * as schema from "../../libs/drizzle/schema";
 import { articles } from "../../libs/drizzle/schema";
 import type { UpsertArticleInput } from "./model";
 
-export class RssArticleRepository {
+export class ArticlePersistenceRepository {
   private db: LibSQLDatabase<typeof schema>;
 
   constructor(db?: LibSQLDatabase<typeof schema>) {

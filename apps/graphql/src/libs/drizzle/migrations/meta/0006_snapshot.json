@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "0f01e228-e6a8-460e-90f1-5e78960c8fba",
+  "id": "c8d7b0d7-f645-467a-8bfe-12d49690b5ef",
   "prevId": "bcafae43-3a0d-4d7c-8b47-cbf6f33fa714",
   "tables": {
     "articles": {
@@ -11,6 +11,13 @@
           "name": "id",
           "type": "text",
           "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },

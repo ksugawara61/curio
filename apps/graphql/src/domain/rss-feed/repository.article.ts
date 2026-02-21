@@ -18,6 +18,7 @@ export class RssArticleRepository {
       .insert(articles)
       .values({
         id: createId(),
+        user_id: input.user_id,
         rss_feed_id: input.rss_feed_id,
         title: input.title,
         url: input.url,

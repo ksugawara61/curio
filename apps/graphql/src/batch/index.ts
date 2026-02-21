@@ -18,6 +18,7 @@ export const scheduled = async (): Promise<void> => {
         if (!article.link) continue;
 
         await articleRepo.upsert({
+          user_id: feed.user_id,
           rss_feed_id: feed.id,
           title: article.title,
           url: article.link,

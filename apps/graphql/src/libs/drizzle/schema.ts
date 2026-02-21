@@ -69,6 +69,7 @@ export const articles = sqliteTable(
   "articles",
   {
     id: text("id").primaryKey(),
+    user_id: text("user_id").notNull(),
     rss_feed_id: text("rss_feed_id")
       .notNull()
       .references(() => rssFeeds.id, { onDelete: "cascade" }),

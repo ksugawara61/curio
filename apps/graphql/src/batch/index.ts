@@ -1,14 +1,13 @@
 import { ArticlePersistenceRepository } from "../domain/article/repository.persistence";
+import { RssFeedBatchRepository } from "../domain/rss-feed/repository.batch";
 import { RssFeedExternalRepository } from "../domain/rss-feed/repository.external";
-import { createDb } from "../libs/drizzle/client";
-import { rssFeeds } from "../libs/drizzle/schema";
 
 export const scheduled = async (): Promise<void> => {
-  const db = createDb();
-  const feeds = await db.select().from(rssFeeds);
+  const feedRepo = new RssFeedBatchRepository();
+  const feeds = await feedRepo.findAll();
 
   const externalRepo = new RssFeedExternalRepository();
-  const articleRepo = new ArticlePersistenceRepository(db);
+  const articleRepo = new ArticlePersistenceRepository();
 
   for (const feed of feeds) {
     try {

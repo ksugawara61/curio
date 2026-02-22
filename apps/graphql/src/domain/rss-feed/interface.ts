@@ -1,4 +1,4 @@
-import type { CreateRssFeedInput, RssFeed } from "./model";
+import type { CreateRssFeedInput, RssFeed, RssFeedBatchItem } from "./model";
 
 export type IRssFeedRepository = {
   findAll(): Promise<RssFeed[]>;
@@ -6,4 +6,8 @@ export type IRssFeedRepository = {
   findByUrl(url: string): Promise<RssFeed | null>;
   create(input: CreateRssFeedInput): Promise<RssFeed>;
   remove(id: string): Promise<void>;
+};
+
+export type IRssFeedBatchRepository = {
+  findAll(): Promise<RssFeedBatchItem[]>;
 };

@@ -4,7 +4,7 @@ import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { createDb } from "../../libs/drizzle/client";
 import type * as schema from "../../libs/drizzle/schema";
 import { rssFeeds } from "../../libs/drizzle/schema";
-import type { CreateRssFeedInput, RssFeed } from "./model";
+import type { CreateRssFeedInput, RssFeed, RssFeedBatchItem } from "./model";
 
 type Transaction = Parameters<
   Parameters<LibSQLDatabase<typeof schema>["transaction"]>[0]
@@ -20,6 +20,19 @@ export class RssFeedRepository {
   ) {
     this.userId = userId;
     this.db = dbOrTx ?? createDb();
+  }
+
+  static async findAllForBatch(
+    db?: LibSQLDatabase<typeof schema>,
+  ): Promise<RssFeedBatchItem[]> {
+    const database = db ?? createDb();
+    return database
+      .select({
+        id: rssFeeds.id,
+        user_id: rssFeeds.user_id,
+        url: rssFeeds.url,
+      })
+      .from(rssFeeds);
   }
 
   async findAll(): Promise<RssFeed[]> {

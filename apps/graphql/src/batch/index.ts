@@ -1,10 +1,9 @@
 import { ArticlePersistenceRepository } from "../domain/article/repository.persistence";
-import { RssFeedBatchRepository } from "../domain/rss-feed/repository.batch";
 import { RssFeedExternalRepository } from "../domain/rss-feed/repository.external";
+import { RssFeedRepository } from "../domain/rss-feed/repository.persistence";
 
 export const scheduled = async (): Promise<void> => {
-  const feedRepo = new RssFeedBatchRepository();
-  const feeds = await feedRepo.findAll();
+  const feeds = await RssFeedRepository.findAllForBatch();
 
   const externalRepo = new RssFeedExternalRepository();
   const articleRepo = new ArticlePersistenceRepository();

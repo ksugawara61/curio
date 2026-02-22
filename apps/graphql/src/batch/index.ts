@@ -1,4 +1,4 @@
-import { RssArticleRepository } from "../domain/rss-feed/repository.article";
+import { ArticlePersistenceRepository } from "../domain/article/repository.persistence";
 import { RssFeedExternalRepository } from "../domain/rss-feed/repository.external";
 import { createDb } from "../libs/drizzle/client";
 import { rssFeeds } from "../libs/drizzle/schema";
@@ -8,7 +8,7 @@ export const scheduled = async (): Promise<void> => {
   const feeds = await db.select().from(rssFeeds);
 
   const externalRepo = new RssFeedExternalRepository();
-  const articleRepo = new RssArticleRepository(db);
+  const articleRepo = new ArticlePersistenceRepository(db);
 
   for (const feed of feeds) {
     try {

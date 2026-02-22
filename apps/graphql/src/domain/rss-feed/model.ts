@@ -7,6 +7,12 @@ export type RssFeed = {
   updated_at: Date;
 };
 
+export type RssFeedBatchItem = {
+  id: string;
+  user_id: string;
+  url: string;
+};
+
 export type CreateRssFeedInput = {
   url: string;
   title: string;

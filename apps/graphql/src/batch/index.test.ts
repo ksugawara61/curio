@@ -1,40 +1,10 @@
-import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 import { RssFeedRepository } from "../domain/rss-feed/repository.persistence";
 import { createDb } from "../libs/drizzle/client";
 import { articles } from "../libs/drizzle/schema";
 import { mockServer } from "../libs/test/mockServer";
 import { scheduled } from "./index";
-
-const createRssXml = (
-  items: {
-    title: string;
-    link: string;
-    description?: string;
-    pubDate?: string;
-    thumbnail?: string;
-  }[],
-) => `
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
-  <channel>
-    <title>Test Feed</title>
-    <description>A test feed</description>
-    ${items
-      .map(
-        (item) => `
-    <item>
-      <title>${item.title}</title>
-      <link>${item.link}</link>
-      ${item.description ? `<description>${item.description}</description>` : ""}
-      ${item.pubDate ? `<pubDate>${item.pubDate}</pubDate>` : ""}
-      ${item.thumbnail ? `<media:thumbnail url="${item.thumbnail}"/>` : ""}
-    </item>`,
-      )
-      .join("")}
-  </channel>
-</rss>
-`;
+import { ScheduledMocks } from "./index.mocks";
 
 describe("scheduled", () => {
   describe("正常系", () => {
@@ -57,26 +27,7 @@ describe("scheduled", () => {
         });
       });
 
-      mockServer.use(
-        http.get("https://example.com/feed.xml", () =>
-          HttpResponse.xml(
-            createRssXml([
-              {
-                title: "Article 1",
-                link: "https://example.com/article-1",
-                description: "Description 1",
-                pubDate: "Mon, 01 Jan 2024 00:00:00 GMT",
-                thumbnail: "https://example.com/img1.jpg",
-              },
-              {
-                title: "Article 2",
-                link: "https://example.com/article-2",
-                description: "Description 2",
-              },
-            ]),
-          ),
-        ),
-      );
+      mockServer.use(ScheduledMocks.FeedWithTwoArticles);
 
       await scheduled();
 
@@ -120,22 +71,7 @@ describe("scheduled", () => {
         });
       });
 
-      mockServer.use(
-        http.get("https://example.com/feed-a.xml", () =>
-          HttpResponse.xml(
-            createRssXml([
-              { title: "A Article", link: "https://example.com/a-article" },
-            ]),
-          ),
-        ),
-        http.get("https://example.com/feed-b.xml", () =>
-          HttpResponse.xml(
-            createRssXml([
-              { title: "B Article", link: "https://example.com/b-article" },
-            ]),
-          ),
-        ),
-      );
+      mockServer.use(ScheduledMocks.FeedA, ScheduledMocks.FeedB);
 
       await scheduled();
 
@@ -157,35 +93,11 @@ describe("scheduled", () => {
         });
       });
 
-      mockServer.use(
-        http.get("https://example.com/feed.xml", () =>
-          HttpResponse.xml(
-            createRssXml([
-              {
-                title: "Original Title",
-                link: "https://example.com/article",
-                description: "Original description",
-              },
-            ]),
-          ),
-        ),
-      );
+      mockServer.use(ScheduledMocks.FeedWithOriginalArticle);
 
       await scheduled();
 
-      mockServer.use(
-        http.get("https://example.com/feed.xml", () =>
-          HttpResponse.xml(
-            createRssXml([
-              {
-                title: "Updated Title",
-                link: "https://example.com/article",
-                description: "Updated description",
-              },
-            ]),
-          ),
-        ),
-      );
+      mockServer.use(ScheduledMocks.FeedWithUpdatedArticle);
 
       await scheduled();
 
@@ -206,25 +118,7 @@ describe("scheduled", () => {
         });
       });
 
-      mockServer.use(
-        http.get("https://example.com/feed.xml", () =>
-          HttpResponse.xml(`
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
-  <channel>
-    <title>Test Feed</title>
-    <item>
-      <title>No Link Article</title>
-    </item>
-    <item>
-      <title>Has Link Article</title>
-      <link>https://example.com/has-link</link>
-    </item>
-  </channel>
-</rss>
-          `),
-        ),
-      );
+      mockServer.use(ScheduledMocks.FeedWithMissingLink);
 
       await scheduled();
 
@@ -250,19 +144,7 @@ describe("scheduled", () => {
         });
       });
 
-      mockServer.use(
-        http.get(
-          "https://example.com/failing-feed.xml",
-          () => new HttpResponse(null, { status: 500 }),
-        ),
-        http.get("https://example.com/ok-feed.xml", () =>
-          HttpResponse.xml(
-            createRssXml([
-              { title: "OK Article", link: "https://example.com/ok-article" },
-            ]),
-          ),
-        ),
-      );
+      mockServer.use(ScheduledMocks.FailingFeed, ScheduledMocks.OkFeed);
 
       await scheduled();
 

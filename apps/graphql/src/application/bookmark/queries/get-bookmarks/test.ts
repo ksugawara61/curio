@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { createDb } from "../../../../libs/drizzle/client";
-import { bookmarks } from ".";
+import { GetBookmarks } from ".";
 
-describe("bookmarks", () => {
+describe("GetBookmarks", () => {
   describe("正常系", () => {
     it("should return array of bookmarks", async () => {
       const db = createDb();
@@ -25,7 +25,8 @@ describe("bookmarks", () => {
         });
       });
 
-      const result = await bookmarks();
+      const repository = new BookmarkRepository("test-user");
+      const result = await new GetBookmarks(repository).invoke();
 
       expect(result).toHaveLength(2);
       expect(result[0]).toHaveProperty("id");
@@ -36,7 +37,8 @@ describe("bookmarks", () => {
     });
 
     it("should return empty array when no bookmarks exist", async () => {
-      const result = await bookmarks();
+      const repository = new BookmarkRepository("test-user");
+      const result = await new GetBookmarks(repository).invoke();
 
       expect(result).toEqual([]);
       expect(result).toHaveLength(0);

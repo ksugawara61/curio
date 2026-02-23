@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from "./routes/__root"
 import { Route as IndexRouteImport } from "./routes/index"
+import { Route as BookmarksIndexRouteImport } from "./routes/bookmarks/index"
 import { Route as BookmarksAddRouteImport } from "./routes/bookmarks/add"
 
 const IndexRoute = IndexRouteImport.update({
   id: "/",
   path: "/",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookmarksIndexRoute = BookmarksIndexRouteImport.update({
+  id: "/bookmarks/",
+  path: "/bookmarks/",
   getParentRoute: () => rootRouteImport,
 } as any)
 const BookmarksAddRoute = BookmarksAddRouteImport.update({
@@ -26,27 +32,31 @@ const BookmarksAddRoute = BookmarksAddRouteImport.update({
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
   "/bookmarks/add": typeof BookmarksAddRoute
+  "/bookmarks/": typeof BookmarksIndexRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
   "/bookmarks/add": typeof BookmarksAddRoute
+  "/bookmarks": typeof BookmarksIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   "/": typeof IndexRoute
   "/bookmarks/add": typeof BookmarksAddRoute
+  "/bookmarks/": typeof BookmarksIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: "/" | "/bookmarks/add"
+  fullPaths: "/" | "/bookmarks/add" | "/bookmarks/"
   fileRoutesByTo: FileRoutesByTo
-  to: "/" | "/bookmarks/add"
-  id: "__root__" | "/" | "/bookmarks/add"
+  to: "/" | "/bookmarks/add" | "/bookmarks"
+  id: "__root__" | "/" | "/bookmarks/add" | "/bookmarks/"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BookmarksAddRoute: typeof BookmarksAddRoute
+  BookmarksIndexRoute: typeof BookmarksIndexRoute
 }
 
 declare module "@tanstack/react-router" {
@@ -56,6 +66,13 @@ declare module "@tanstack/react-router" {
       path: "/"
       fullPath: "/"
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/bookmarks/": {
+      id: "/bookmarks/"
+      path: "/bookmarks"
+      fullPath: "/bookmarks/"
+      preLoaderRoute: typeof BookmarksIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/bookmarks/add": {
@@ -71,6 +88,7 @@ declare module "@tanstack/react-router" {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BookmarksAddRoute: BookmarksAddRoute,
+  BookmarksIndexRoute: BookmarksIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

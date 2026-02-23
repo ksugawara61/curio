@@ -19,6 +19,7 @@ input CreateTagInputInput {
 }
 type Query {
   articles(offset: Number, limit: Number): [Article!]!
+  recentArticles(hours: Number): [PersistedArticle!]!
   bookmarks: [Bookmark!]!
   archivedBookmarks: [Bookmark!]!
   bookmark(id: String, uri: String): Bookmark
@@ -58,6 +59,18 @@ type Bookmark {
 type Tag {
   id: String!
   name: String!
+  created_at: Date!
+  updated_at: Date!
+}
+type PersistedArticle {
+  id: String!
+  user_id: String!
+  rss_feed_id: String!
+  title: String!
+  url: String!
+  description: String
+  thumbnail_url: String
+  pub_date: String
   created_at: Date!
   updated_at: Date!
 }

@@ -14,9 +14,13 @@ const setupFeed = async (userId: string, url: string) => {
 
 describe("GetRecentArticles", () => {
   describe("正常系", () => {
-    it("should return articles created within the specified hours", async () => {
+    it("should return articles with pub_date within the specified hours", async () => {
       const feed = await setupFeed("test-user", "https://example.com/feed.xml");
       const repo = new ArticlePersistenceRepository();
+
+      const recentPubDate = new Date(
+        Date.now() - 24 * 60 * 60 * 1000,
+      ).toISOString(); // 24 hours ago
 
       await repo.upsert({
         user_id: "test-user",
@@ -24,6 +28,7 @@ describe("GetRecentArticles", () => {
         title: "Recent Article",
         url: "https://example.com/recent",
         description: "A recent article",
+        pub_date: recentPubDate,
       });
 
       const result = await new GetRecentArticles(repo, "test-user").invoke({
@@ -38,6 +43,49 @@ describe("GetRecentArticles", () => {
       expect(result[0]).toHaveProperty("rss_feed_id", feed.id);
       expect(result[0].created_at).toBeInstanceOf(Date);
       expect(result[0].updated_at).toBeInstanceOf(Date);
+    });
+
+    it("should exclude articles with pub_date older than the specified hours", async () => {
+      const feed = await setupFeed("test-user", "https://example.com/feed.xml");
+      const repo = new ArticlePersistenceRepository();
+
+      const oldPubDate = new Date(
+        Date.now() - 72 * 60 * 60 * 1000,
+      ).toISOString(); // 72 hours ago
+
+      await repo.upsert({
+        user_id: "test-user",
+        rss_feed_id: feed.id,
+        title: "Old Article",
+        url: "https://example.com/old",
+        pub_date: oldPubDate,
+      });
+
+      const result = await new GetRecentArticles(repo, "test-user").invoke({
+        hours: 48,
+      });
+
+      expect(result).toHaveLength(0);
+    });
+
+    it("should fall back to created_at when pub_date is null", async () => {
+      const feed = await setupFeed("test-user", "https://example.com/feed.xml");
+      const repo = new ArticlePersistenceRepository();
+
+      await repo.upsert({
+        user_id: "test-user",
+        rss_feed_id: feed.id,
+        title: "No PubDate Article",
+        url: "https://example.com/no-pubdate",
+        pub_date: null,
+      });
+
+      const result = await new GetRecentArticles(repo, "test-user").invoke({
+        hours: 48,
+      });
+
+      expect(result).toHaveLength(1);
+      expect(result[0].title).toBe("No PubDate Article");
     });
 
     it("should return empty array when no articles exist", async () => {
@@ -55,17 +103,23 @@ describe("GetRecentArticles", () => {
       const feed2 = await setupFeed("user-b", "https://example.com/feed2.xml");
       const repo = new ArticlePersistenceRepository();
 
+      const recentPubDate = new Date(
+        Date.now() - 24 * 60 * 60 * 1000,
+      ).toISOString();
+
       await repo.upsert({
         user_id: "user-a",
         rss_feed_id: feed1.id,
         title: "User A Article",
         url: "https://example.com/article-a",
+        pub_date: recentPubDate,
       });
       await repo.upsert({
         user_id: "user-b",
         rss_feed_id: feed2.id,
         title: "User B Article",
         url: "https://example.com/article-b",
+        pub_date: recentPubDate,
       });
 
       const result = await new GetRecentArticles(repo, "user-a").invoke({
@@ -77,23 +131,29 @@ describe("GetRecentArticles", () => {
       expect(result[0].user_id).toBe("user-a");
     });
 
-    it("should support custom hours input for flexible time ranges", async () => {
+    it("should support RFC 2822 pub_date format from RSS feeds", async () => {
       const feed = await setupFeed("test-user", "https://example.com/feed.xml");
       const repo = new ArticlePersistenceRepository();
+
+      // RFC 2822 format used by RSS feeds
+      const recentRfc2822 = new Date(
+        Date.now() - 24 * 60 * 60 * 1000,
+      ).toUTCString();
 
       await repo.upsert({
         user_id: "test-user",
         rss_feed_id: feed.id,
-        title: "Article within 1 hour",
-        url: "https://example.com/article-1h",
+        title: "RSS Article",
+        url: "https://example.com/rss-article",
+        pub_date: recentRfc2822,
       });
 
       const result = await new GetRecentArticles(repo, "test-user").invoke({
-        hours: 1,
+        hours: 48,
       });
 
       expect(result).toHaveLength(1);
-      expect(result[0].title).toBe("Article within 1 hour");
+      expect(result[0].title).toBe("RSS Article");
     });
   });
 });

@@ -1,5 +1,5 @@
 import type { Context } from "@getcronit/pylon";
-import { getContext } from "@getcronit/pylon";
+import { getContext, getEnv } from "@getcronit/pylon";
 import { vi } from "vitest";
 
 vi.mock("@getcronit/pylon", async (importOriginal) => {
@@ -7,6 +7,7 @@ vi.mock("@getcronit/pylon", async (importOriginal) => {
   return {
     ...actual,
     getContext: vi.fn(),
+    getEnv: vi.fn(),
   };
 });
 
@@ -27,6 +28,16 @@ export const mockAuthContext = (options?: MockAuthContextOptions): void => {
   // コンテキストの値を保持するストア（userIdを事前設定）
   const store = new Map<string, unknown>([["userId", userId]]);
 
+  const env = {
+    NODE_ENV: nodeEnv,
+    TEST_AUTH_KEY: testKey,
+    CLERK_SECRET_KEY: "test-clerk-key",
+    SECRET_KEY: "test-secret",
+    TURSO_DATABASE_URL:
+      process.env.TURSO_DATABASE_URL ?? "file:./test-database.db",
+    TURSO_AUTH_TOKEN: "test-token",
+  };
+
   // getContextをモック
   vi.mocked(getContext).mockReturnValue({
     req: {
@@ -36,17 +47,13 @@ export const mockAuthContext = (options?: MockAuthContextOptions): void => {
         return undefined;
       },
     },
-    env: {
-      NODE_ENV: nodeEnv,
-      TEST_AUTH_KEY: testKey,
-      CLERK_SECRET_KEY: "test-clerk-key",
-      SECRET_KEY: "test-secret",
-      TURSO_DATABASE_URL: "test-url",
-      TURSO_AUTH_TOKEN: "test-token",
-    },
+    env,
     set: vi.fn((key: string, value: unknown) => {
       store.set(key, value);
     }),
     get: vi.fn((key: string) => store.get(key)),
   } as unknown as Context);
+
+  // getEnvをモック（batch など env 引数を使うケース向け）
+  vi.mocked(getEnv).mockReturnValue(env as ReturnType<typeof getEnv>);
 };

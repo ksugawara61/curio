@@ -5,9 +5,9 @@ import { RssFeedRepository } from "../domain/rss-feed/repository.persistence";
 import { createDb } from "../libs/drizzle/client";
 
 export const scheduled = async (
-  _controller: ScheduledController,
-  env: ReturnType<typeof getEnv>,
-  _ctx: ExecutionContext,
+  _controller?: ScheduledController,
+  env?: ReturnType<typeof getEnv>,
+  _ctx?: ExecutionContext,
 ): Promise<void> => {
   console.log("[batch] Starting RSS feed fetch batch job...");
   const db = createDb(env);

@@ -1,16 +1,55 @@
 import { createId } from "@paralleldrive/cuid2";
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { createDb } from "../../libs/drizzle/client";
 import type * as schema from "../../libs/drizzle/schema";
 import { articles } from "../../libs/drizzle/schema";
-import type { UpsertArticleInput } from "./model";
+import type {
+  GetRecentArticlesInput,
+  PersistedArticle,
+  UpsertArticleInput,
+} from "./model";
 
 export class ArticlePersistenceRepository {
   private db: LibSQLDatabase<typeof schema>;
 
   constructor(db?: LibSQLDatabase<typeof schema>) {
     this.db = db ?? createDb();
+  }
+
+  async findManyWithinPeriod(
+    userId: string,
+    input: GetRecentArticlesInput,
+  ): Promise<PersistedArticle[]> {
+    const { hours } = input;
+    const threshold = new Date(Date.now() - hours * 60 * 60 * 1000);
+
+    const result = await this.db
+      .select()
+      .from(articles)
+      .where(eq(articles.user_id, userId))
+      .orderBy(sql`${articles.pub_date} desc`);
+
+    return result
+      .map((row) => ({
+        id: row.id,
+        user_id: row.user_id,
+        rss_feed_id: row.rss_feed_id,
+        title: row.title,
+        url: row.url,
+        description: row.description,
+        thumbnail_url: row.thumbnail_url,
+        pub_date: row.pub_date,
+        created_at: new Date(row.created_at),
+        updated_at: new Date(row.updated_at),
+      }))
+      .filter((article) => {
+        const date =
+          article.pub_date !== null && article.pub_date !== undefined
+            ? new Date(article.pub_date)
+            : article.created_at;
+        return !Number.isNaN(date.getTime()) && date >= threshold;
+      });
   }
 
   async upsert(input: UpsertArticleInput): Promise<void> {

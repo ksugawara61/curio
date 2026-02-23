@@ -1,4 +1,9 @@
-import type { Article, UpsertArticleInput } from "./model";
+import type {
+  Article,
+  GetRecentArticlesInput,
+  PersistedArticle,
+  UpsertArticleInput,
+} from "./model";
 
 export type IArticleRepository = {
   fetchArticles(offset?: number, limit?: number): Promise<Article[]>;
@@ -6,4 +11,8 @@ export type IArticleRepository = {
 
 export type IArticlePersistenceRepository = {
   upsert(input: UpsertArticleInput): Promise<void>;
+  findManyWithinPeriod(
+    userId: string,
+    input: GetRecentArticlesInput,
+  ): Promise<PersistedArticle[]>;
 };

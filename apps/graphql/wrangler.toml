@@ -4,6 +4,9 @@ main = ".pylon/index.js"
 compatibility_date = "2024-09-03"
 compatibility_flags = ["nodejs_compat_v2"]
 
+[observability]
+enabled = true
+
 [triggers]
 crons = ["0 0 * * *"]
 

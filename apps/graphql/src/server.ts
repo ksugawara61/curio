@@ -1,4 +1,5 @@
 import { articles } from "./application/article/queries/get-articles";
+import { recentArticles } from "./application/article/queries/get-recent-articles";
 import { archiveBookmark } from "./application/bookmark/mutations/archive-bookmark";
 import { createBookmark } from "./application/bookmark/mutations/create-bookmark";
 import { deleteBookmark } from "./application/bookmark/mutations/delete-bookmark";
@@ -19,6 +20,7 @@ import { withAuth } from "./middleware/auth";
 export const server = {
   Query: {
     articles: withAuth(articles),
+    recentArticles: withAuth(recentArticles),
     bookmarks: withAuth(bookmarks),
     archivedBookmarks: withAuth(archivedBookmarks),
     bookmark: withAuth(bookmark),

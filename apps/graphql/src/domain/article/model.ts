@@ -39,3 +39,7 @@ export type UpsertArticleInput = {
   thumbnail_url?: string | null;
   pub_date?: string | null;
 };
+
+export type GetRecentArticlesInput = {
+  hours: number;
+};

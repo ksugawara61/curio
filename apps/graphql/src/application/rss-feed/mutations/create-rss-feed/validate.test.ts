@@ -1,33 +1,7 @@
-import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 import { mockServer } from "../../../../libs/test/mockServer";
 import { fetchAndValidateRssFeed, rssFeedUrlSchema } from "./validate";
-
-const createRssXml = (title: string, description: string) => `
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
-  <channel>
-    <title>${title}</title>
-    <description>${description}</description>
-    <item>
-      <title>Test Article</title>
-      <link>https://example.com/article</link>
-    </item>
-  </channel>
-</rss>
-`;
-
-const createAtomXml = (title: string, subtitle: string) => `
-<?xml version="1.0" encoding="UTF-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <title>${title}</title>
-  <subtitle>${subtitle}</subtitle>
-  <entry>
-    <title>Test Entry</title>
-    <link href="https://example.com/entry"/>
-  </entry>
-</feed>
-`;
+import { FetchRssFeedMocks } from "./validate.mocks";
 
 describe("rssFeedUrlSchema", () => {
   it("should accept a valid https URL", () => {
@@ -62,11 +36,7 @@ describe("rssFeedUrlSchema", () => {
 describe("fetchAndValidateRssFeed", () => {
   describe("正常系", () => {
     it("should parse a valid RSS 2.0 feed", async () => {
-      mockServer.use(
-        http.get("https://example.com/rss.xml", () =>
-          HttpResponse.xml(createRssXml("My Blog", "A blog about things")),
-        ),
-      );
+      mockServer.use(FetchRssFeedMocks.Rss);
 
       const result = await fetchAndValidateRssFeed(
         "https://example.com/rss.xml",
@@ -79,11 +49,7 @@ describe("fetchAndValidateRssFeed", () => {
     });
 
     it("should parse a valid Atom feed", async () => {
-      mockServer.use(
-        http.get("https://example.com/atom.xml", () =>
-          HttpResponse.xml(createAtomXml("My Atom Blog", "An Atom feed")),
-        ),
-      );
+      mockServer.use(FetchRssFeedMocks.Atom);
 
       const result = await fetchAndValidateRssFeed(
         "https://example.com/atom.xml",
@@ -96,18 +62,7 @@ describe("fetchAndValidateRssFeed", () => {
     });
 
     it("should handle RSS feed without description", async () => {
-      mockServer.use(
-        http.get("https://example.com/no-desc.xml", () =>
-          HttpResponse.xml(`
-            <?xml version="1.0" encoding="UTF-8"?>
-            <rss version="2.0">
-              <channel>
-                <title>No Desc Blog</title>
-              </channel>
-            </rss>
-          `),
-        ),
-      );
+      mockServer.use(FetchRssFeedMocks.RssWithoutDescription);
 
       const result = await fetchAndValidateRssFeed(
         "https://example.com/no-desc.xml",
@@ -120,12 +75,7 @@ describe("fetchAndValidateRssFeed", () => {
 
   describe("異常系", () => {
     it("should throw on HTTP error responses", async () => {
-      mockServer.use(
-        http.get(
-          "https://example.com/not-found.xml",
-          () => new HttpResponse(null, { status: 404 }),
-        ),
-      );
+      mockServer.use(FetchRssFeedMocks.NotFound);
 
       await expect(
         fetchAndValidateRssFeed("https://example.com/not-found.xml"),
@@ -133,11 +83,7 @@ describe("fetchAndValidateRssFeed", () => {
     });
 
     it("should throw on invalid XML content", async () => {
-      mockServer.use(
-        http.get("https://example.com/page", () =>
-          HttpResponse.html("<html><body>Not a feed</body></html>"),
-        ),
-      );
+      mockServer.use(FetchRssFeedMocks.HtmlPage);
 
       await expect(
         fetchAndValidateRssFeed("https://example.com/page"),

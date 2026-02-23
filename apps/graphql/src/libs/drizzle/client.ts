@@ -5,14 +5,14 @@ import * as schema from "./schema";
 
 let db: LibSQLDatabase<typeof schema>;
 
-export const createDb = () => {
+export const createDb = (env: ReturnType<typeof getEnv> = getEnv()) => {
   if (db) {
     return db;
   }
 
   const tursoClient = createClient({
-    url: getEnv().TURSO_DATABASE_URL ?? "file:./local.db",
-    authToken: getEnv().TURSO_AUTH_TOKEN,
+    url: env.TURSO_DATABASE_URL ?? "file:./local.db",
+    authToken: env.TURSO_AUTH_TOKEN,
   });
   db = drizzle(tursoClient, { schema });
   return db;

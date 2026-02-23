@@ -1,5 +1,7 @@
 import { ServiceError } from "@getcronit/pylon";
+import { ArticlePersistenceRepository } from "../../../../domain/article/repository.persistence";
 import type { RssFeed } from "../../../../domain/rss-feed/model";
+import { RssFeedExternalRepository } from "../../../../domain/rss-feed/repository.external";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
 import { createDb } from "../../../../libs/drizzle/client";
 import { ContextRepository } from "../../../../shared/context";
@@ -31,8 +33,9 @@ export const createRssFeed = async (url: string): Promise<RssFeed> => {
   const { getUserId } = ContextRepository.create();
   const userId = getUserId();
 
+  let feed: RssFeed;
   try {
-    return await db.transaction(async (tx) => {
+    feed = await db.transaction(async (tx) => {
       const repository = new RssFeedRepository(userId, tx);
       return await repository.create({
         url: urlResult.data,
@@ -58,4 +61,31 @@ export const createRssFeed = async (url: string): Promise<RssFeed> => {
       },
     );
   }
+
+  try {
+    const externalRepo = new RssFeedExternalRepository();
+    const rssArticles = await externalRepo.fetchArticles(feed.url);
+    const articleRepo = new ArticlePersistenceRepository(db);
+
+    for (const article of rssArticles) {
+      if (!article.link) continue;
+
+      await articleRepo.upsert({
+        user_id: userId,
+        rss_feed_id: feed.id,
+        title: article.title,
+        url: article.link,
+        description: article.description,
+        thumbnail_url: article.thumbnailUrl,
+        pub_date: article.pubDate,
+      });
+    }
+  } catch (error) {
+    console.error(
+      `[createRssFeed] Failed to save initial articles for feed: ${feed.url}`,
+      error,
+    );
+  }
+
+  return feed;
 };

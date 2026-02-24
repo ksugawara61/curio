@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { RssFeedRepository } from "../domain/rss-feed/repository.persistence";
 import { createDb } from "../libs/drizzle/client";
 import { articles } from "../libs/drizzle/schema";
+import { ContextRepository } from "../shared/context";
+import { mockAuthContext } from "../libs/test/authHelper";
 import { mockServer } from "../libs/test/mockServer";
 import { scheduled } from "./index";
 import { ScheduledMocks } from "./index.mocks";
@@ -20,7 +22,7 @@ describe("scheduled", () => {
       const db = createDb();
 
       const feed = await db.transaction(async (tx) => {
-        const repo = new RssFeedRepository("test-user", tx);
+        const repo = new RssFeedRepository(ContextRepository.create(), tx);
         return await repo.create({
           url: "https://example.com/feed.xml",
           title: "Test Feed",
@@ -55,16 +57,18 @@ describe("scheduled", () => {
     it("should process feeds for multiple users independently", async () => {
       const db = createDb();
 
+      mockAuthContext({ userId: "user-a" });
       await db.transaction(async (tx) => {
-        const repo = new RssFeedRepository("user-a", tx);
+        const repo = new RssFeedRepository(ContextRepository.create(), tx);
         await repo.create({
           url: "https://example.com/feed-a.xml",
           title: "Feed A",
         });
       });
 
+      mockAuthContext({ userId: "user-b" });
       await db.transaction(async (tx) => {
-        const repo = new RssFeedRepository("user-b", tx);
+        const repo = new RssFeedRepository(ContextRepository.create(), tx);
         await repo.create({
           url: "https://example.com/feed-b.xml",
           title: "Feed B",
@@ -86,7 +90,7 @@ describe("scheduled", () => {
       const db = createDb();
 
       await db.transaction(async (tx) => {
-        const repo = new RssFeedRepository("test-user", tx);
+        const repo = new RssFeedRepository(ContextRepository.create(), tx);
         await repo.create({
           url: "https://example.com/feed.xml",
           title: "Test Feed",
@@ -111,7 +115,7 @@ describe("scheduled", () => {
       const db = createDb();
 
       await db.transaction(async (tx) => {
-        const repo = new RssFeedRepository("test-user", tx);
+        const repo = new RssFeedRepository(ContextRepository.create(), tx);
         await repo.create({
           url: "https://example.com/feed.xml",
           title: "Test Feed",
@@ -133,7 +137,7 @@ describe("scheduled", () => {
       const db = createDb();
 
       await db.transaction(async (tx) => {
-        const repo = new RssFeedRepository("test-user", tx);
+        const repo = new RssFeedRepository(ContextRepository.create(), tx);
         await repo.create({
           url: "https://example.com/failing-feed.xml",
           title: "Failing Feed",

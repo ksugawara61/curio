@@ -24,8 +24,6 @@ export class GetRssFeeds implements BaseApplication<void, RssFeed[]> {
 }
 
 export const rssFeeds = async (): Promise<RssFeed[]> => {
-  const { getUserId } = ContextRepository.create();
-  const userId = getUserId();
-  const repository = new RssFeedRepository(userId);
+  const repository = new RssFeedRepository(ContextRepository.create());
   return new GetRssFeeds(repository).invoke();
 };

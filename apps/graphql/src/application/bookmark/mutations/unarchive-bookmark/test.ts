@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { createDb } from "../../../../libs/drizzle/client";
+import { ContextRepository } from "../../../../shared/context";
 import { archiveBookmark } from "../archive-bookmark";
 import { unarchiveBookmark } from ".";
 
@@ -9,7 +10,7 @@ describe("unarchiveBookmark", () => {
     it("should unarchive a bookmark successfully", async () => {
       const db = createDb();
       const bookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Test Bookmark",
           url: `https://example.com/unarchive-test-${Date.now()}`,
@@ -27,7 +28,7 @@ describe("unarchiveBookmark", () => {
     it("should appear in findMany after unarchiving", async () => {
       const db = createDb();
       const bookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Test Bookmark",
           url: `https://example.com/unarchive-visible-${Date.now()}`,
@@ -37,7 +38,7 @@ describe("unarchiveBookmark", () => {
       await archiveBookmark(bookmark.id);
       await unarchiveBookmark(bookmark.id);
 
-      const repository = new BookmarkRepository("test-user");
+      const repository = new BookmarkRepository(ContextRepository.create());
       const allBookmarks = await repository.findMany();
       const found = allBookmarks.find((b) => b.id === bookmark.id);
       expect(found).toBeDefined();
@@ -47,7 +48,7 @@ describe("unarchiveBookmark", () => {
     it("should not appear in findManyArchived after unarchiving", async () => {
       const db = createDb();
       const bookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Test Bookmark",
           url: `https://example.com/unarchive-hidden-${Date.now()}`,
@@ -57,7 +58,7 @@ describe("unarchiveBookmark", () => {
       await archiveBookmark(bookmark.id);
       await unarchiveBookmark(bookmark.id);
 
-      const repository = new BookmarkRepository("test-user");
+      const repository = new BookmarkRepository(ContextRepository.create());
       const archivedBookmarks = await repository.findManyArchived();
       const found = archivedBookmarks.find((b) => b.id === bookmark.id);
       expect(found).toBeUndefined();

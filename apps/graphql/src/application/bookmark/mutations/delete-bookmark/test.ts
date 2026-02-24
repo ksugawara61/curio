@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { createDb } from "../../../../libs/drizzle/client";
+import { ContextRepository } from "../../../../shared/context";
 import { deleteBookmark } from ".";
 
 describe("deleteBookmark", () => {
@@ -8,7 +9,7 @@ describe("deleteBookmark", () => {
     it("should delete a bookmark successfully", async () => {
       const db = createDb();
       const bookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Test Bookmark",
           url: "https://example.com",
@@ -20,7 +21,7 @@ describe("deleteBookmark", () => {
 
       expect(result).toBe(true);
 
-      const repository = new BookmarkRepository("test-user");
+      const repository = new BookmarkRepository(ContextRepository.create());
       const deletedBookmark = await repository.findById(bookmark.id);
       expect(deletedBookmark).toBeNull();
     });

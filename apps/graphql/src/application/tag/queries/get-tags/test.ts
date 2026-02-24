@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { TagRepository } from "../../../../domain/tag/repository.persistence";
 import { createDb } from "../../../../libs/drizzle/client";
+import { ContextRepository } from "../../../../shared/context";
 import { tags } from ".";
 
 describe("tags", () => {
@@ -8,7 +9,7 @@ describe("tags", () => {
     it("should return array of tags", async () => {
       const db = createDb();
       await db.transaction(async (tx) => {
-        const repository = new TagRepository("test-user", tx);
+        const repository = new TagRepository(ContextRepository.create(), tx);
         await repository.create({ name: "Frontend" });
         await repository.create({ name: "Backend" });
         await repository.create({ name: "Database" });

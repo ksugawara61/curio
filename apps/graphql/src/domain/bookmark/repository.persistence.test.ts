@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createDb } from "../../libs/drizzle/client";
+import { ContextRepository } from "../../shared/context";
 import { BookmarkRepository } from "./repository.persistence";
 
 describe("BookmarkRepository", () => {
@@ -13,7 +14,7 @@ describe("BookmarkRepository", () => {
       };
 
       const result = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create(input);
       });
 
@@ -34,7 +35,7 @@ describe("BookmarkRepository", () => {
       };
 
       const result = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create(input);
       });
 
@@ -46,7 +47,7 @@ describe("BookmarkRepository", () => {
 
   describe("findMany", () => {
     it("should return empty array when no bookmarks exist", async () => {
-      const repository = new BookmarkRepository("test-user");
+      const repository = new BookmarkRepository(ContextRepository.create());
       const result = await repository.findMany();
       expect(result).toEqual([]);
     });
@@ -55,7 +56,7 @@ describe("BookmarkRepository", () => {
       const db = createDb();
 
       const bookmark1 = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Bookmark 1",
           url: "https://example1.com",
@@ -65,14 +66,14 @@ describe("BookmarkRepository", () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       const bookmark2 = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Bookmark 2",
           url: "https://example2.com",
         });
       });
 
-      const repository = new BookmarkRepository("test-user");
+      const repository = new BookmarkRepository(ContextRepository.create());
       const result = await repository.findMany();
 
       expect(result).toHaveLength(2);
@@ -86,21 +87,21 @@ describe("BookmarkRepository", () => {
       const db = createDb();
 
       const created = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Test Bookmark",
           url: "https://example.com",
         });
       });
 
-      const repository = new BookmarkRepository("test-user");
+      const repository = new BookmarkRepository(ContextRepository.create());
       const result = await repository.findById(created.id);
 
       expect(result).toEqual(created);
     });
 
     it("should return null for non-existent id", async () => {
-      const repository = new BookmarkRepository("test-user");
+      const repository = new BookmarkRepository(ContextRepository.create());
       const result = await repository.findById("non-existent-id");
       expect(result).toBeNull();
     });
@@ -112,14 +113,14 @@ describe("BookmarkRepository", () => {
       const testUrl = "https://example.com/findbyurl";
 
       const created = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Test Bookmark",
           url: testUrl,
         });
       });
 
-      const repository = new BookmarkRepository("test-user");
+      const repository = new BookmarkRepository(ContextRepository.create());
       const result = await repository.findByUrl(testUrl);
 
       expect(result).toEqual(created);
@@ -130,7 +131,7 @@ describe("BookmarkRepository", () => {
       const testUrl = "https://example.com/findbyurl-with-tags";
 
       const created = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Test Bookmark",
           url: testUrl,
@@ -138,7 +139,7 @@ describe("BookmarkRepository", () => {
         });
       });
 
-      const repository = new BookmarkRepository("test-user");
+      const repository = new BookmarkRepository(ContextRepository.create());
       const result = await repository.findByUrl(testUrl);
 
       expect(result).not.toBeNull();
@@ -151,7 +152,7 @@ describe("BookmarkRepository", () => {
     });
 
     it("should return null for non-existent url", async () => {
-      const repository = new BookmarkRepository("test-user");
+      const repository = new BookmarkRepository(ContextRepository.create());
       const result = await repository.findByUrl("https://non-existent-url.com");
       expect(result).toBeNull();
     });
@@ -162,7 +163,7 @@ describe("BookmarkRepository", () => {
       const db = createDb();
 
       const created = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Original Title",
           url: "https://example.com",
@@ -176,7 +177,7 @@ describe("BookmarkRepository", () => {
       };
 
       const result = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.update(created.id, updateInput);
       });
 
@@ -196,7 +197,7 @@ describe("BookmarkRepository", () => {
 
       await expect(
         db.transaction(async (tx) => {
-          const repository = new BookmarkRepository("test-user", tx);
+          const repository = new BookmarkRepository(ContextRepository.create(), tx);
           return await repository.update("non-existent-id", {
             title: "Updated Title",
           });
@@ -208,7 +209,7 @@ describe("BookmarkRepository", () => {
       const db = createDb();
 
       const created = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Original Title",
           url: "https://example.com",
@@ -217,7 +218,7 @@ describe("BookmarkRepository", () => {
       });
 
       const result = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.update(created.id, {
           title: "Updated Title",
         });
@@ -234,7 +235,7 @@ describe("BookmarkRepository", () => {
       const db = createDb();
 
       const created = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Test Bookmark",
           url: "https://example.com",
@@ -242,11 +243,11 @@ describe("BookmarkRepository", () => {
       });
 
       await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         await repository.deleteBookmark(created.id);
       });
 
-      const repository = new BookmarkRepository("test-user");
+      const repository = new BookmarkRepository(ContextRepository.create());
       const fetched = await repository.findById(created.id);
       expect(fetched).toBeNull();
     });
@@ -256,7 +257,7 @@ describe("BookmarkRepository", () => {
 
       await expect(
         db.transaction(async (tx) => {
-          const repository = new BookmarkRepository("test-user", tx);
+          const repository = new BookmarkRepository(ContextRepository.create(), tx);
           await repository.deleteBookmark("non-existent-id");
         }),
       ).rejects.toThrow();
@@ -274,7 +275,7 @@ describe("BookmarkRepository", () => {
       };
 
       const result = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create(input);
       });
 
@@ -292,7 +293,7 @@ describe("BookmarkRepository", () => {
       const db = createDb();
 
       const created = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Test Bookmark",
           url: "https://example.com",
@@ -300,7 +301,7 @@ describe("BookmarkRepository", () => {
         });
       });
 
-      const repository = new BookmarkRepository("test-user");
+      const repository = new BookmarkRepository(ContextRepository.create());
       const found = await repository.findById(created.id);
 
       expect(found).not.toBeNull();
@@ -315,7 +316,7 @@ describe("BookmarkRepository", () => {
       const db = createDb();
 
       const created = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Test Bookmark",
           url: "https://example.com",
@@ -324,7 +325,7 @@ describe("BookmarkRepository", () => {
       });
 
       const updated = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.update(created.id, {
           tagNames: ["newTag1", "newTag2", "newTag3"],
         });
@@ -342,7 +343,7 @@ describe("BookmarkRepository", () => {
       const db = createDb();
 
       const created = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Original Title",
           url: "https://example.com",
@@ -351,7 +352,7 @@ describe("BookmarkRepository", () => {
       });
 
       const updated = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.update(created.id, {
           title: "Updated Title",
         });
@@ -369,7 +370,7 @@ describe("BookmarkRepository", () => {
       const db = createDb();
 
       const created = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create({
           title: "Test Bookmark",
           url: "https://example.com",
@@ -378,7 +379,7 @@ describe("BookmarkRepository", () => {
       });
 
       const updated = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.update(created.id, {
           tagNames: [],
         });
@@ -396,7 +397,7 @@ describe("BookmarkRepository", () => {
       };
 
       const result = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(ContextRepository.create(), tx);
         return await repository.create(input);
       });
 

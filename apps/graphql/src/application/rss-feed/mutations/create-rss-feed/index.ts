@@ -74,9 +74,11 @@ export class SyncRssFeedArticles {
   constructor(
     private readonly externalRepository: IRssFeedExternalRepository,
     private readonly articleRepository: IArticlePersistenceRepository,
+    private readonly contextRepository: ContextRepository,
   ) {}
 
-  async invoke(feed: RssFeed, userId: string): Promise<void> {
+  async invoke(feed: RssFeed): Promise<void> {
+    const userId = this.contextRepository.getUserId();
     const rssArticles = await this.externalRepository.fetchArticles(feed.url);
     for (const article of rssArticles) {
       if (!article.link) continue;
@@ -95,12 +97,11 @@ export class SyncRssFeedArticles {
 
 export const createRssFeed = async (url: string): Promise<RssFeed> => {
   const db = createDb();
-  const { getUserId } = ContextRepository.create();
-  const userId = getUserId();
+  const contextRepository = ContextRepository.create();
 
   // Phase 1: フィード作成をトランザクション内で実行
   const feed = await db.transaction(async (tx) => {
-    const repository = new RssFeedRepository(userId, tx);
+    const repository = new RssFeedRepository(contextRepository, tx);
     return new CreateRssFeed(repository).invoke(url);
   });
 
@@ -109,10 +110,11 @@ export const createRssFeed = async (url: string): Promise<RssFeed> => {
   try {
     const externalRepo = new RssFeedExternalRepository();
     const articleRepo = new ArticlePersistenceRepository(db);
-    await new SyncRssFeedArticles(externalRepo, articleRepo).invoke(
-      feed,
-      userId,
-    );
+    await new SyncRssFeedArticles(
+      externalRepo,
+      articleRepo,
+      contextRepository,
+    ).invoke(feed);
   } catch (error) {
     console.error(
       `[createRssFeed] Failed to save initial articles for feed: ${feed.url}`,

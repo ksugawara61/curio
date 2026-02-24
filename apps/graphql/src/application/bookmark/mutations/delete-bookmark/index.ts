@@ -1,23 +1,16 @@
 import { ServiceError } from "@getcronit/pylon";
+import type { IBookmarkRepository } from "../../../../domain/bookmark/interface";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { createDb } from "../../../../libs/drizzle/client";
 import { ContextRepository } from "../../../../shared/context";
 import type { BaseApplication } from "../../../base";
 
-type DbClient = ReturnType<typeof createDb>;
-
 export class DeleteBookmark implements BaseApplication<string, boolean> {
-  constructor(
-    private readonly db: DbClient,
-    private readonly userId: string,
-  ) {}
+  constructor(private readonly repository: IBookmarkRepository) {}
 
   async invoke(id: string): Promise<boolean> {
     try {
-      await this.db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(this.userId, tx);
-        await repository.deleteBookmark(id);
-      });
+      await this.repository.deleteBookmark(id);
       return true;
     } catch (error) {
       if (
@@ -44,5 +37,8 @@ export const deleteBookmark = async (id: string): Promise<boolean> => {
   const db = createDb();
   const { getUserId } = ContextRepository.create();
   const userId = getUserId();
-  return new DeleteBookmark(db, userId).invoke(id);
+  return await db.transaction(async (tx) => {
+    const repository = new BookmarkRepository(userId, tx);
+    return new DeleteBookmark(repository).invoke(id);
+  });
 };

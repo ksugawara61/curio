@@ -1,4 +1,5 @@
 import { ServiceError } from "@getcronit/pylon";
+import type { IBookmarkRepository } from "../../../../domain/bookmark/interface";
 import type {
   Bookmark,
   CreateBookmarkInput,
@@ -10,22 +11,14 @@ import type { BaseApplication } from "../../../base";
 
 export type { CreateBookmarkInput };
 
-type DbClient = ReturnType<typeof createDb>;
-
 export class CreateBookmark
   implements BaseApplication<CreateBookmarkInput, Bookmark>
 {
-  constructor(
-    private readonly db: DbClient,
-    private readonly userId: string,
-  ) {}
+  constructor(private readonly repository: IBookmarkRepository) {}
 
   async invoke(input: CreateBookmarkInput): Promise<Bookmark> {
     try {
-      return await this.db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(this.userId, tx);
-        return await repository.create(input);
-      });
+      return await this.repository.create(input);
     } catch (error) {
       throw new ServiceError(
         `Failed to create bookmark: ${error instanceof Error ? error.message : "Unknown error"}`,
@@ -44,5 +37,8 @@ export const createBookmark = async (
   const db = createDb();
   const { getUserId } = ContextRepository.create();
   const userId = getUserId();
-  return new CreateBookmark(db, userId).invoke(input);
+  return await db.transaction(async (tx) => {
+    const repository = new BookmarkRepository(userId, tx);
+    return new CreateBookmark(repository).invoke(input);
+  });
 };

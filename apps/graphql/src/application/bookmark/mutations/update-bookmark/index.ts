@@ -1,4 +1,5 @@
 import { ServiceError } from "@getcronit/pylon";
+import type { IBookmarkRepository } from "../../../../domain/bookmark/interface";
 import type {
   Bookmark,
   UpdateBookmarkInput,
@@ -10,24 +11,16 @@ import type { BaseApplication } from "../../../base";
 
 export type { UpdateBookmarkInput };
 
-type DbClient = ReturnType<typeof createDb>;
-
 type UpdateBookmarkParams = { id: string; input: UpdateBookmarkInput };
 
 export class UpdateBookmark
   implements BaseApplication<UpdateBookmarkParams, Bookmark>
 {
-  constructor(
-    private readonly db: DbClient,
-    private readonly userId: string,
-  ) {}
+  constructor(private readonly repository: IBookmarkRepository) {}
 
   async invoke({ id, input }: UpdateBookmarkParams): Promise<Bookmark> {
     try {
-      return await this.db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(this.userId, tx);
-        return await repository.update(id, input);
-      });
+      return await this.repository.update(id, input);
     } catch (error) {
       if (
         error instanceof Error &&
@@ -56,5 +49,8 @@ export const updateBookmark = async (
   const db = createDb();
   const { getUserId } = ContextRepository.create();
   const userId = getUserId();
-  return new UpdateBookmark(db, userId).invoke({ id, input });
+  return await db.transaction(async (tx) => {
+    const repository = new BookmarkRepository(userId, tx);
+    return new UpdateBookmark(repository).invoke({ id, input });
+  });
 };

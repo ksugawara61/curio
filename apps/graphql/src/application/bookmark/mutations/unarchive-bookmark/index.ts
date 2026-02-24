@@ -1,24 +1,17 @@
 import { ServiceError } from "@getcronit/pylon";
+import type { IBookmarkRepository } from "../../../../domain/bookmark/interface";
 import type { Bookmark } from "../../../../domain/bookmark/model";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { createDb } from "../../../../libs/drizzle/client";
 import { ContextRepository } from "../../../../shared/context";
 import type { BaseApplication } from "../../../base";
 
-type DbClient = ReturnType<typeof createDb>;
-
 export class UnarchiveBookmark implements BaseApplication<string, Bookmark> {
-  constructor(
-    private readonly db: DbClient,
-    private readonly userId: string,
-  ) {}
+  constructor(private readonly repository: IBookmarkRepository) {}
 
   async invoke(id: string): Promise<Bookmark> {
     try {
-      return await this.db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(this.userId, tx);
-        return await repository.unarchive(id);
-      });
+      return await this.repository.unarchive(id);
     } catch (error) {
       if (
         error instanceof Error &&
@@ -44,5 +37,8 @@ export const unarchiveBookmark = async (id: string): Promise<Bookmark> => {
   const db = createDb();
   const { getUserId } = ContextRepository.create();
   const userId = getUserId();
-  return new UnarchiveBookmark(db, userId).invoke(id);
+  return await db.transaction(async (tx) => {
+    const repository = new BookmarkRepository(userId, tx);
+    return new UnarchiveBookmark(repository).invoke(id);
+  });
 };

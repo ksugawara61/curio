@@ -1,1 +1,1 @@
-export { createTag } from "./create-tag";
+export { CreateTag, createTag } from "./create-tag";

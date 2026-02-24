@@ -1,1 +1,1 @@
-export { tags } from "./get-tags";
+export { GetTags, tags } from "./get-tags";

@@ -9,7 +9,10 @@ describe("bookmark", () => {
     it("should return bookmark when found by id", async () => {
       const db = createDb();
       const createdBookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(ContextRepository.create(), tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Test Bookmark",
           url: "https://example.com/byid",
@@ -30,7 +33,10 @@ describe("bookmark", () => {
       const db = createDb();
       const testUri = "https://example.com/byuri";
       const createdBookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(ContextRepository.create(), tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Test Bookmark by URI",
           url: testUri,

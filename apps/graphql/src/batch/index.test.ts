@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { RssFeedRepository } from "../domain/rss-feed/repository.persistence";
 import { createDb } from "../libs/drizzle/client";
 import { articles } from "../libs/drizzle/schema";
-import { ContextRepository } from "../shared/context";
 import { mockAuthContext } from "../libs/test/authHelper";
 import { mockServer } from "../libs/test/mockServer";
+import { ContextRepository } from "../shared/context";
 import { scheduled } from "./index";
 import { ScheduledMocks } from "./index.mocks";
 

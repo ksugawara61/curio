@@ -9,7 +9,10 @@ describe("updateBookmark", () => {
     it("should update a bookmark successfully", async () => {
       const db = createDb();
       const bookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(ContextRepository.create(), tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Original Title",
           url: `https://example.com/update-test-1-${Date.now()}`,
@@ -36,7 +39,10 @@ describe("updateBookmark", () => {
     it("should update partial fields only", async () => {
       const db = createDb();
       const bookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(ContextRepository.create(), tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Original Title",
           url: `https://example.com/update-test-2-${Date.now()}`,
@@ -60,7 +66,10 @@ describe("updateBookmark", () => {
       const db = createDb();
       const url = `https://example.com/update-same-url-${Date.now()}`;
       const bookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(ContextRepository.create(), tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Original Title",
           url,
@@ -103,7 +112,10 @@ describe("updateBookmark", () => {
 
       // Create first bookmark with a specific URL
       await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(ContextRepository.create(), tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "First Bookmark",
           url: existingUrl,
@@ -112,7 +124,10 @@ describe("updateBookmark", () => {
 
       // Create second bookmark with a different URL
       const secondBookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(ContextRepository.create(), tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Second Bookmark",
           url: `https://example.com/second-url-${Date.now()}`,

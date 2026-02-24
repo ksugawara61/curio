@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createDb } from "../../libs/drizzle/client";
-import { ContextRepository } from "../../shared/context";
 import { mockAuthContext } from "../../libs/test/authHelper";
+import { ContextRepository } from "../../shared/context";
 import { RssFeedRepository } from "./repository.persistence";
 
 describe("RssFeedRepository", () => {

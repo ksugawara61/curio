@@ -9,7 +9,10 @@ describe("archiveBookmark", () => {
     it("should archive a bookmark successfully", async () => {
       const db = createDb();
       const bookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(ContextRepository.create(), tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Test Bookmark",
           url: `https://example.com/archive-test-${Date.now()}`,
@@ -27,7 +30,10 @@ describe("archiveBookmark", () => {
     it("should not appear in findMany after archiving", async () => {
       const db = createDb();
       const bookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(ContextRepository.create(), tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Test Bookmark",
           url: `https://example.com/archive-hidden-${Date.now()}`,
@@ -45,7 +51,10 @@ describe("archiveBookmark", () => {
     it("should appear in findManyArchived after archiving", async () => {
       const db = createDb();
       const bookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(ContextRepository.create(), tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Test Bookmark",
           url: `https://example.com/archive-visible-${Date.now()}`,

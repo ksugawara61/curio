@@ -9,7 +9,10 @@ describe("deleteBookmark", () => {
     it("should delete a bookmark successfully", async () => {
       const db = createDb();
       const bookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(ContextRepository.create(), tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Test Bookmark",
           url: "https://example.com",

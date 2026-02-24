@@ -10,7 +10,10 @@ describe("archivedBookmarks", () => {
     it("should return only archived bookmarks", async () => {
       const db = createDb();
       const bookmark1 = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(ContextRepository.create(), tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Archived Bookmark",
           url: `https://example.com/archived-query-1-${Date.now()}`,
@@ -18,7 +21,10 @@ describe("archivedBookmarks", () => {
       });
 
       await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(ContextRepository.create(), tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Active Bookmark",
           url: `https://example.com/active-query-1-${Date.now()}`,

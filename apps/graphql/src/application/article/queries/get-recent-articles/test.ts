@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { ArticlePersistenceRepository } from "../../../../domain/article/repository.persistence";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
 import { createDb } from "../../../../libs/drizzle/client";
-import { ContextRepository } from "../../../../shared/context";
 import { mockAuthContext } from "../../../../libs/test/authHelper";
+import { ContextRepository } from "../../../../shared/context";
 import { GetRecentArticles } from ".";
 
 const setupFeed = async (userId: string, url: string) => {
@@ -34,7 +34,10 @@ describe("GetRecentArticles", () => {
         pub_date: recentPubDate,
       });
 
-      const result = await new GetRecentArticles(repo, ContextRepository.create()).invoke({
+      const result = await new GetRecentArticles(
+        repo,
+        ContextRepository.create(),
+      ).invoke({
         hours: 48,
       });
 
@@ -64,7 +67,10 @@ describe("GetRecentArticles", () => {
         pub_date: oldPubDate,
       });
 
-      const result = await new GetRecentArticles(repo, ContextRepository.create()).invoke({
+      const result = await new GetRecentArticles(
+        repo,
+        ContextRepository.create(),
+      ).invoke({
         hours: 48,
       });
 
@@ -83,7 +89,10 @@ describe("GetRecentArticles", () => {
         pub_date: null,
       });
 
-      const result = await new GetRecentArticles(repo, ContextRepository.create()).invoke({
+      const result = await new GetRecentArticles(
+        repo,
+        ContextRepository.create(),
+      ).invoke({
         hours: 48,
       });
 
@@ -93,7 +102,10 @@ describe("GetRecentArticles", () => {
 
     it("should return empty array when no articles exist", async () => {
       const repo = new ArticlePersistenceRepository();
-      const result = await new GetRecentArticles(repo, ContextRepository.create()).invoke({
+      const result = await new GetRecentArticles(
+        repo,
+        ContextRepository.create(),
+      ).invoke({
         hours: 48,
       });
 
@@ -126,7 +138,10 @@ describe("GetRecentArticles", () => {
       });
 
       mockAuthContext({ userId: "user-a" });
-      const result = await new GetRecentArticles(repo, ContextRepository.create()).invoke({
+      const result = await new GetRecentArticles(
+        repo,
+        ContextRepository.create(),
+      ).invoke({
         hours: 48,
       });
 
@@ -152,7 +167,10 @@ describe("GetRecentArticles", () => {
         pub_date: recentRfc2822,
       });
 
-      const result = await new GetRecentArticles(repo, ContextRepository.create()).invoke({
+      const result = await new GetRecentArticles(
+        repo,
+        ContextRepository.create(),
+      ).invoke({
         hours: 48,
       });
 

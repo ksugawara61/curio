@@ -9,7 +9,10 @@ describe("GetBookmarks", () => {
     it("should return array of bookmarks", async () => {
       const db = createDb();
       await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(ContextRepository.create(), tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Test Bookmark 1",
           url: "https://example1.com",
@@ -18,7 +21,10 @@ describe("GetBookmarks", () => {
       });
 
       await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(ContextRepository.create(), tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Test Bookmark 2",
           url: "https://example2.com",

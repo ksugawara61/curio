@@ -15,9 +15,7 @@ export const bookmarks = sqliteTable(
     created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
     updated_at: text("updated_at").default(sql`(datetime('now'))`).notNull(),
   },
-  (table) => ({
-    uniqueUserUrl: unique().on(table.user_id, table.url),
-  }),
+  (table) => [unique().on(table.user_id, table.url)],
 );
 
 export const tags = sqliteTable(
@@ -29,9 +27,7 @@ export const tags = sqliteTable(
     created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
     updated_at: text("updated_at").default(sql`(datetime('now'))`).notNull(),
   },
-  (table) => ({
-    uniqueUserName: unique().on(table.user_id, table.name),
-  }),
+  (table) => [unique().on(table.user_id, table.name)],
 );
 
 export const bookmarkTags = sqliteTable(
@@ -44,9 +40,7 @@ export const bookmarkTags = sqliteTable(
       .notNull()
       .references(() => tags.id, { onDelete: "cascade" }),
   },
-  (table) => ({
-    pk: primaryKey({ columns: [table.bookmark_id, table.tag_id] }),
-  }),
+  (table) => [primaryKey({ columns: [table.bookmark_id, table.tag_id] })],
 );
 
 export const rssFeeds = sqliteTable(
@@ -60,9 +54,7 @@ export const rssFeeds = sqliteTable(
     created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
     updated_at: text("updated_at").default(sql`(datetime('now'))`).notNull(),
   },
-  (table) => ({
-    uniqueUserUrl: unique().on(table.user_id, table.url),
-  }),
+  (table) => [unique().on(table.user_id, table.url)],
 );
 
 export const articles = sqliteTable(
@@ -81,9 +73,7 @@ export const articles = sqliteTable(
     created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
     updated_at: text("updated_at").default(sql`(datetime('now'))`).notNull(),
   },
-  (table) => ({
-    uniqueFeedUrl: unique().on(table.rss_feed_id, table.url),
-  }),
+  (table) => [unique().on(table.rss_feed_id, table.url)],
 );
 
 export type InsertBookmark = typeof bookmarks.$inferInsert;

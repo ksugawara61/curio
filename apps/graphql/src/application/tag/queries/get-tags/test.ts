@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { TagRepository } from "../../../../domain/tag/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { ContextRepository } from "../../../../shared/context";
 import { tags } from ".";
 
 describe("tags", () => {
   describe("正常系", () => {
     it("should return array of tags", async () => {
-      const db = createDb();
-      await db.transaction(async (tx) => {
+      
+      await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new TagRepository(ContextRepository.create(), tx);
         await repository.create({ name: "Frontend" });
         await repository.create({ name: "Backend" });

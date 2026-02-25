@@ -2,8 +2,8 @@ import { ServiceError } from "@getcronit/pylon";
 import type { IBookmarkRepository } from "../../../../domain/bookmark/interface";
 import type { Bookmark } from "../../../../domain/bookmark/model";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import type { BaseApplication } from "../../../base";
 
 export class ArchiveBookmark implements BaseApplication<string, Bookmark> {
@@ -34,8 +34,7 @@ export class ArchiveBookmark implements BaseApplication<string, Bookmark> {
 }
 
 export const archiveBookmark = async (id: string): Promise<Bookmark> => {
-  const db = createDb();
-  return await db.transaction(async (tx) => {
+  return await DrizzleRepository.create().transaction(async (tx) => {
     const repository = new BookmarkRepository(ContextRepository.create(), tx);
     return new ArchiveBookmark(repository).invoke(id);
   });

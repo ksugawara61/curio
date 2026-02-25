@@ -1,15 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { ArticlePersistenceRepository } from "../../../../domain/article/repository.persistence";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { mockAuthContext } from "../../../../libs/test/authHelper";
 import { ContextRepository } from "../../../../shared/context";
 import { GetRecentArticles } from ".";
 
 const setupFeed = async (userId: string, url: string) => {
-  const db = createDb();
+  
   mockAuthContext({ userId });
-  return await db.transaction(async (tx) => {
+  return await DrizzleRepository.create().transaction(async (tx) => {
     const feedRepo = new RssFeedRepository(ContextRepository.create(), tx);
     return await feedRepo.create({ url, title: "Test Feed" });
   });

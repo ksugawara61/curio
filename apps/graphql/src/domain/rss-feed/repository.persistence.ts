@@ -1,32 +1,30 @@
 import { createId } from "@paralleldrive/cuid2";
 import { and, eq } from "drizzle-orm";
-import type { LibSQLDatabase } from "drizzle-orm/libsql";
-import { createDb } from "../../libs/drizzle/client";
-import type * as schema from "../../libs/drizzle/schema";
 import { rssFeeds } from "../../libs/drizzle/schema";
 import type { ContextRepository } from "../../shared/context";
+import {
+  DrizzleRepository,
+  type DrizzleDb,
+  type Transaction,
+} from "../../shared/drizzle";
 import type { CreateRssFeedInput, RssFeed, RssFeedBatchItem } from "./model";
 
-type Transaction = Parameters<
-  Parameters<LibSQLDatabase<typeof schema>["transaction"]>[0]
->[0];
-
 export class RssFeedRepository {
-  private db: LibSQLDatabase<typeof schema> | Transaction;
+  private db: DrizzleDb | Transaction;
   private contextRepository: ContextRepository;
 
   constructor(
     contextRepository: ContextRepository,
-    dbOrTx?: LibSQLDatabase<typeof schema> | Transaction,
+    dbOrTx?: DrizzleDb | Transaction,
   ) {
     this.contextRepository = contextRepository;
-    this.db = dbOrTx ?? createDb();
+    this.db = dbOrTx ?? DrizzleRepository.create().getDb();
   }
 
   static async findAllForBatch(
-    db?: LibSQLDatabase<typeof schema>,
+    db?: DrizzleDb,
   ): Promise<RssFeedBatchItem[]> {
-    const database = db ?? createDb();
+    const database = db ?? DrizzleRepository.create().getDb();
     return database
       .select({
         id: rssFeeds.id,

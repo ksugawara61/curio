@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { ContextRepository } from "../../../../shared/context";
 import { updateBookmark } from ".";
 
 describe("updateBookmark", () => {
   describe("正常系", () => {
     it("should update a bookmark successfully", async () => {
-      const db = createDb();
-      const bookmark = await db.transaction(async (tx) => {
+      
+      const bookmark = await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,
@@ -37,8 +37,8 @@ describe("updateBookmark", () => {
     });
 
     it("should update partial fields only", async () => {
-      const db = createDb();
-      const bookmark = await db.transaction(async (tx) => {
+      
+      const bookmark = await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,
@@ -63,9 +63,9 @@ describe("updateBookmark", () => {
     });
 
     it("should allow updating to the same URL", async () => {
-      const db = createDb();
+      
       const url = `https://example.com/update-same-url-${Date.now()}`;
-      const bookmark = await db.transaction(async (tx) => {
+      const bookmark = await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,
@@ -107,11 +107,11 @@ describe("updateBookmark", () => {
     });
 
     it("should throw error when updating to an existing URL", async () => {
-      const db = createDb();
+      
       const existingUrl = `https://example.com/existing-url-${Date.now()}`;
 
       // Create first bookmark with a specific URL
-      await db.transaction(async (tx) => {
+      await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,
@@ -123,7 +123,7 @@ describe("updateBookmark", () => {
       });
 
       // Create second bookmark with a different URL
-      const secondBookmark = await db.transaction(async (tx) => {
+      const secondBookmark = await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,

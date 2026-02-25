@@ -1,20 +1,18 @@
 import { createId } from "@paralleldrive/cuid2";
 import { and, eq, isNotNull, isNull } from "drizzle-orm";
-import type { LibSQLDatabase } from "drizzle-orm/libsql";
-import { createDb } from "../../libs/drizzle/client";
-import type * as schema from "../../libs/drizzle/schema";
 import { bookmarks, bookmarkTags, tags } from "../../libs/drizzle/schema";
 import type { ContextRepository } from "../../shared/context";
+import {
+  type DrizzleDb,
+  DrizzleRepository,
+  type Transaction,
+} from "../../shared/drizzle";
 import { TagRepository } from "../tag/repository.persistence";
 import type {
   Bookmark,
   CreateBookmarkInput,
   UpdateBookmarkInput,
 } from "./model";
-
-type Transaction = Parameters<
-  Parameters<LibSQLDatabase<typeof schema>["transaction"]>[0]
->[0];
 
 const bookmarkSelectFields = {
   id: bookmarks.id,
@@ -56,16 +54,16 @@ const rowToBookmark = (row: {
 });
 
 export class BookmarkRepository {
-  private db: LibSQLDatabase<typeof schema> | Transaction;
+  private db: DrizzleDb | Transaction;
   private tagRepository: TagRepository;
   private contextRepository: ContextRepository;
 
   constructor(
     contextRepository: ContextRepository,
-    dbOrTx?: LibSQLDatabase<typeof schema> | Transaction,
+    dbOrTx?: DrizzleDb | Transaction,
   ) {
     this.contextRepository = contextRepository;
-    this.db = dbOrTx ?? createDb();
+    this.db = dbOrTx ?? DrizzleRepository.create().getDb();
     this.tagRepository = new TagRepository(contextRepository, this.db);
   }
 

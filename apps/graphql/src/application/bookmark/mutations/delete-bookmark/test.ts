@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { ContextRepository } from "../../../../shared/context";
 import { deleteBookmark } from ".";
 
 describe("deleteBookmark", () => {
   describe("正常系", () => {
     it("should delete a bookmark successfully", async () => {
-      const db = createDb();
-      const bookmark = await db.transaction(async (tx) => {
+      
+      const bookmark = await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,

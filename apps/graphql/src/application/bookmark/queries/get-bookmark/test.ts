@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { ContextRepository } from "../../../../shared/context";
 import { bookmark } from ".";
 
 describe("bookmark", () => {
   describe("正常系", () => {
     it("should return bookmark when found by id", async () => {
-      const db = createDb();
-      const createdBookmark = await db.transaction(async (tx) => {
+      
+      const createdBookmark = await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,
@@ -30,9 +30,9 @@ describe("bookmark", () => {
     });
 
     it("should return bookmark when found by uri", async () => {
-      const db = createDb();
+      
       const testUri = "https://example.com/byuri";
-      const createdBookmark = await db.transaction(async (tx) => {
+      const createdBookmark = await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,

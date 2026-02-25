@@ -1,8 +1,8 @@
 import { ServiceError } from "@getcronit/pylon";
 import type { IBookmarkRepository } from "../../../../domain/bookmark/interface";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import type { BaseApplication } from "../../../base";
 
 export class DeleteBookmark implements BaseApplication<string, boolean> {
@@ -34,8 +34,7 @@ export class DeleteBookmark implements BaseApplication<string, boolean> {
 }
 
 export const deleteBookmark = async (id: string): Promise<boolean> => {
-  const db = createDb();
-  return await db.transaction(async (tx) => {
+  return await DrizzleRepository.create().transaction(async (tx) => {
     const repository = new BookmarkRepository(ContextRepository.create(), tx);
     return new DeleteBookmark(repository).invoke(id);
   });

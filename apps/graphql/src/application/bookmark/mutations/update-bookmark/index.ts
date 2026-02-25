@@ -5,8 +5,8 @@ import type {
   UpdateBookmarkInput,
 } from "../../../../domain/bookmark/model";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import type { BaseApplication } from "../../../base";
 
 export type { UpdateBookmarkInput };
@@ -46,8 +46,7 @@ export const updateBookmark = async (
   id: string,
   input: UpdateBookmarkInput,
 ): Promise<Bookmark> => {
-  const db = createDb();
-  return await db.transaction(async (tx) => {
+  return await DrizzleRepository.create().transaction(async (tx) => {
     const repository = new BookmarkRepository(ContextRepository.create(), tx);
     return new UpdateBookmark(repository).invoke({ id, input });
   });

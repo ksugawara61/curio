@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { ContextRepository } from "../../../../shared/context";
 import { GetBookmarks } from ".";
 
 describe("GetBookmarks", () => {
   describe("正常系", () => {
     it("should return array of bookmarks", async () => {
-      const db = createDb();
-      await db.transaction(async (tx) => {
+      
+      await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,
@@ -20,7 +20,7 @@ describe("GetBookmarks", () => {
         });
       });
 
-      await db.transaction(async (tx) => {
+      await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,

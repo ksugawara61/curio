@@ -1,8 +1,8 @@
 import { ServiceError } from "@getcronit/pylon";
 import type { IRssFeedRepository } from "../../../../domain/rss-feed/interface";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import type { BaseApplication } from "../../../base";
 
 export class DeleteRssFeed implements BaseApplication<string, boolean> {
@@ -34,8 +34,7 @@ export class DeleteRssFeed implements BaseApplication<string, boolean> {
 }
 
 export const deleteRssFeed = async (id: string): Promise<boolean> => {
-  const db = createDb();
-  return await db.transaction(async (tx) => {
+  return await DrizzleRepository.create().transaction(async (tx) => {
     const repository = new RssFeedRepository(ContextRepository.create(), tx);
     return new DeleteRssFeed(repository).invoke(id);
   });

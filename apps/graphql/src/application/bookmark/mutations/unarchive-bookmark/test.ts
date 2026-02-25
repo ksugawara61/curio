@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { ContextRepository } from "../../../../shared/context";
 import { archiveBookmark } from "../archive-bookmark";
 import { unarchiveBookmark } from ".";
@@ -8,8 +8,8 @@ import { unarchiveBookmark } from ".";
 describe("unarchiveBookmark", () => {
   describe("正常系", () => {
     it("should unarchive a bookmark successfully", async () => {
-      const db = createDb();
-      const bookmark = await db.transaction(async (tx) => {
+      
+      const bookmark = await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,
@@ -29,8 +29,8 @@ describe("unarchiveBookmark", () => {
     });
 
     it("should appear in findMany after unarchiving", async () => {
-      const db = createDb();
-      const bookmark = await db.transaction(async (tx) => {
+      
+      const bookmark = await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,
@@ -52,8 +52,8 @@ describe("unarchiveBookmark", () => {
     });
 
     it("should not appear in findManyArchived after unarchiving", async () => {
-      const db = createDb();
-      const bookmark = await db.transaction(async (tx) => {
+      
+      const bookmark = await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,

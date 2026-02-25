@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { ContextRepository } from "../../../../shared/context";
 import { archiveBookmark } from "../../mutations/archive-bookmark";
 import { archivedBookmarks } from ".";
@@ -8,8 +8,8 @@ import { archivedBookmarks } from ".";
 describe("archivedBookmarks", () => {
   describe("正常系", () => {
     it("should return only archived bookmarks", async () => {
-      const db = createDb();
-      const bookmark1 = await db.transaction(async (tx) => {
+      
+      const bookmark1 = await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,
@@ -20,7 +20,7 @@ describe("archivedBookmarks", () => {
         });
       });
 
-      await db.transaction(async (tx) => {
+      await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,

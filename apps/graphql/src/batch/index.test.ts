@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { RssFeedRepository } from "../domain/rss-feed/repository.persistence";
-import { createDb } from "../libs/drizzle/client";
+import { DrizzleRepository } from "../shared/drizzle";
 import { articles } from "../libs/drizzle/schema";
 import { mockAuthContext } from "../libs/test/authHelper";
 import { mockServer } from "../libs/test/mockServer";
@@ -13,15 +13,15 @@ describe("scheduled", () => {
     it("should do nothing when no feeds are registered", async () => {
       await scheduled();
 
-      const db = createDb();
+      const db = DrizzleRepository.create().getDb();
       const rows = await db.select().from(articles);
       expect(rows).toHaveLength(0);
     });
 
     it("should fetch articles and upsert them for each feed", async () => {
-      const db = createDb();
+      const db = DrizzleRepository.create().getDb();
 
-      const feed = await db.transaction(async (tx) => {
+      const feed = await DrizzleRepository.create().transaction(async (tx) => {
         const repo = new RssFeedRepository(ContextRepository.create(), tx);
         return await repo.create({
           url: "https://example.com/feed.xml",
@@ -55,10 +55,10 @@ describe("scheduled", () => {
     });
 
     it("should process feeds for multiple users independently", async () => {
-      const db = createDb();
+      const db = DrizzleRepository.create().getDb();
 
       mockAuthContext({ userId: "user-a" });
-      await db.transaction(async (tx) => {
+      await DrizzleRepository.create().transaction(async (tx) => {
         const repo = new RssFeedRepository(ContextRepository.create(), tx);
         await repo.create({
           url: "https://example.com/feed-a.xml",
@@ -67,7 +67,7 @@ describe("scheduled", () => {
       });
 
       mockAuthContext({ userId: "user-b" });
-      await db.transaction(async (tx) => {
+      await DrizzleRepository.create().transaction(async (tx) => {
         const repo = new RssFeedRepository(ContextRepository.create(), tx);
         await repo.create({
           url: "https://example.com/feed-b.xml",
@@ -87,9 +87,9 @@ describe("scheduled", () => {
     });
 
     it("should upsert articles on repeated runs (update existing)", async () => {
-      const db = createDb();
+      const db = DrizzleRepository.create().getDb();
 
-      await db.transaction(async (tx) => {
+      await DrizzleRepository.create().transaction(async (tx) => {
         const repo = new RssFeedRepository(ContextRepository.create(), tx);
         await repo.create({
           url: "https://example.com/feed.xml",
@@ -112,9 +112,9 @@ describe("scheduled", () => {
     });
 
     it("should skip articles without a link", async () => {
-      const db = createDb();
+      const db = DrizzleRepository.create().getDb();
 
-      await db.transaction(async (tx) => {
+      await DrizzleRepository.create().transaction(async (tx) => {
         const repo = new RssFeedRepository(ContextRepository.create(), tx);
         await repo.create({
           url: "https://example.com/feed.xml",
@@ -134,9 +134,9 @@ describe("scheduled", () => {
 
   describe("異常系", () => {
     it("should continue processing other feeds when one fails", async () => {
-      const db = createDb();
+      const db = DrizzleRepository.create().getDb();
 
-      await db.transaction(async (tx) => {
+      await DrizzleRepository.create().transaction(async (tx) => {
         const repo = new RssFeedRepository(ContextRepository.create(), tx);
         await repo.create({
           url: "https://example.com/failing-feed.xml",

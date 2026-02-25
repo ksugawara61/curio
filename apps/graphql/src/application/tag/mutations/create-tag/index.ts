@@ -2,8 +2,8 @@ import { ServiceError } from "@getcronit/pylon";
 import type { ITagRepository } from "../../../../domain/tag/interface";
 import type { CreateTagInput, Tag } from "../../../../domain/tag/model";
 import { TagRepository } from "../../../../domain/tag/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import type { BaseApplication } from "../../../base";
 
 export type { CreateTagInput };
@@ -27,8 +27,7 @@ export class CreateTag implements BaseApplication<CreateTagInput, Tag> {
 }
 
 export const createTag = async (input: CreateTagInput): Promise<Tag> => {
-  const db = createDb();
-  return await db.transaction(async (tx) => {
+  return await DrizzleRepository.create().transaction(async (tx) => {
     const repository = new TagRepository(ContextRepository.create(), tx);
     return new CreateTag(repository).invoke(input);
   });

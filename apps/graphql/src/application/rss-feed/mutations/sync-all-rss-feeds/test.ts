@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { articles } from "../../../../domain/article/schema";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
 import { mockAuthContext } from "../../../../libs/test/authHelper";
 import { mockServer } from "../../../../libs/test/mockServer";
 import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
-import { articles } from "../../../../shared/drizzle/schema";
 import { syncAllRssFeeds } from ".";
 import { SyncAllRssFeedsMocks } from "./mocks";
 

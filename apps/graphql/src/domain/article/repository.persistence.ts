@@ -1,12 +1,12 @@
 import { createId } from "@paralleldrive/cuid2";
 import { eq, sql } from "drizzle-orm";
 import type { DrizzleDb } from "../../shared/drizzle";
-import { articles } from "../../shared/drizzle/schema";
 import type {
   GetRecentArticlesInput,
   PersistedArticle,
   UpsertArticleInput,
 } from "./model";
+import { articles } from "./schema";
 
 export class ArticlePersistenceRepository {
   private db: DrizzleDb;

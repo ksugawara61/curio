@@ -17,18 +17,18 @@ export class DrizzleRepository {
   private static instance: DrizzleRepository | null = null;
   private readonly db: DrizzleDb;
 
-  private constructor() {
-    const env = getEnv();
+  private constructor(env?: ReturnType<typeof getEnv>) {
+    const resolvedEnv = env ?? getEnv();
     const tursoClient = createClient({
-      url: env.TURSO_DATABASE_URL ?? "file:./local.db",
-      authToken: env.TURSO_AUTH_TOKEN,
+      url: resolvedEnv.TURSO_DATABASE_URL ?? "file:./local.db",
+      authToken: resolvedEnv.TURSO_AUTH_TOKEN,
     });
     this.db = drizzle(tursoClient, { schema });
   }
 
-  static create(): DrizzleRepository {
+  static create(env?: ReturnType<typeof getEnv>): DrizzleRepository {
     if (!DrizzleRepository.instance) {
-      DrizzleRepository.instance = new DrizzleRepository();
+      DrizzleRepository.instance = new DrizzleRepository(env);
     }
     return DrizzleRepository.instance;
   }

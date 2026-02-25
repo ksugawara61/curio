@@ -89,149 +89,196 @@ pnpm test
 
 本プロジェクトはClean Architectureの原則に従って設計されており、責務を明確に分離しています。
 
-### ディレクトリ構造
+### ディレクトリ構造と各ディレクトリの役割
 
 ```
 src/
-  server.ts             # GraphQLリゾルバー（エントリポイント）
-  index.ts              # アプリケーションエントリポイント
-  domain/               # ドメイン層（エンティティ単位で整理）
-    {entity}/
-      model.ts          #   エンティティ型定義
-      interface.ts      #   リポジトリインターフェース
-      repository.*.ts   #   リポジトリ実装 (persistence / external)
-  application/          # アプリケーション層（ユースケース）
-    {entity}/
-      queries/          #   読み取りユースケース (e.g. get-bookmarks/)
-      mutations/        #   書き込みユースケース (e.g. create-bookmark/)
-  middleware/            # ミドルウェア層
-    auth.ts             #   認証ミドルウェア (Clerk / テストキー)
-  shared/               # 共有層
-    context/            #   ContextRepository（ユーザーコンテキスト管理）
-  libs/                 # 技術基盤ライブラリ
-    drizzle/            #   DBクライアント, スキーマ定義, マイグレーション
-    openapi/            #   Qiita APIクライアント
-    test/               #   テストユーティリティ（認証ヘルパー, MSWモックサーバー等）
-  generated/            # 自動生成コード (GQty, OpenAPI型定義)
+  index.ts              # Cloudflare Workers エントリポイント
+                        #   → server (GraphQL) と scheduled (batch) を export
+  server.ts             # GraphQL リゾルバー定義
+                        #   → 全 Query / Mutation を withAuth でラップして登録
+  middleware/           # 認証ミドルウェア
+  application/          # ユースケース層（エンティティ × query/mutation ごとに分割）
+  domain/               # ドメイン層（モデル / インターフェース / リポジトリ実装）
+  shared/               # 横断的な共有モジュール
+  libs/                 # テスト専用ユーティリティ
+  batch/                # スケジューラ（RSS フィード定期取得）
+  generated/            # 自動生成コード（GQty スキーマ）
 ```
 
-各 query/mutation ディレクトリは `index.ts`（実装）と `test.ts`（テスト）をコロケーションしています。
+#### `middleware/`
 
-### 依存関係
+| ファイル | 役割 |
+|---|---|
+| `auth.ts` | `withAuth` HOF。本番では Clerk JWT を検証し、開発/テストでは `X-Test-Key` ヘッダーでバイパス。認証済み userId を `ContextRepository` に保存する |
 
-```mermaid
-graph TD
-    subgraph "Interface Layer"
-        Server[server.ts]
-    end
+**依存先**: `@clerk/backend` / `shared/context`
 
-    subgraph "Middleware Layer"
-        Auth[middleware/auth.ts]
-    end
+---
 
-    subgraph "Application Layer"
-        ArticleQueries[article/queries]
-        BookmarkQueries[bookmark/queries]
-        BookmarkMutations[bookmark/mutations]
-        TagQueries[tag/queries]
-        TagMutations[tag/mutations]
-    end
+#### `application/`
 
-    subgraph "Domain Layer"
-        ArticleDomain[domain/article<br/>model / interface / repository.external]
-        BookmarkDomain[domain/bookmark<br/>model / interface / repository.persistence]
-        TagDomain[domain/tag<br/>model / interface / repository.persistence]
-    end
+ユースケース層。エンティティ単位のディレクトリ下に `queries/` と `mutations/` を配置。
+各ユースケースは `BaseApplication<TInput, TOutput>` 型（`application/base.ts`）に従い `invoke()` を実装する。
 
-    subgraph "Shared"
-        Context[shared/context<br/>ContextRepository]
-    end
-
-    subgraph "Libs"
-        Drizzle[libs/drizzle<br/>DB client / schema]
-        OpenAPI[libs/openapi<br/>Qiita API client]
-    end
-
-    Server --> Auth
-    Server --> ArticleQueries
-    Server --> BookmarkQueries
-    Server --> BookmarkMutations
-    Server --> TagQueries
-    Server --> TagMutations
-
-    ArticleQueries --> ArticleDomain
-    BookmarkQueries --> BookmarkDomain
-    BookmarkMutations --> BookmarkDomain
-    TagQueries --> TagDomain
-    TagMutations --> TagDomain
-
-    Auth --> Context
-    ArticleQueries --> Context
-    BookmarkQueries --> Context
-    BookmarkMutations --> Context
-    TagQueries --> Context
-    TagMutations --> Context
-
-    ArticleDomain --> OpenAPI
-    BookmarkDomain --> Drizzle
-    TagDomain --> Drizzle
-
-    classDef interface fill:#e1f5fe
-    classDef middleware fill:#e8f5e9
-    classDef application fill:#f3e5f5
-    classDef domain fill:#fff3e0
-    classDef shared fill:#fce4ec
-    classDef libs fill:#f5f5f5
-
-    class Server interface
-    class Auth middleware
-    class ArticleQueries,BookmarkQueries,BookmarkMutations,TagQueries,TagMutations application
-    class ArticleDomain,BookmarkDomain,TagDomain domain
-    class Context shared
-    class Drizzle,OpenAPI libs
+```
+application/
+  base.ts                            # BaseApplication<TInput, TOutput> 型定義
+  article/queries/
+    get-articles/                    # Qiita 記事一覧取得
+    get-recent-articles/             # Qiita 最新記事取得
+  bookmark/
+    queries/
+      get-bookmarks/                 # ブックマーク一覧
+      get-archived-bookmarks/        # アーカイブ済みブックマーク一覧
+      get-bookmark/                  # ブックマーク単件取得
+    mutations/
+      create-bookmark/               # ブックマーク作成
+      update-bookmark/               # ブックマーク更新
+      archive-bookmark/              # アーカイブ
+      unarchive-bookmark/            # アーカイブ解除
+      delete-bookmark/               # 削除
+  tag/
+    queries/get-tags/                # タグ一覧
+    mutations/create-tag/            # タグ作成
+  rss-feed/
+    queries/
+      get-rss-feeds/                 # RSS フィード一覧
+      get-rss-articles/              # RSS フィードから取得した記事一覧
+    mutations/
+      create-rss-feed/               # RSS フィード登録（フィード作成 + 初回記事取得）
+      delete-rss-feed/               # RSS フィード削除
+  url-metadata/
+    queries/fetch-url-metadata/      # URL のメタデータ取得（og: / twitter: / title）
 ```
 
-依存の方向: `domain` ← `application` ← `middleware` / `server.ts`
+各 `index.ts`（実装）と `test.ts`（テスト）をコロケーション配置。
 
-### 各層の責務
+**依存先**: `domain/{entity}/interface.ts` / `shared/context` / `shared/drizzle`（トランザクション）
 
-#### Domain Layer (`src/domain/`)
-- **エンティティ定義**: 各ドメインオブジェクトの型定義 (`model.ts`)
-- **リポジトリインターフェース**: データアクセスの抽象化 (`interface.ts`)
-- **リポジトリ実装**: DB連携 (`repository.persistence.ts`) / 外部API連携 (`repository.external.ts`)
-  - `article`: Qiita APIからの記事取得
-  - `bookmark`: Drizzle ORMによるブックマークCRUD
-  - `tag`: Drizzle ORMによるタグCRUD
+---
 
-#### Application Layer (`src/application/`)
-- **ユースケース**: エンティティ単位（article, bookmark, tag）で整理
-- 各query/mutationは独立したディレクトリで、`index.ts`（実装）と`test.ts`（テスト）を配置
-- ドメイン層のリポジトリを利用してビジネスロジックを実装
+#### `domain/`
 
-#### Middleware Layer (`src/middleware/`)
-- **認証ミドルウェア**: Clerk JWT検証 / テストキーバイパス
-- `withAuth` HOFでリゾルバーをラップし、認証済みコンテキストを提供
+ドメイン層。エンティティごとに以下のファイル構成を取る。
 
-#### Shared Layer (`src/shared/`)
-- **ContextRepository**: Pylonの`getContext`を利用したユーザーコンテキスト管理（userId）
+```
+domain/{entity}/
+  model.ts                 # ドメインモデルの型定義
+  interface.ts             # リポジトリインターフェース（抽象）
+  repository.persistence.ts  # DB 実装（Drizzle ORM / Turso SQLite）
+  repository.external.ts     # 外部 API 実装（外部連携があるエンティティのみ）
+```
 
-#### Libs (`src/libs/`)
-- **drizzle**: DBクライアント・スキーマ定義・マイグレーション
-- **openapi**: Qiita API型安全クライアント
-- **test**: テストユーティリティ（認証ヘルパー、MSWモックサーバー等）
+| エンティティ | persistence | external | 外部連携先 |
+|---|---|---|---|
+| `bookmark` | ○ | − | − |
+| `tag` | ○ | − | − |
+| `article` | ○ | ○ | Qiita API（OpenAPI クライアント）|
+| `rss-feed` | ○ | ○ | RSS/Atom フィード（fetch + 独自 XML パーサー）|
+| `url-metadata` | − | ○ | HTML スクレイピング（fetch）|
+
+**依存先（persistence）**: `shared/drizzle/schema` / `shared/context`（userId）/ `drizzle-orm`
+**依存先（external）**: `shared/openapi`（article のみ）/ `fetch`
+
+---
+
+#### `shared/`
+
+横断的な共有モジュール。どの層からも参照される。
+
+| パス | 役割 |
+|---|---|
+| `shared/context/index.ts` | `ContextRepository` — Pylon の `getContext` を使い userId をリクエストスコープで管理 |
+| `shared/drizzle/index.ts` | `DrizzleRepository` シングルトン — DB クライアント（Turso / ローカル SQLite）の生成と提供 |
+| `shared/drizzle/schema.ts` | Drizzle ORM テーブル定義（`bookmarks` / `tags` / `bookmark_tags` / `rss_feeds` / `articles`）|
+| `shared/drizzle/migrations/` | Drizzle マイグレーションファイル |
+| `shared/openapi/client.ts` | Qiita API の型安全 fetch クライアント（`openapi-fetch` ベース）|
+| `shared/openapi/generated/` | `pnpm generate:openapi` で生成した Qiita OpenAPI 型定義 |
+
+**依存先**: `@libsql/client` / `drizzle-orm` / `openapi-fetch`
+
+---
+
+#### `libs/`
+
+| パス | 役割 |
+|---|---|
+| `libs/test/authHelper.ts` | テスト用認証ヘッダー生成ヘルパー |
+| `libs/test/client.ts` | GraphQL テストクライアント（Pylon アプリに直接リクエストを送る）|
+| `libs/test/mockServer.ts` | MSW を使った外部 API モックサーバー |
+| `libs/test/globalSetup.ts` | Vitest グローバルセットアップ |
+| `libs/test/vitest.setup.ts` | Vitest テストファイル単位のセットアップ |
+
+**依存先**: `msw` / `vitest`（テスト専用。プロダクションコードからは参照しない）
+
+---
+
+#### `batch/`
+
+| ファイル | 役割 |
+|---|---|
+| `batch/index.ts` | Cloudflare Workers `scheduled` イベントハンドラー。全ユーザーの RSS フィードを横断して記事を取得し upsert する |
+
+**依存先**: `domain/rss-feed/repository.persistence` / `domain/rss-feed/repository.external` / `domain/article/repository.persistence` / `shared/drizzle` / `shared/context`
+
+---
+
+#### `generated/`
+
+`pnpm codegen`（GQty）で自動生成されるファイル群。手動編集しない。
+
+---
+
+### 依存関係図
+
+```
+index.ts
+  ├── server.ts
+  │     ├── middleware/auth.ts
+  │     │     └── shared/context
+  │     └── application/**
+  │           ├── domain/**/interface.ts
+  │           ├── shared/context
+  │           └── shared/drizzle  (transaction)
+  └── batch/index.ts
+        ├── domain/rss-feed/repository.persistence
+        ├── domain/rss-feed/repository.external
+        ├── domain/article/repository.persistence
+        ├── shared/context
+        └── shared/drizzle
+
+domain/**/repository.persistence.ts
+  ├── shared/drizzle/schema
+  ├── shared/context          (userId)
+  └── drizzle-orm
+
+domain/article/repository.external.ts
+  └── shared/openapi/client   (Qiita API)
+
+domain/rss-feed/repository.external.ts
+  └── fetch                   (RSS/Atom XML)
+
+domain/url-metadata/repository.external.ts
+  └── fetch                   (HTML scraping)
+```
+
+依存の方向: `shared` / `domain` ← `application` ← `middleware` ← `server.ts` ← `index.ts`
+
+---
 
 ### 設計の特徴
 
 1. **Clean Architecture**: domain / application / middleware / shared の明確な層分離
-2. **エンティティ単位の整理**: application層・domain層ともにエンティティ単位でディレクトリを構成
-3. **コロケーション**: 各query/mutationにテストファイルを同梱し、関連ファイルを近くに配置
-4. **TypeScript関数ベース**: クラスではなくアロー関数を使用したシンプルな実装
-5. **type定義**: `interface`ではなく`type`を使用（Biomeルール準拠）
-6. **リポジトリパターン**: ドメイン層でインターフェースを定義し、永続化/外部API実装を同梱
+2. **エンティティ単位の整理**: application 層・domain 層ともにエンティティ単位でディレクトリを構成
+3. **コロケーション**: 各 query/mutation にテストファイルを同梱し、関連ファイルを近くに配置
+4. **TypeScript 関数ベース**: クラスではなくアロー関数を使用したシンプルな実装
+5. **`type` 定義**: `interface` ではなく `type` を使用（Biome ルール準拠）
+6. **リポジトリパターン**: ドメイン層でインターフェースを定義し、永続化 / 外部 API 実装を同梱
 
 ## Database Schema
 
-SQLite（本番: Turso、開発: ローカルSQLite）を使用。スキーマは Drizzle ORM で定義（`src/libs/drizzle/schema.ts`）。
+SQLite（本番: Turso、開発: ローカルSQLite）を使用。スキーマは Drizzle ORM で定義（`src/shared/drizzle/schema.ts`）。
 
 ### bookmarks
 | Column | Type | Constraints |
@@ -266,3 +313,32 @@ UNIQUE制約: `(user_id, name)`
 | tag_id | TEXT | NOT NULL, FK → tags.id (CASCADE DELETE) |
 
 PRIMARY KEY: `(bookmark_id, tag_id)`
+
+### rss_feeds
+| Column | Type | Constraints |
+|--------|------|-------------|
+| id | TEXT | PRIMARY KEY (cuid2) |
+| user_id | TEXT | NOT NULL |
+| url | TEXT | NOT NULL |
+| title | TEXT | NOT NULL |
+| description | TEXT | |
+| created_at | TEXT | NOT NULL, DEFAULT datetime('now') |
+| updated_at | TEXT | NOT NULL, DEFAULT datetime('now') |
+
+UNIQUE制約: `(user_id, url)`
+
+### articles
+| Column | Type | Constraints |
+|--------|------|-------------|
+| id | TEXT | PRIMARY KEY (cuid2) |
+| user_id | TEXT | NOT NULL |
+| rss_feed_id | TEXT | NOT NULL, FK → rss_feeds.id (CASCADE DELETE) |
+| title | TEXT | NOT NULL |
+| url | TEXT | NOT NULL |
+| description | TEXT | |
+| thumbnail_url | TEXT | |
+| pub_date | TEXT | |
+| created_at | TEXT | NOT NULL, DEFAULT datetime('now') |
+| updated_at | TEXT | NOT NULL, DEFAULT datetime('now') |
+
+UNIQUE制約: `(rss_feed_id, url)`

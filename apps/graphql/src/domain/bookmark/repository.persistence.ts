@@ -4,6 +4,7 @@ import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { createDb } from "../../libs/drizzle/client";
 import type * as schema from "../../libs/drizzle/schema";
 import { bookmarks, bookmarkTags, tags } from "../../libs/drizzle/schema";
+import type { ContextRepository } from "../../shared/context";
 import { TagRepository } from "../tag/repository.persistence";
 import type {
   Bookmark,
@@ -57,42 +58,39 @@ const rowToBookmark = (row: {
 export class BookmarkRepository {
   private db: LibSQLDatabase<typeof schema> | Transaction;
   private tagRepository: TagRepository;
-  private userId: string;
+  private contextRepository: ContextRepository;
 
   constructor(
-    userId: string,
+    contextRepository: ContextRepository,
     dbOrTx?: LibSQLDatabase<typeof schema> | Transaction,
   ) {
-    this.userId = userId;
+    this.contextRepository = contextRepository;
     this.db = dbOrTx ?? createDb();
-    this.tagRepository = new TagRepository(userId, this.db);
+    this.tagRepository = new TagRepository(contextRepository, this.db);
   }
 
   async findMany(): Promise<Bookmark[]> {
+    const userId = this.contextRepository.getUserId();
     const result = await this.db
       .select(bookmarkSelectFields)
       .from(bookmarks)
       .leftJoin(bookmarkTags, eq(bookmarks.id, bookmarkTags.bookmark_id))
       .leftJoin(tags, eq(bookmarkTags.tag_id, tags.id))
-      .where(
-        and(eq(bookmarks.user_id, this.userId), isNull(bookmarks.archived_at)),
-      )
+      .where(and(eq(bookmarks.user_id, userId), isNull(bookmarks.archived_at)))
       .orderBy(bookmarks.created_at);
 
     return this.groupBookmarksWithTags(result);
   }
 
   async findManyArchived(): Promise<Bookmark[]> {
+    const userId = this.contextRepository.getUserId();
     const result = await this.db
       .select(bookmarkSelectFields)
       .from(bookmarks)
       .leftJoin(bookmarkTags, eq(bookmarks.id, bookmarkTags.bookmark_id))
       .leftJoin(tags, eq(bookmarkTags.tag_id, tags.id))
       .where(
-        and(
-          eq(bookmarks.user_id, this.userId),
-          isNotNull(bookmarks.archived_at),
-        ),
+        and(eq(bookmarks.user_id, userId), isNotNull(bookmarks.archived_at)),
       )
       .orderBy(bookmarks.created_at);
 
@@ -100,12 +98,13 @@ export class BookmarkRepository {
   }
 
   async findById(id: string): Promise<Bookmark | null> {
+    const userId = this.contextRepository.getUserId();
     const result = await this.db
       .select(bookmarkSelectFields)
       .from(bookmarks)
       .leftJoin(bookmarkTags, eq(bookmarks.id, bookmarkTags.bookmark_id))
       .leftJoin(tags, eq(bookmarkTags.tag_id, tags.id))
-      .where(and(eq(bookmarks.id, id), eq(bookmarks.user_id, this.userId)));
+      .where(and(eq(bookmarks.id, id), eq(bookmarks.user_id, userId)));
 
     if (result.length === 0) {
       return null;
@@ -130,12 +129,13 @@ export class BookmarkRepository {
   }
 
   async findByUrl(url: string): Promise<Bookmark | null> {
+    const userId = this.contextRepository.getUserId();
     const result = await this.db
       .select(bookmarkSelectFields)
       .from(bookmarks)
       .leftJoin(bookmarkTags, eq(bookmarks.id, bookmarkTags.bookmark_id))
       .leftJoin(tags, eq(bookmarkTags.tag_id, tags.id))
-      .where(and(eq(bookmarks.url, url), eq(bookmarks.user_id, this.userId)));
+      .where(and(eq(bookmarks.url, url), eq(bookmarks.user_id, userId)));
 
     if (result.length === 0) {
       return null;
@@ -178,11 +178,12 @@ export class BookmarkRepository {
         : [];
 
     // Insert bookmark
+    const userId = this.contextRepository.getUserId();
     const [bookmark] = await this.db
       .insert(bookmarks)
       .values({
         id: createId(),
-        user_id: this.userId,
+        user_id: userId,
         title: input.title,
         url: input.url,
         description: input.description,
@@ -236,10 +237,11 @@ export class BookmarkRepository {
     // Always update the updated_at field
     updateData.updated_at = new Date().toISOString();
 
+    const userId = this.contextRepository.getUserId();
     const [updatedBookmark] = await this.db
       .update(bookmarks)
       .set(updateData)
-      .where(and(eq(bookmarks.id, id), eq(bookmarks.user_id, this.userId)))
+      .where(and(eq(bookmarks.id, id), eq(bookmarks.user_id, userId)))
       .returning();
 
     if (!updatedBookmark) {
@@ -309,6 +311,7 @@ export class BookmarkRepository {
   }
 
   async archive(id: string): Promise<Bookmark> {
+    const userId = this.contextRepository.getUserId();
     const now = new Date().toISOString();
 
     const [updatedBookmark] = await this.db
@@ -317,7 +320,7 @@ export class BookmarkRepository {
         archived_at: now,
         updated_at: now,
       })
-      .where(and(eq(bookmarks.id, id), eq(bookmarks.user_id, this.userId)))
+      .where(and(eq(bookmarks.id, id), eq(bookmarks.user_id, userId)))
       .returning();
 
     if (!updatedBookmark) {
@@ -333,6 +336,7 @@ export class BookmarkRepository {
   }
 
   async unarchive(id: string): Promise<Bookmark> {
+    const userId = this.contextRepository.getUserId();
     const now = new Date().toISOString();
 
     const [updatedBookmark] = await this.db
@@ -341,7 +345,7 @@ export class BookmarkRepository {
         archived_at: null,
         updated_at: now,
       })
-      .where(and(eq(bookmarks.id, id), eq(bookmarks.user_id, this.userId)))
+      .where(and(eq(bookmarks.id, id), eq(bookmarks.user_id, userId)))
       .returning();
 
     if (!updatedBookmark) {
@@ -357,9 +361,10 @@ export class BookmarkRepository {
   }
 
   async deleteBookmark(id: string): Promise<void> {
+    const userId = this.contextRepository.getUserId();
     const result = await this.db
       .delete(bookmarks)
-      .where(and(eq(bookmarks.id, id), eq(bookmarks.user_id, this.userId)))
+      .where(and(eq(bookmarks.id, id), eq(bookmarks.user_id, userId)))
       .returning();
 
     if (result.length === 0) {

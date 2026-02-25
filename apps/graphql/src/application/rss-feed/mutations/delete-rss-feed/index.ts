@@ -35,10 +35,8 @@ export class DeleteRssFeed implements BaseApplication<string, boolean> {
 
 export const deleteRssFeed = async (id: string): Promise<boolean> => {
   const db = createDb();
-  const { getUserId } = ContextRepository.create();
-  const userId = getUserId();
   return await db.transaction(async (tx) => {
-    const repository = new RssFeedRepository(userId, tx);
+    const repository = new RssFeedRepository(ContextRepository.create(), tx);
     return new DeleteRssFeed(repository).invoke(id);
   });
 };

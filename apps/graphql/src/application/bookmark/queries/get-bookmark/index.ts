@@ -45,8 +45,6 @@ export const bookmark = async (
   id?: string,
   uri?: string,
 ): Promise<Bookmark | null> => {
-  const { getUserId } = ContextRepository.create();
-  const userId = getUserId();
-  const repository = new BookmarkRepository(userId);
+  const repository = new BookmarkRepository(ContextRepository.create());
   return new GetBookmark(repository).invoke({ id, uri });
 };

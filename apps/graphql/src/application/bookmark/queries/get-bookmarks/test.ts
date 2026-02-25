@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { createDb } from "../../../../libs/drizzle/client";
+import { ContextRepository } from "../../../../shared/context";
 import { GetBookmarks } from ".";
 
 describe("GetBookmarks", () => {
@@ -8,7 +9,10 @@ describe("GetBookmarks", () => {
     it("should return array of bookmarks", async () => {
       const db = createDb();
       await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Test Bookmark 1",
           url: "https://example1.com",
@@ -17,7 +21,10 @@ describe("GetBookmarks", () => {
       });
 
       await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository("test-user", tx);
+        const repository = new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        );
         return await repository.create({
           title: "Test Bookmark 2",
           url: "https://example2.com",
@@ -25,7 +32,7 @@ describe("GetBookmarks", () => {
         });
       });
 
-      const repository = new BookmarkRepository("test-user");
+      const repository = new BookmarkRepository(ContextRepository.create());
       const result = await new GetBookmarks(repository).invoke();
 
       expect(result).toHaveLength(2);
@@ -37,7 +44,7 @@ describe("GetBookmarks", () => {
     });
 
     it("should return empty array when no bookmarks exist", async () => {
-      const repository = new BookmarkRepository("test-user");
+      const repository = new BookmarkRepository(ContextRepository.create());
       const result = await new GetBookmarks(repository).invoke();
 
       expect(result).toEqual([]);

@@ -24,8 +24,6 @@ export class GetTags implements BaseApplication<void, Tag[]> {
 }
 
 export const tags = async (): Promise<Tag[]> => {
-  const { getUserId } = ContextRepository.create();
-  const userId = getUserId();
-  const repository = new TagRepository(userId);
+  const repository = new TagRepository(ContextRepository.create());
   return new GetTags(repository).invoke();
 };

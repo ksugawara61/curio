@@ -35,10 +35,8 @@ export class UnarchiveBookmark implements BaseApplication<string, Bookmark> {
 
 export const unarchiveBookmark = async (id: string): Promise<Bookmark> => {
   const db = createDb();
-  const { getUserId } = ContextRepository.create();
-  const userId = getUserId();
   return await db.transaction(async (tx) => {
-    const repository = new BookmarkRepository(userId, tx);
+    const repository = new BookmarkRepository(ContextRepository.create(), tx);
     return new UnarchiveBookmark(repository).invoke(id);
   });
 };

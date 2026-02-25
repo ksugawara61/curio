@@ -4,6 +4,7 @@ import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { createDb } from "../../libs/drizzle/client";
 import type * as schema from "../../libs/drizzle/schema";
 import { tags } from "../../libs/drizzle/schema";
+import type { ContextRepository } from "../../shared/context";
 import type { CreateTagInput, Tag, UpdateTagInput } from "./model";
 
 type Transaction = Parameters<
@@ -12,21 +13,22 @@ type Transaction = Parameters<
 
 export class TagRepository {
   private db: LibSQLDatabase<typeof schema> | Transaction;
-  private userId: string;
+  private contextRepository: ContextRepository;
 
   constructor(
-    userId: string,
+    contextRepository: ContextRepository,
     dbOrTx?: LibSQLDatabase<typeof schema> | Transaction,
   ) {
-    this.userId = userId;
+    this.contextRepository = contextRepository;
     this.db = dbOrTx ?? createDb();
   }
 
   async findAll(): Promise<Tag[]> {
+    const userId = this.contextRepository.getUserId();
     const result = await this.db
       .select()
       .from(tags)
-      .where(eq(tags.user_id, this.userId))
+      .where(eq(tags.user_id, userId))
       .orderBy(tags.name);
 
     return result.map((tag) => ({
@@ -38,10 +40,11 @@ export class TagRepository {
   }
 
   async findById(id: string): Promise<Tag | null> {
+    const userId = this.contextRepository.getUserId();
     const result = await this.db
       .select()
       .from(tags)
-      .where(and(eq(tags.id, id), eq(tags.user_id, this.userId)))
+      .where(and(eq(tags.id, id), eq(tags.user_id, userId)))
       .limit(1);
 
     if (result.length === 0) {
@@ -58,10 +61,11 @@ export class TagRepository {
   }
 
   async findByName(name: string): Promise<Tag | null> {
+    const userId = this.contextRepository.getUserId();
     const result = await this.db
       .select()
       .from(tags)
-      .where(and(eq(tags.name, name), eq(tags.user_id, this.userId)))
+      .where(and(eq(tags.name, name), eq(tags.user_id, userId)))
       .limit(1);
 
     if (result.length === 0) {
@@ -78,9 +82,10 @@ export class TagRepository {
   }
 
   async create(input: CreateTagInput): Promise<Tag> {
+    const userId = this.contextRepository.getUserId();
     const [tag] = await this.db
       .insert(tags)
-      .values({ id: createId(), user_id: this.userId, name: input.name })
+      .values({ id: createId(), user_id: userId, name: input.name })
       .returning();
 
     return {
@@ -101,11 +106,12 @@ export class TagRepository {
   }
 
   async update(id: string, input: UpdateTagInput): Promise<Tag> {
+    const userId = this.contextRepository.getUserId();
     const updateData = { ...input, updated_at: new Date().toISOString() };
     const [tag] = await this.db
       .update(tags)
       .set(updateData)
-      .where(and(eq(tags.id, id), eq(tags.user_id, this.userId)))
+      .where(and(eq(tags.id, id), eq(tags.user_id, userId)))
       .returning();
 
     return {
@@ -117,8 +123,9 @@ export class TagRepository {
   }
 
   async remove(id: string): Promise<void> {
+    const userId = this.contextRepository.getUserId();
     await this.db
       .delete(tags)
-      .where(and(eq(tags.id, id), eq(tags.user_id, this.userId)));
+      .where(and(eq(tags.id, id), eq(tags.user_id, userId)));
   }
 }

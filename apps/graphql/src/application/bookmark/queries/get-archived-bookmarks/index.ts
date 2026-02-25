@@ -24,8 +24,6 @@ export class GetArchivedBookmarks implements BaseApplication<void, Bookmark[]> {
 }
 
 export const archivedBookmarks = async (): Promise<Bookmark[]> => {
-  const { getUserId } = ContextRepository.create();
-  const userId = getUserId();
-  const repository = new BookmarkRepository(userId);
+  const repository = new BookmarkRepository(ContextRepository.create());
   return new GetArchivedBookmarks(repository).invoke();
 };

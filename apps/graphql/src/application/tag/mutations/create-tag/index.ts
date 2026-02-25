@@ -28,10 +28,8 @@ export class CreateTag implements BaseApplication<CreateTagInput, Tag> {
 
 export const createTag = async (input: CreateTagInput): Promise<Tag> => {
   const db = createDb();
-  const { getUserId } = ContextRepository.create();
-  const userId = getUserId();
   return await db.transaction(async (tx) => {
-    const repository = new TagRepository(userId, tx);
+    const repository = new TagRepository(ContextRepository.create(), tx);
     return new CreateTag(repository).invoke(input);
   });
 };

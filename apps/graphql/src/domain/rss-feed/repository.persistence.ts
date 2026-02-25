@@ -4,6 +4,7 @@ import type { LibSQLDatabase } from "drizzle-orm/libsql";
 import { createDb } from "../../libs/drizzle/client";
 import type * as schema from "../../libs/drizzle/schema";
 import { rssFeeds } from "../../libs/drizzle/schema";
+import type { ContextRepository } from "../../shared/context";
 import type { CreateRssFeedInput, RssFeed, RssFeedBatchItem } from "./model";
 
 type Transaction = Parameters<
@@ -12,13 +13,13 @@ type Transaction = Parameters<
 
 export class RssFeedRepository {
   private db: LibSQLDatabase<typeof schema> | Transaction;
-  private userId: string;
+  private contextRepository: ContextRepository;
 
   constructor(
-    userId: string,
+    contextRepository: ContextRepository,
     dbOrTx?: LibSQLDatabase<typeof schema> | Transaction,
   ) {
-    this.userId = userId;
+    this.contextRepository = contextRepository;
     this.db = dbOrTx ?? createDb();
   }
 
@@ -36,10 +37,11 @@ export class RssFeedRepository {
   }
 
   async findAll(): Promise<RssFeed[]> {
+    const userId = this.contextRepository.getUserId();
     const result = await this.db
       .select()
       .from(rssFeeds)
-      .where(eq(rssFeeds.user_id, this.userId))
+      .where(eq(rssFeeds.user_id, userId))
       .orderBy(rssFeeds.created_at);
 
     return result.map((feed) => ({
@@ -53,10 +55,11 @@ export class RssFeedRepository {
   }
 
   async findById(id: string): Promise<RssFeed | null> {
+    const userId = this.contextRepository.getUserId();
     const result = await this.db
       .select()
       .from(rssFeeds)
-      .where(and(eq(rssFeeds.id, id), eq(rssFeeds.user_id, this.userId)))
+      .where(and(eq(rssFeeds.id, id), eq(rssFeeds.user_id, userId)))
       .limit(1);
 
     if (result.length === 0) {
@@ -75,10 +78,11 @@ export class RssFeedRepository {
   }
 
   async findByUrl(url: string): Promise<RssFeed | null> {
+    const userId = this.contextRepository.getUserId();
     const result = await this.db
       .select()
       .from(rssFeeds)
-      .where(and(eq(rssFeeds.url, url), eq(rssFeeds.user_id, this.userId)))
+      .where(and(eq(rssFeeds.url, url), eq(rssFeeds.user_id, userId)))
       .limit(1);
 
     if (result.length === 0) {
@@ -102,11 +106,12 @@ export class RssFeedRepository {
       throw new Error(`RSS feed with URL "${input.url}" is already registered`);
     }
 
+    const userId = this.contextRepository.getUserId();
     const [feed] = await this.db
       .insert(rssFeeds)
       .values({
         id: createId(),
-        user_id: this.userId,
+        user_id: userId,
         url: input.url,
         title: input.title,
         description: input.description,
@@ -129,8 +134,9 @@ export class RssFeedRepository {
       throw new Error("No record was found");
     }
 
+    const userId = this.contextRepository.getUserId();
     await this.db
       .delete(rssFeeds)
-      .where(and(eq(rssFeeds.id, id), eq(rssFeeds.user_id, this.userId)));
+      .where(and(eq(rssFeeds.id, id), eq(rssFeeds.user_id, userId)));
   }
 }

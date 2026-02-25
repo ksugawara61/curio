@@ -35,10 +35,8 @@ export class DeleteBookmark implements BaseApplication<string, boolean> {
 
 export const deleteBookmark = async (id: string): Promise<boolean> => {
   const db = createDb();
-  const { getUserId } = ContextRepository.create();
-  const userId = getUserId();
   return await db.transaction(async (tx) => {
-    const repository = new BookmarkRepository(userId, tx);
+    const repository = new BookmarkRepository(ContextRepository.create(), tx);
     return new DeleteBookmark(repository).invoke(id);
   });
 };

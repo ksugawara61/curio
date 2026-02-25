@@ -35,10 +35,8 @@ export const createBookmark = async (
   input: CreateBookmarkInput,
 ): Promise<Bookmark> => {
   const db = createDb();
-  const { getUserId } = ContextRepository.create();
-  const userId = getUserId();
   return await db.transaction(async (tx) => {
-    const repository = new BookmarkRepository(userId, tx);
+    const repository = new BookmarkRepository(ContextRepository.create(), tx);
     return new CreateBookmark(repository).invoke(input);
   });
 };

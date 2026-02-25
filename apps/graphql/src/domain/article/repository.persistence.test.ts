@@ -1,13 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { createDb } from "../../libs/drizzle/client";
 import { articles } from "../../libs/drizzle/schema";
+import { mockAuthContext } from "../../libs/test/authHelper";
+import { ContextRepository } from "../../shared/context";
 import { RssFeedRepository } from "../rss-feed/repository.persistence";
 import { ArticlePersistenceRepository } from "./repository.persistence";
 
 const setupFeed = async (userId: string, url: string) => {
   const db = createDb();
+  mockAuthContext({ userId });
   return await db.transaction(async (tx) => {
-    const feedRepo = new RssFeedRepository(userId, tx);
+    const feedRepo = new RssFeedRepository(ContextRepository.create(), tx);
     return await feedRepo.create({ url, title: "Test Feed" });
   });
 };

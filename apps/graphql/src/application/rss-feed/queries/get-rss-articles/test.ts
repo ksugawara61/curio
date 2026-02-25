@@ -8,11 +8,8 @@ import { rssArticles } from ".";
 
 const createTestFeed = async (url: string, title: string) => {
   const db = createDb();
-  const { getUserId } = ContextRepository.create();
-  const userId = getUserId();
-
   return await db.transaction(async (tx) => {
-    const repository = new RssFeedRepository(userId, tx);
+    const repository = new RssFeedRepository(ContextRepository.create(), tx);
     return await repository.create({ url, title });
   });
 };

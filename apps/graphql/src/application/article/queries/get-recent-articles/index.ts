@@ -13,12 +13,13 @@ export class GetRecentArticles
 {
   constructor(
     private readonly repository: IArticlePersistenceRepository,
-    private readonly userId: string,
+    private readonly contextRepository: ContextRepository,
   ) {}
 
   async invoke(input: GetRecentArticlesInput): Promise<PersistedArticle[]> {
     try {
-      return await this.repository.findManyWithinPeriod(this.userId, input);
+      const userId = this.contextRepository.getUserId();
+      return await this.repository.findManyWithinPeriod(userId, input);
     } catch (error) {
       throw new ServiceError(
         `Failed to fetch recent articles: ${error instanceof Error ? error.message : "Unknown error"}`,
@@ -34,8 +35,8 @@ export class GetRecentArticles
 export const recentArticles = async (
   hours = 48,
 ): Promise<PersistedArticle[]> => {
-  const { getUserId } = ContextRepository.create();
-  const userId = getUserId();
   const repository = new ArticlePersistenceRepository();
-  return new GetRecentArticles(repository, userId).invoke({ hours });
+  return new GetRecentArticles(repository, ContextRepository.create()).invoke({
+    hours,
+  });
 };

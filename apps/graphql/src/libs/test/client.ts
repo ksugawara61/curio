@@ -1,5 +1,5 @@
 import { createOpenApiHttp } from "openapi-msw";
-import type { paths } from "../../generated/openapi/schema";
-import { baseUrl } from "../openapi/client";
+import { baseUrl } from "../../shared/openapi/client";
+import type { paths } from "../../shared/openapi/generated/schema";
 
 export const openApiMockClient = createOpenApiHttp<paths>({ baseUrl });

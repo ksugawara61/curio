@@ -2,13 +2,14 @@ import { createId } from "@paralleldrive/cuid2";
 import { and, eq, isNotNull, isNull } from "drizzle-orm";
 import type { ContextRepository } from "../../shared/context";
 import type { DrizzleDb, Transaction } from "../../shared/drizzle";
-import { bookmarks, bookmarkTags, tags } from "../../shared/drizzle/schema";
 import { TagRepository } from "../tag/repository.persistence";
+import { tags } from "../tag/schema";
 import type {
   Bookmark,
   CreateBookmarkInput,
   UpdateBookmarkInput,
 } from "./model";
+import { bookmarks, bookmarkTags } from "./schema";
 
 const bookmarkSelectFields = {
   id: bookmarks.id,

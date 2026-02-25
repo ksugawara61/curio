@@ -30,7 +30,7 @@ const createRssXml = (items: RssItem[]) => `
 </rss>
 `;
 
-export const ScheduledMocks = {
+export const SyncAllRssFeedsMocks = {
   /** feed.xml with Article 1 (with thumbnail and pub date) and Article 2 */
   FeedWithTwoArticles: http.get("https://example.com/feed.xml", () =>
     HttpResponse.xml(

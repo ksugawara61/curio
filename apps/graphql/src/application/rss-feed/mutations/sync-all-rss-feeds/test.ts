@@ -1,17 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { RssFeedRepository } from "../domain/rss-feed/repository.persistence";
-import { mockAuthContext } from "../libs/test/authHelper";
-import { mockServer } from "../libs/test/mockServer";
-import { ContextRepository } from "../shared/context";
-import { DrizzleRepository } from "../shared/drizzle";
-import { articles } from "../shared/drizzle/schema";
-import { scheduled } from "./index";
-import { ScheduledMocks } from "./index.mocks";
+import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
+import { mockAuthContext } from "../../../../libs/test/authHelper";
+import { mockServer } from "../../../../libs/test/mockServer";
+import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
+import { articles } from "../../../../shared/drizzle/schema";
+import { syncAllRssFeeds } from ".";
+import { SyncAllRssFeedsMocks } from "./mocks";
 
-describe("scheduled", () => {
+describe("syncAllRssFeeds", () => {
   describe("正常系", () => {
     it("should do nothing when no feeds are registered", async () => {
-      await scheduled();
+      await syncAllRssFeeds();
 
       const db = DrizzleRepository.create().getDb();
       const rows = await db.select().from(articles);
@@ -29,9 +29,9 @@ describe("scheduled", () => {
         });
       });
 
-      mockServer.use(ScheduledMocks.FeedWithTwoArticles);
+      mockServer.use(SyncAllRssFeedsMocks.FeedWithTwoArticles);
 
-      await scheduled();
+      await syncAllRssFeeds();
 
       const rows = await db.select().from(articles);
       expect(rows).toHaveLength(2);
@@ -75,9 +75,9 @@ describe("scheduled", () => {
         });
       });
 
-      mockServer.use(ScheduledMocks.FeedA, ScheduledMocks.FeedB);
+      mockServer.use(SyncAllRssFeedsMocks.FeedA, SyncAllRssFeedsMocks.FeedB);
 
-      await scheduled();
+      await syncAllRssFeeds();
 
       const rows = await db.select().from(articles);
       expect(rows).toHaveLength(2);
@@ -97,13 +97,13 @@ describe("scheduled", () => {
         });
       });
 
-      mockServer.use(ScheduledMocks.FeedWithOriginalArticle);
+      mockServer.use(SyncAllRssFeedsMocks.FeedWithOriginalArticle);
 
-      await scheduled();
+      await syncAllRssFeeds();
 
-      mockServer.use(ScheduledMocks.FeedWithUpdatedArticle);
+      mockServer.use(SyncAllRssFeedsMocks.FeedWithUpdatedArticle);
 
-      await scheduled();
+      await syncAllRssFeeds();
 
       const rows = await db.select().from(articles);
       expect(rows).toHaveLength(1);
@@ -122,9 +122,9 @@ describe("scheduled", () => {
         });
       });
 
-      mockServer.use(ScheduledMocks.FeedWithMissingLink);
+      mockServer.use(SyncAllRssFeedsMocks.FeedWithMissingLink);
 
-      await scheduled();
+      await syncAllRssFeeds();
 
       const rows = await db.select().from(articles);
       expect(rows).toHaveLength(1);
@@ -148,9 +148,12 @@ describe("scheduled", () => {
         });
       });
 
-      mockServer.use(ScheduledMocks.FailingFeed, ScheduledMocks.OkFeed);
+      mockServer.use(
+        SyncAllRssFeedsMocks.FailingFeed,
+        SyncAllRssFeedsMocks.OkFeed,
+      );
 
-      await scheduled();
+      await syncAllRssFeeds();
 
       const rows = await db.select().from(articles);
       expect(rows).toHaveLength(1);

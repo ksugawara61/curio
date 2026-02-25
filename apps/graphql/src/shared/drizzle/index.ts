@@ -1,7 +1,7 @@
 import { getEnv } from "@getcronit/pylon";
 import { createClient } from "@libsql/client";
 import { drizzle, type LibSQLDatabase } from "drizzle-orm/libsql";
-import * as schema from "../../libs/drizzle/schema";
+import * as schema from "./schema";
 
 /** スキーマ付きのデータベース型 */
 export type DrizzleDb = LibSQLDatabase<typeof schema>;

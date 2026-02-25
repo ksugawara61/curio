@@ -16,7 +16,7 @@ const config = process.env.TURSO_AUTH_TOKEN
     };
 
 export default {
-  schema: "./src/libs/drizzle/schema.ts",
-  out: "./src/libs/drizzle/migrations",
+  schema: "./src/shared/drizzle/schema.ts",
+  out: "./src/shared/drizzle/migrations",
   ...config,
 } satisfies Config;

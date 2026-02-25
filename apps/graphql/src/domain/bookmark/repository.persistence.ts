@@ -1,8 +1,8 @@
 import { createId } from "@paralleldrive/cuid2";
 import { and, eq, isNotNull, isNull } from "drizzle-orm";
-import { bookmarks, bookmarkTags, tags } from "../../libs/drizzle/schema";
 import type { ContextRepository } from "../../shared/context";
 import type { DrizzleDb, Transaction } from "../../shared/drizzle";
+import { bookmarks, bookmarkTags, tags } from "../../shared/drizzle/schema";
 import { TagRepository } from "../tag/repository.persistence";
 import type {
   Bookmark,

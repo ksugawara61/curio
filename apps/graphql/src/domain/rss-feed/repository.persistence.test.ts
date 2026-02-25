@@ -262,9 +262,11 @@ describe("RssFeedRepository", () => {
 
   describe("findAllForBatch", () => {
     it("should return empty array when no feeds exist", async () => {
-      const result = await RssFeedRepository.findAllForBatch(
+      const repo = new RssFeedRepository(
+        ContextRepository.create(),
         DrizzleRepository.create().getDb(),
       );
+      const result = await repo.findAllForBatch();
       expect(result).toEqual([]);
     });
 
@@ -287,9 +289,11 @@ describe("RssFeedRepository", () => {
         });
       });
 
-      const result = await RssFeedRepository.findAllForBatch(
+      const repo = new RssFeedRepository(
+        ContextRepository.create(),
         DrizzleRepository.create().getDb(),
       );
+      const result = await repo.findAllForBatch();
 
       expect(result).toHaveLength(2);
 
@@ -313,9 +317,11 @@ describe("RssFeedRepository", () => {
         });
       });
 
-      const result = await RssFeedRepository.findAllForBatch(
+      const repo = new RssFeedRepository(
+        ContextRepository.create(),
         DrizzleRepository.create().getDb(),
       );
+      const result = await repo.findAllForBatch();
 
       expect(result).toHaveLength(1);
       expect(result[0]).toHaveProperty("id");
@@ -341,9 +347,11 @@ describe("RssFeedRepository", () => {
         });
       });
 
-      const result = await RssFeedRepository.findAllForBatch(
+      const repo = new RssFeedRepository(
+        ContextRepository.create(),
         DrizzleRepository.create().getDb(),
       );
+      const result = await repo.findAllForBatch();
 
       expect(result).toHaveLength(3);
       expect(result.every((f) => f.user_id === "test-user")).toBe(true);

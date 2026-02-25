@@ -2,6 +2,7 @@ import type { getEnv } from "@getcronit/pylon";
 import { ArticlePersistenceRepository } from "../domain/article/repository.persistence";
 import { RssFeedExternalRepository } from "../domain/rss-feed/repository.external";
 import { RssFeedRepository } from "../domain/rss-feed/repository.persistence";
+import { ContextRepository } from "../shared/context";
 import { DrizzleRepository } from "../shared/drizzle";
 
 export const scheduled = async (
@@ -11,7 +12,11 @@ export const scheduled = async (
 ): Promise<void> => {
   console.log("[batch] Starting RSS feed fetch batch job...");
   const drizzle = DrizzleRepository.create(env);
-  const feeds = await RssFeedRepository.findAllForBatch(drizzle.getDb());
+  const rssFeedRepo = new RssFeedRepository(
+    ContextRepository.create(),
+    drizzle.getDb(),
+  );
+  const feeds = await rssFeedRepo.findAllForBatch();
 
   const externalRepo = new RssFeedExternalRepository();
   const articleRepo = new ArticlePersistenceRepository(drizzle.getDb());

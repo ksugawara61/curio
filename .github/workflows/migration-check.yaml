@@ -3,8 +3,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - 'apps/graphql/src/libs/drizzle/schema.ts'
-      - 'apps/graphql/src/libs/drizzle/migrations/**'
+      - 'apps/graphql/src/shared/drizzle/schema.ts'
+      - 'apps/graphql/src/shared/drizzle/migrations/**'
   workflow_dispatch:
 
 jobs:

@@ -1,5 +1,5 @@
 import type { getEnv } from "@getcronit/pylon";
-import { syncAllRssFeeds } from "./application/rss-feed/batch/sync-all-rss-feeds";
+import { syncAllRssFeeds } from "./application/rss-feed/mutations/sync-all-rss-feeds";
 
 export const scheduled = async (
   _controller?: ScheduledController,

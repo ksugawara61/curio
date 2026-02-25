@@ -1,26 +1,27 @@
 import { describe, expect, it } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { archiveBookmark } from "../../mutations/archive-bookmark";
 import { archivedBookmarks } from ".";
 
 describe("archivedBookmarks", () => {
   describe("正常系", () => {
     it("should return only archived bookmarks", async () => {
-      const db = createDb();
-      const bookmark1 = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Archived Bookmark",
-          url: `https://example.com/archived-query-1-${Date.now()}`,
-        });
-      });
+      const bookmark1 = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Archived Bookmark",
+            url: `https://example.com/archived-query-1-${Date.now()}`,
+          });
+        },
+      );
 
-      await db.transaction(async (tx) => {
+      await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
           ContextRepository.create(),
           tx,

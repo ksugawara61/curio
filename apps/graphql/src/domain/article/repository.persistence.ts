@@ -1,9 +1,7 @@
 import { createId } from "@paralleldrive/cuid2";
 import { eq, sql } from "drizzle-orm";
-import type { LibSQLDatabase } from "drizzle-orm/libsql";
-import { createDb } from "../../libs/drizzle/client";
-import type * as schema from "../../libs/drizzle/schema";
 import { articles } from "../../libs/drizzle/schema";
+import type { DrizzleDb } from "../../shared/drizzle";
 import type {
   GetRecentArticlesInput,
   PersistedArticle,
@@ -11,10 +9,10 @@ import type {
 } from "./model";
 
 export class ArticlePersistenceRepository {
-  private db: LibSQLDatabase<typeof schema>;
+  private db: DrizzleDb;
 
-  constructor(db?: LibSQLDatabase<typeof schema>) {
-    this.db = db ?? createDb();
+  constructor(db: DrizzleDb) {
+    this.db = db;
   }
 
   async findManyWithinPeriod(

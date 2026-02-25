@@ -1,15 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { createDb } from "../../libs/drizzle/client";
 import { articles } from "../../libs/drizzle/schema";
 import { mockAuthContext } from "../../libs/test/authHelper";
 import { ContextRepository } from "../../shared/context";
+import { DrizzleRepository } from "../../shared/drizzle";
 import { RssFeedRepository } from "../rss-feed/repository.persistence";
 import { ArticlePersistenceRepository } from "./repository.persistence";
 
 const setupFeed = async (userId: string, url: string) => {
-  const db = createDb();
   mockAuthContext({ userId });
-  return await db.transaction(async (tx) => {
+  return await DrizzleRepository.create().transaction(async (tx) => {
     const feedRepo = new RssFeedRepository(ContextRepository.create(), tx);
     return await feedRepo.create({ url, title: "Test Feed" });
   });
@@ -20,7 +19,9 @@ describe("ArticlePersistenceRepository", () => {
     it("should insert a new article", async () => {
       const feed = await setupFeed("test-user", "https://example.com/feed.xml");
 
-      const repo = new ArticlePersistenceRepository();
+      const repo = new ArticlePersistenceRepository(
+        DrizzleRepository.create().getDb(),
+      );
       await repo.upsert({
         user_id: "test-user",
         rss_feed_id: feed.id,
@@ -31,8 +32,10 @@ describe("ArticlePersistenceRepository", () => {
         pub_date: "Mon, 01 Jan 2024 00:00:00 GMT",
       });
 
-      const db = createDb();
-      const rows = await db.select().from(articles);
+      const rows = await DrizzleRepository.create()
+        .getDb()
+        .select()
+        .from(articles);
       expect(rows).toHaveLength(1);
       expect(rows[0].title).toBe("Test Article");
       expect(rows[0].url).toBe("https://example.com/article-1");
@@ -46,7 +49,9 @@ describe("ArticlePersistenceRepository", () => {
     it("should insert an article with only required fields", async () => {
       const feed = await setupFeed("test-user", "https://example.com/feed.xml");
 
-      const repo = new ArticlePersistenceRepository();
+      const repo = new ArticlePersistenceRepository(
+        DrizzleRepository.create().getDb(),
+      );
       await repo.upsert({
         user_id: "test-user",
         rss_feed_id: feed.id,
@@ -54,8 +59,10 @@ describe("ArticlePersistenceRepository", () => {
         url: "https://example.com/minimal",
       });
 
-      const db = createDb();
-      const rows = await db.select().from(articles);
+      const rows = await DrizzleRepository.create()
+        .getDb()
+        .select()
+        .from(articles);
       expect(rows).toHaveLength(1);
       expect(rows[0].title).toBe("Minimal Article");
       expect(rows[0].description).toBeNull();
@@ -67,7 +74,9 @@ describe("ArticlePersistenceRepository", () => {
       const feed = await setupFeed("test-user", "https://example.com/feed.xml");
       const articleUrl = "https://example.com/article-update";
 
-      const repo = new ArticlePersistenceRepository();
+      const repo = new ArticlePersistenceRepository(
+        DrizzleRepository.create().getDb(),
+      );
       await repo.upsert({
         user_id: "test-user",
         rss_feed_id: feed.id,
@@ -85,8 +94,10 @@ describe("ArticlePersistenceRepository", () => {
         thumbnail_url: "https://example.com/new-thumb.jpg",
       });
 
-      const db = createDb();
-      const rows = await db.select().from(articles);
+      const rows = await DrizzleRepository.create()
+        .getDb()
+        .select()
+        .from(articles);
       expect(rows).toHaveLength(1);
       expect(rows[0].title).toBe("Updated Title");
       expect(rows[0].description).toBe("Updated description");
@@ -98,7 +109,9 @@ describe("ArticlePersistenceRepository", () => {
       const feed2 = await setupFeed("user-b", "https://example.com/feed2.xml");
       const articleUrl = "https://example.com/shared-article";
 
-      const repo = new ArticlePersistenceRepository();
+      const repo = new ArticlePersistenceRepository(
+        DrizzleRepository.create().getDb(),
+      );
       await repo.upsert({
         user_id: "user-a",
         rss_feed_id: feed1.id,
@@ -112,8 +125,10 @@ describe("ArticlePersistenceRepository", () => {
         url: articleUrl,
       });
 
-      const db = createDb();
-      const rows = await db.select().from(articles);
+      const rows = await DrizzleRepository.create()
+        .getDb()
+        .select()
+        .from(articles);
       expect(rows).toHaveLength(2);
     });
   });

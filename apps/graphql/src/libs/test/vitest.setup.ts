@@ -1,11 +1,11 @@
 import { sql } from "drizzle-orm";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
-import { createDb } from "../drizzle/client";
+import { DrizzleRepository } from "../../shared/drizzle";
 import { mockAuthContext } from "./authHelper";
 import { mockServer } from "./mockServer";
 
 const clearAllTables = async () => {
-  const db = createDb();
+  const db = DrizzleRepository.create().getDb();
   const tables = await db.all<{ name: string }>(
     sql`SELECT name FROM sqlite_master WHERE type='table'`,
   );

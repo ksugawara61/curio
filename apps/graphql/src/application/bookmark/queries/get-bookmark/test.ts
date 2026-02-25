@@ -1,24 +1,25 @@
 import { describe, expect, it } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { bookmark } from ".";
 
 describe("bookmark", () => {
   describe("正常系", () => {
     it("should return bookmark when found by id", async () => {
-      const db = createDb();
-      const createdBookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Test Bookmark",
-          url: "https://example.com/byid",
-          description: "A test bookmark",
-        });
-      });
+      const createdBookmark = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Test Bookmark",
+            url: "https://example.com/byid",
+            description: "A test bookmark",
+          });
+        },
+      );
 
       const result = await bookmark(createdBookmark.id);
 
@@ -30,19 +31,20 @@ describe("bookmark", () => {
     });
 
     it("should return bookmark when found by uri", async () => {
-      const db = createDb();
       const testUri = "https://example.com/byuri";
-      const createdBookmark = await db.transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Test Bookmark by URI",
-          url: testUri,
-          description: "A test bookmark found by URI",
-        });
-      });
+      const createdBookmark = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Test Bookmark by URI",
+            url: testUri,
+            description: "A test bookmark found by URI",
+          });
+        },
+      );
 
       const result = await bookmark(undefined, testUri);
 

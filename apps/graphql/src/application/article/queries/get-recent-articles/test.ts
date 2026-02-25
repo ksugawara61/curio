@@ -1,15 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { ArticlePersistenceRepository } from "../../../../domain/article/repository.persistence";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
 import { mockAuthContext } from "../../../../libs/test/authHelper";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { GetRecentArticles } from ".";
 
 const setupFeed = async (userId: string, url: string) => {
-  const db = createDb();
   mockAuthContext({ userId });
-  return await db.transaction(async (tx) => {
+  return await DrizzleRepository.create().transaction(async (tx) => {
     const feedRepo = new RssFeedRepository(ContextRepository.create(), tx);
     return await feedRepo.create({ url, title: "Test Feed" });
   });
@@ -19,7 +18,9 @@ describe("GetRecentArticles", () => {
   describe("正常系", () => {
     it("should return articles with pub_date within the specified hours", async () => {
       const feed = await setupFeed("test-user", "https://example.com/feed.xml");
-      const repo = new ArticlePersistenceRepository();
+      const repo = new ArticlePersistenceRepository(
+        DrizzleRepository.create().getDb(),
+      );
 
       const recentPubDate = new Date(
         Date.now() - 24 * 60 * 60 * 1000,
@@ -53,7 +54,9 @@ describe("GetRecentArticles", () => {
 
     it("should exclude articles with pub_date older than the specified hours", async () => {
       const feed = await setupFeed("test-user", "https://example.com/feed.xml");
-      const repo = new ArticlePersistenceRepository();
+      const repo = new ArticlePersistenceRepository(
+        DrizzleRepository.create().getDb(),
+      );
 
       const oldPubDate = new Date(
         Date.now() - 72 * 60 * 60 * 1000,
@@ -79,7 +82,9 @@ describe("GetRecentArticles", () => {
 
     it("should fall back to created_at when pub_date is null", async () => {
       const feed = await setupFeed("test-user", "https://example.com/feed.xml");
-      const repo = new ArticlePersistenceRepository();
+      const repo = new ArticlePersistenceRepository(
+        DrizzleRepository.create().getDb(),
+      );
 
       await repo.upsert({
         user_id: "test-user",
@@ -101,7 +106,9 @@ describe("GetRecentArticles", () => {
     });
 
     it("should return empty array when no articles exist", async () => {
-      const repo = new ArticlePersistenceRepository();
+      const repo = new ArticlePersistenceRepository(
+        DrizzleRepository.create().getDb(),
+      );
       const result = await new GetRecentArticles(
         repo,
         ContextRepository.create(),
@@ -116,7 +123,9 @@ describe("GetRecentArticles", () => {
     it("should only return articles for the authenticated user", async () => {
       const feed1 = await setupFeed("user-a", "https://example.com/feed1.xml");
       const feed2 = await setupFeed("user-b", "https://example.com/feed2.xml");
-      const repo = new ArticlePersistenceRepository();
+      const repo = new ArticlePersistenceRepository(
+        DrizzleRepository.create().getDb(),
+      );
 
       const recentPubDate = new Date(
         Date.now() - 24 * 60 * 60 * 1000,
@@ -152,7 +161,9 @@ describe("GetRecentArticles", () => {
 
     it("should support RFC 2822 pub_date format from RSS feeds", async () => {
       const feed = await setupFeed("test-user", "https://example.com/feed.xml");
-      const repo = new ArticlePersistenceRepository();
+      const repo = new ArticlePersistenceRepository(
+        DrizzleRepository.create().getDb(),
+      );
 
       // RFC 2822 format used by RSS feeds
       const recentRfc2822 = new Date(

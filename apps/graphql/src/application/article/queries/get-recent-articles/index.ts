@@ -6,6 +6,7 @@ import type {
 } from "../../../../domain/article/model";
 import { ArticlePersistenceRepository } from "../../../../domain/article/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import type { BaseApplication } from "../../../base";
 
 export class GetRecentArticles
@@ -35,7 +36,9 @@ export class GetRecentArticles
 export const recentArticles = async (
   hours = 48,
 ): Promise<PersistedArticle[]> => {
-  const repository = new ArticlePersistenceRepository();
+  const repository = new ArticlePersistenceRepository(
+    DrizzleRepository.create().getDb(),
+  );
   return new GetRecentArticles(repository, ContextRepository.create()).invoke({
     hours,
   });

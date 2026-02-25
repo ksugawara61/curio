@@ -8,8 +8,8 @@ import type {
 import type { RssFeed } from "../../../../domain/rss-feed/model";
 import { RssFeedExternalRepository } from "../../../../domain/rss-feed/repository.external";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
-import { createDb } from "../../../../libs/drizzle/client";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import type { BaseApplication } from "../../../base";
 import { fetchAndValidateRssFeed, rssFeedUrlSchema } from "./validate";
 
@@ -96,11 +96,11 @@ export class SyncRssFeedArticles {
 }
 
 export const createRssFeed = async (url: string): Promise<RssFeed> => {
-  const db = createDb();
+  const drizzle = DrizzleRepository.create();
   const contextRepository = ContextRepository.create();
 
   // Phase 1: フィード作成をトランザクション内で実行
-  const feed = await db.transaction(async (tx) => {
+  const feed = await drizzle.transaction(async (tx) => {
     const repository = new RssFeedRepository(contextRepository, tx);
     return new CreateRssFeed(repository).invoke(url);
   });
@@ -109,7 +109,7 @@ export const createRssFeed = async (url: string): Promise<RssFeed> => {
   // 失敗してもフィード作成自体は成功扱いにするため、意図的に分離している
   try {
     const externalRepo = new RssFeedExternalRepository();
-    const articleRepo = new ArticlePersistenceRepository(db);
+    const articleRepo = new ArticlePersistenceRepository(drizzle.getDb());
     await new SyncRssFeedArticles(
       externalRepo,
       articleRepo,

@@ -1,8 +1,8 @@
 import { HttpResponse, http } from "msw";
 import { describe, expect, it, vi } from "vitest";
-import { createDb } from "../../../../libs/drizzle/client";
 import { articles } from "../../../../libs/drizzle/schema";
 import { mockServer } from "../../../../libs/test/mockServer";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { createRssFeed } from ".";
 
 vi.mock("./validate", async (importOriginal) => {
@@ -116,7 +116,7 @@ describe("createRssFeed", () => {
 
       const feed = await createRssFeed("https://example.com/rss.xml");
 
-      const db = createDb();
+      const db = DrizzleRepository.create().getDb();
       const rows = await db.select().from(articles);
       expect(rows).toHaveLength(2);
 
@@ -160,7 +160,7 @@ describe("createRssFeed", () => {
 
       await createRssFeed("https://example.com/rss.xml");
 
-      const db = createDb();
+      const db = DrizzleRepository.create().getDb();
       const rows = await db.select().from(articles);
       expect(rows).toHaveLength(1);
       expect(rows[0].url).toBe("https://example.com/has-link");
@@ -180,7 +180,7 @@ describe("createRssFeed", () => {
       expect(result).toHaveProperty("id");
       expect(result.url).toBe("https://example.com/rss.xml");
 
-      const db = createDb();
+      const db = DrizzleRepository.create().getDb();
       const rows = await db.select().from(articles);
       expect(rows).toHaveLength(0);
     });

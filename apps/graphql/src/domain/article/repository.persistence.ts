@@ -1,7 +1,7 @@
 import { createId } from "@paralleldrive/cuid2";
 import { eq, sql } from "drizzle-orm";
-import { articles } from "../../libs/drizzle/schema";
 import type { DrizzleDb } from "../../shared/drizzle";
+import { articles } from "../../shared/drizzle/schema";
 import type {
   GetRecentArticlesInput,
   PersistedArticle,

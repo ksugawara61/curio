@@ -6,20 +6,21 @@ import { BookmarkRepository } from "./repository.persistence";
 describe("BookmarkRepository", () => {
   describe("create", () => {
     it("should create a new bookmark", async () => {
-      
       const input = {
         title: "Test Bookmark",
         url: "https://example.com",
         description: "A test bookmark",
       };
 
-      const result = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create(input);
-      });
+      const result = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create(input);
+        },
+      );
 
       expect(result).toHaveProperty("id");
       expect(result.title).toBe(input.title);
@@ -31,19 +32,20 @@ describe("BookmarkRepository", () => {
     });
 
     it("should create a bookmark without description", async () => {
-      
       const input = {
         title: "Test Bookmark",
         url: "https://example.com",
       };
 
-      const result = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create(input);
-      });
+      const result = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create(input);
+        },
+      );
 
       expect(result.title).toBe(input.title);
       expect(result.url).toBe(input.url);
@@ -59,31 +61,33 @@ describe("BookmarkRepository", () => {
     });
 
     it("should return all bookmarks ordered by created_at desc", async () => {
-      
-
-      const bookmark1 = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Bookmark 1",
-          url: "https://example1.com",
-        });
-      });
+      const bookmark1 = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Bookmark 1",
+            url: "https://example1.com",
+          });
+        },
+      );
 
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      const bookmark2 = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Bookmark 2",
-          url: "https://example2.com",
-        });
-      });
+      const bookmark2 = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Bookmark 2",
+            url: "https://example2.com",
+          });
+        },
+      );
 
       const repository = new BookmarkRepository(ContextRepository.create());
       const result = await repository.findMany();
@@ -96,18 +100,18 @@ describe("BookmarkRepository", () => {
 
   describe("findById", () => {
     it("should return bookmark by id", async () => {
-      
-
-      const created = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Test Bookmark",
-          url: "https://example.com",
-        });
-      });
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Test Bookmark",
+            url: "https://example.com",
+          });
+        },
+      );
 
       const repository = new BookmarkRepository(ContextRepository.create());
       const result = await repository.findById(created.id);
@@ -124,19 +128,20 @@ describe("BookmarkRepository", () => {
 
   describe("findByUrl", () => {
     it("should return bookmark by url", async () => {
-      
       const testUrl = "https://example.com/findbyurl";
 
-      const created = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Test Bookmark",
-          url: testUrl,
-        });
-      });
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Test Bookmark",
+            url: testUrl,
+          });
+        },
+      );
 
       const repository = new BookmarkRepository(ContextRepository.create());
       const result = await repository.findByUrl(testUrl);
@@ -145,20 +150,21 @@ describe("BookmarkRepository", () => {
     });
 
     it("should return bookmark with tags by url", async () => {
-      
       const testUrl = "https://example.com/findbyurl-with-tags";
 
-      const created = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Test Bookmark",
-          url: testUrl,
-          tagNames: ["tag1", "tag2"],
-        });
-      });
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Test Bookmark",
+            url: testUrl,
+            tagNames: ["tag1", "tag2"],
+          });
+        },
+      );
 
       const repository = new BookmarkRepository(ContextRepository.create());
       const result = await repository.findByUrl(testUrl);
@@ -181,32 +187,34 @@ describe("BookmarkRepository", () => {
 
   describe("update", () => {
     it("should update existing bookmark", async () => {
-      
-
-      const created = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Original Title",
-          url: "https://example.com",
-          description: "Original description",
-        });
-      });
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Original Title",
+            url: "https://example.com",
+            description: "Original description",
+          });
+        },
+      );
 
       const updateInput = {
         title: "Updated Title",
         description: "Updated description",
       };
 
-      const result = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.update(created.id, updateInput);
-      });
+      const result = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.update(created.id, updateInput);
+        },
+      );
 
       expect(result).not.toBeNull();
       expect(result?.id).toBe(created.id);
@@ -220,8 +228,6 @@ describe("BookmarkRepository", () => {
     });
 
     it("should throw error for non-existent bookmark", async () => {
-      
-
       await expect(
         DrizzleRepository.create().transaction(async (tx) => {
           const repository = new BookmarkRepository(
@@ -236,29 +242,31 @@ describe("BookmarkRepository", () => {
     });
 
     it("should update only provided fields", async () => {
-      
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Original Title",
+            url: "https://example.com",
+            description: "Original description",
+          });
+        },
+      );
 
-      const created = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Original Title",
-          url: "https://example.com",
-          description: "Original description",
-        });
-      });
-
-      const result = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.update(created.id, {
-          title: "Updated Title",
-        });
-      });
+      const result = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.update(created.id, {
+            title: "Updated Title",
+          });
+        },
+      );
 
       expect(result?.title).toBe("Updated Title");
       expect(result?.url).toBe(created.url);
@@ -268,18 +276,18 @@ describe("BookmarkRepository", () => {
 
   describe("deleteBookmark", () => {
     it("should delete existing bookmark", async () => {
-      
-
-      const created = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Test Bookmark",
-          url: "https://example.com",
-        });
-      });
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Test Bookmark",
+            url: "https://example.com",
+          });
+        },
+      );
 
       await DrizzleRepository.create().transaction(async (tx) => {
         const repository = new BookmarkRepository(
@@ -295,8 +303,6 @@ describe("BookmarkRepository", () => {
     });
 
     it("should throw error for non-existent bookmark", async () => {
-      
-
       await expect(
         DrizzleRepository.create().transaction(async (tx) => {
           const repository = new BookmarkRepository(
@@ -311,7 +317,6 @@ describe("BookmarkRepository", () => {
 
   describe("tags functionality", () => {
     it("should create bookmark with tags", async () => {
-      
       const input = {
         title: "Test Bookmark",
         url: "https://example.com",
@@ -319,13 +324,15 @@ describe("BookmarkRepository", () => {
         tagNames: ["tag1", "tag2", "tag3"],
       };
 
-      const result = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create(input);
-      });
+      const result = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create(input);
+        },
+      );
 
       expect(result).toHaveProperty("id");
       expect(result.title).toBe(input.title);
@@ -338,19 +345,19 @@ describe("BookmarkRepository", () => {
     });
 
     it("should find bookmark with tags", async () => {
-      
-
-      const created = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Test Bookmark",
-          url: "https://example.com",
-          tagNames: ["findTag1", "findTag2"],
-        });
-      });
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Test Bookmark",
+            url: "https://example.com",
+            tagNames: ["findTag1", "findTag2"],
+          });
+        },
+      );
 
       const repository = new BookmarkRepository(ContextRepository.create());
       const found = await repository.findById(created.id);
@@ -364,29 +371,31 @@ describe("BookmarkRepository", () => {
     });
 
     it("should update bookmark tags", async () => {
-      
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Test Bookmark",
+            url: "https://example.com",
+            tagNames: ["oldTag1", "oldTag2"],
+          });
+        },
+      );
 
-      const created = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Test Bookmark",
-          url: "https://example.com",
-          tagNames: ["oldTag1", "oldTag2"],
-        });
-      });
-
-      const updated = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.update(created.id, {
-          tagNames: ["newTag1", "newTag2", "newTag3"],
-        });
-      });
+      const updated = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.update(created.id, {
+            tagNames: ["newTag1", "newTag2", "newTag3"],
+          });
+        },
+      );
 
       expect(updated.tags).toHaveLength(3);
       expect(updated.tags?.map((tag) => tag.name).sort()).toEqual([
@@ -397,29 +406,31 @@ describe("BookmarkRepository", () => {
     });
 
     it("should preserve existing tags when updating other fields", async () => {
-      
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Original Title",
+            url: "https://example.com",
+            tagNames: ["preserveTag1", "preserveTag2"],
+          });
+        },
+      );
 
-      const created = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Original Title",
-          url: "https://example.com",
-          tagNames: ["preserveTag1", "preserveTag2"],
-        });
-      });
-
-      const updated = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.update(created.id, {
-          title: "Updated Title",
-        });
-      });
+      const updated = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.update(created.id, {
+            title: "Updated Title",
+          });
+        },
+      );
 
       expect(updated.title).toBe("Updated Title");
       expect(updated.tags).toHaveLength(2);
@@ -430,48 +441,51 @@ describe("BookmarkRepository", () => {
     });
 
     it("should handle empty tag array", async () => {
-      
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Test Bookmark",
+            url: "https://example.com",
+            tagNames: ["tag1", "tag2"],
+          });
+        },
+      );
 
-      const created = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Test Bookmark",
-          url: "https://example.com",
-          tagNames: ["tag1", "tag2"],
-        });
-      });
-
-      const updated = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.update(created.id, {
-          tagNames: [],
-        });
-      });
+      const updated = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.update(created.id, {
+            tagNames: [],
+          });
+        },
+      );
 
       expect(updated.tags).toHaveLength(0);
     });
 
     it("should handle duplicate tag names", async () => {
-      
       const input = {
         title: "Test Bookmark",
         url: "https://example.com",
         tagNames: ["duplicate", "duplicate", "unique"],
       };
 
-      const result = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create(input);
-      });
+      const result = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create(input);
+        },
+      );
 
       expect(result.tags).toHaveLength(2);
       expect(result.tags?.map((tag) => tag.name).sort()).toEqual([

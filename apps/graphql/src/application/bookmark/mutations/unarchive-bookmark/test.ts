@@ -1,25 +1,26 @@
 import { describe, expect, it } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
-import { DrizzleRepository } from "../../../../shared/drizzle";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { archiveBookmark } from "../archive-bookmark";
 import { unarchiveBookmark } from ".";
 
 describe("unarchiveBookmark", () => {
   describe("正常系", () => {
     it("should unarchive a bookmark successfully", async () => {
-      
-      const bookmark = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Test Bookmark",
-          url: `https://example.com/unarchive-test-${Date.now()}`,
-          description: "A test bookmark",
-        });
-      });
+      const bookmark = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Test Bookmark",
+            url: `https://example.com/unarchive-test-${Date.now()}`,
+            description: "A test bookmark",
+          });
+        },
+      );
 
       await archiveBookmark(bookmark.id);
       const result = await unarchiveBookmark(bookmark.id);
@@ -29,17 +30,18 @@ describe("unarchiveBookmark", () => {
     });
 
     it("should appear in findMany after unarchiving", async () => {
-      
-      const bookmark = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Test Bookmark",
-          url: `https://example.com/unarchive-visible-${Date.now()}`,
-        });
-      });
+      const bookmark = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Test Bookmark",
+            url: `https://example.com/unarchive-visible-${Date.now()}`,
+          });
+        },
+      );
 
       await archiveBookmark(bookmark.id);
       await unarchiveBookmark(bookmark.id);
@@ -52,17 +54,18 @@ describe("unarchiveBookmark", () => {
     });
 
     it("should not appear in findManyArchived after unarchiving", async () => {
-      
-      const bookmark = await DrizzleRepository.create().transaction(async (tx) => {
-        const repository = new BookmarkRepository(
-          ContextRepository.create(),
-          tx,
-        );
-        return await repository.create({
-          title: "Test Bookmark",
-          url: `https://example.com/unarchive-hidden-${Date.now()}`,
-        });
-      });
+      const bookmark = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repository = new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          );
+          return await repository.create({
+            title: "Test Bookmark",
+            url: `https://example.com/unarchive-hidden-${Date.now()}`,
+          });
+        },
+      );
 
       await archiveBookmark(bookmark.id);
       await unarchiveBookmark(bookmark.id);

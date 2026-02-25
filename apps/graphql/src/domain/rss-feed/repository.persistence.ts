@@ -3,8 +3,8 @@ import { and, eq } from "drizzle-orm";
 import { rssFeeds } from "../../libs/drizzle/schema";
 import type { ContextRepository } from "../../shared/context";
 import {
-  DrizzleRepository,
   type DrizzleDb,
+  DrizzleRepository,
   type Transaction,
 } from "../../shared/drizzle";
 import type { CreateRssFeedInput, RssFeed, RssFeedBatchItem } from "./model";
@@ -21,9 +21,7 @@ export class RssFeedRepository {
     this.db = dbOrTx ?? DrizzleRepository.create().getDb();
   }
 
-  static async findAllForBatch(
-    db?: DrizzleDb,
-  ): Promise<RssFeedBatchItem[]> {
+  static async findAllForBatch(db?: DrizzleDb): Promise<RssFeedBatchItem[]> {
     const database = db ?? DrizzleRepository.create().getDb();
     return database
       .select({

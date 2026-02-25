@@ -1,13 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { ArticlePersistenceRepository } from "../../../../domain/article/repository.persistence";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
-import { DrizzleRepository } from "../../../../shared/drizzle";
 import { mockAuthContext } from "../../../../libs/test/authHelper";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { GetRecentArticles } from ".";
 
 const setupFeed = async (userId: string, url: string) => {
-  
   mockAuthContext({ userId });
   return await DrizzleRepository.create().transaction(async (tx) => {
     const feedRepo = new RssFeedRepository(ContextRepository.create(), tx);

@@ -3,8 +3,8 @@ import { and, eq } from "drizzle-orm";
 import { tags } from "../../libs/drizzle/schema";
 import type { ContextRepository } from "../../shared/context";
 import {
-  DrizzleRepository,
   type DrizzleDb,
+  DrizzleRepository,
   type Transaction,
 } from "../../shared/drizzle";
 import type { CreateTagInput, Tag, UpdateTagInput } from "./model";

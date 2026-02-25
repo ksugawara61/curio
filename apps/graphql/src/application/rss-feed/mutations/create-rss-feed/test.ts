@@ -1,8 +1,8 @@
 import { HttpResponse, http } from "msw";
 import { describe, expect, it, vi } from "vitest";
-import { DrizzleRepository } from "../../../../shared/drizzle";
 import { articles } from "../../../../libs/drizzle/schema";
 import { mockServer } from "../../../../libs/test/mockServer";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { createRssFeed } from ".";
 
 vi.mock("./validate", async (importOriginal) => {

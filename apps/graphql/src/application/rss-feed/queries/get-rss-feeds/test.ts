@@ -1,12 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
-import { DrizzleRepository } from "../../../../shared/drizzle";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import { rssFeeds } from ".";
 
 describe("rssFeeds", () => {
   const createTestFeed = async (url: string, title: string) => {
-    
     return await DrizzleRepository.create().transaction(async (tx) => {
       const repository = new RssFeedRepository(ContextRepository.create(), tx);
       return await repository.create({ url, title });

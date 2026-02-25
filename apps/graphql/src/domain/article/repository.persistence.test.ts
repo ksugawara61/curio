@@ -1,13 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { DrizzleRepository } from "../../shared/drizzle";
 import { articles } from "../../libs/drizzle/schema";
 import { mockAuthContext } from "../../libs/test/authHelper";
 import { ContextRepository } from "../../shared/context";
+import { DrizzleRepository } from "../../shared/drizzle";
 import { RssFeedRepository } from "../rss-feed/repository.persistence";
 import { ArticlePersistenceRepository } from "./repository.persistence";
 
 const setupFeed = async (userId: string, url: string) => {
-  
   mockAuthContext({ userId });
   return await DrizzleRepository.create().transaction(async (tx) => {
     const feedRepo = new RssFeedRepository(ContextRepository.create(), tx);
@@ -31,8 +30,10 @@ describe("ArticlePersistenceRepository", () => {
         pub_date: "Mon, 01 Jan 2024 00:00:00 GMT",
       });
 
-      
-      const rows = await DrizzleRepository.create().getDb().select().from(articles);
+      const rows = await DrizzleRepository.create()
+        .getDb()
+        .select()
+        .from(articles);
       expect(rows).toHaveLength(1);
       expect(rows[0].title).toBe("Test Article");
       expect(rows[0].url).toBe("https://example.com/article-1");
@@ -54,8 +55,10 @@ describe("ArticlePersistenceRepository", () => {
         url: "https://example.com/minimal",
       });
 
-      
-      const rows = await DrizzleRepository.create().getDb().select().from(articles);
+      const rows = await DrizzleRepository.create()
+        .getDb()
+        .select()
+        .from(articles);
       expect(rows).toHaveLength(1);
       expect(rows[0].title).toBe("Minimal Article");
       expect(rows[0].description).toBeNull();
@@ -85,8 +88,10 @@ describe("ArticlePersistenceRepository", () => {
         thumbnail_url: "https://example.com/new-thumb.jpg",
       });
 
-      
-      const rows = await DrizzleRepository.create().getDb().select().from(articles);
+      const rows = await DrizzleRepository.create()
+        .getDb()
+        .select()
+        .from(articles);
       expect(rows).toHaveLength(1);
       expect(rows[0].title).toBe("Updated Title");
       expect(rows[0].description).toBe("Updated description");
@@ -112,8 +117,10 @@ describe("ArticlePersistenceRepository", () => {
         url: articleUrl,
       });
 
-      
-      const rows = await DrizzleRepository.create().getDb().select().from(articles);
+      const rows = await DrizzleRepository.create()
+        .getDb()
+        .select()
+        .from(articles);
       expect(rows).toHaveLength(2);
     });
   });

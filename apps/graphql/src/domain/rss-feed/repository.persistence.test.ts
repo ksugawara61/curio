@@ -1,23 +1,24 @@
 import { describe, expect, it } from "vitest";
-import { DrizzleRepository } from "../../shared/drizzle";
 import { mockAuthContext } from "../../libs/test/authHelper";
 import { ContextRepository } from "../../shared/context";
+import { DrizzleRepository } from "../../shared/drizzle";
 import { RssFeedRepository } from "./repository.persistence";
 
 describe("RssFeedRepository", () => {
   describe("create", () => {
     it("should create a new RSS feed", async () => {
-      
       const input = {
         url: "https://example.com/feed.xml",
         title: "Example Feed",
         description: "An example RSS feed",
       };
 
-      const result = await DrizzleRepository.create().transaction(async (tx) => {
-        const repo = new RssFeedRepository(ContextRepository.create(), tx);
-        return await repo.create(input);
-      });
+      const result = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repo = new RssFeedRepository(ContextRepository.create(), tx);
+          return await repo.create(input);
+        },
+      );
 
       expect(result).toHaveProperty("id");
       expect(result.url).toBe(input.url);
@@ -28,21 +29,20 @@ describe("RssFeedRepository", () => {
     });
 
     it("should create a feed without description", async () => {
-      
-
-      const result = await DrizzleRepository.create().transaction(async (tx) => {
-        const repo = new RssFeedRepository(ContextRepository.create(), tx);
-        return await repo.create({
-          url: "https://example.com/feed.xml",
-          title: "Example Feed",
-        });
-      });
+      const result = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repo = new RssFeedRepository(ContextRepository.create(), tx);
+          return await repo.create({
+            url: "https://example.com/feed.xml",
+            title: "Example Feed",
+          });
+        },
+      );
 
       expect(result.description).toBeNull();
     });
 
     it("should throw when creating a feed with duplicate URL for same user", async () => {
-      
       const url = "https://example.com/duplicate-feed.xml";
 
       await DrizzleRepository.create().transaction(async (tx) => {
@@ -59,7 +59,6 @@ describe("RssFeedRepository", () => {
     });
 
     it("should allow same URL for different users", async () => {
-      
       const url = "https://example.com/shared-feed.xml";
 
       mockAuthContext({ userId: "user-a" });
@@ -87,8 +86,6 @@ describe("RssFeedRepository", () => {
     });
 
     it("should return only feeds for the given user", async () => {
-      
-
       mockAuthContext({ userId: "user-a" });
       await DrizzleRepository.create().transaction(async (tx) => {
         const repo = new RssFeedRepository(ContextRepository.create(), tx);
@@ -121,8 +118,6 @@ describe("RssFeedRepository", () => {
     });
 
     it("should return feeds ordered by created_at", async () => {
-      
-
       await DrizzleRepository.create().transaction(async (tx) => {
         const repo = new RssFeedRepository(ContextRepository.create(), tx);
         await repo.create({
@@ -152,15 +147,15 @@ describe("RssFeedRepository", () => {
 
   describe("findById", () => {
     it("should return a feed by id", async () => {
-      
-
-      const created = await DrizzleRepository.create().transaction(async (tx) => {
-        const repo = new RssFeedRepository(ContextRepository.create(), tx);
-        return await repo.create({
-          url: "https://example.com/feed.xml",
-          title: "Test Feed",
-        });
-      });
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repo = new RssFeedRepository(ContextRepository.create(), tx);
+          return await repo.create({
+            url: "https://example.com/feed.xml",
+            title: "Test Feed",
+          });
+        },
+      );
 
       const repo = new RssFeedRepository(ContextRepository.create());
       const result = await repo.findById(created.id);
@@ -177,16 +172,16 @@ describe("RssFeedRepository", () => {
     });
 
     it("should return null when id belongs to a different user", async () => {
-      
-
       mockAuthContext({ userId: "user-a" });
-      const created = await DrizzleRepository.create().transaction(async (tx) => {
-        const repo = new RssFeedRepository(ContextRepository.create(), tx);
-        return await repo.create({
-          url: "https://example.com/feed.xml",
-          title: "Feed A",
-        });
-      });
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repo = new RssFeedRepository(ContextRepository.create(), tx);
+          return await repo.create({
+            url: "https://example.com/feed.xml",
+            title: "Feed A",
+          });
+        },
+      );
 
       mockAuthContext({ userId: "user-b" });
       const repo = new RssFeedRepository(ContextRepository.create());
@@ -197,13 +192,14 @@ describe("RssFeedRepository", () => {
 
   describe("findByUrl", () => {
     it("should return a feed by url", async () => {
-      
       const url = "https://example.com/findbyurl-feed.xml";
 
-      const created = await DrizzleRepository.create().transaction(async (tx) => {
-        const repo = new RssFeedRepository(ContextRepository.create(), tx);
-        return await repo.create({ url, title: "Test Feed" });
-      });
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repo = new RssFeedRepository(ContextRepository.create(), tx);
+          return await repo.create({ url, title: "Test Feed" });
+        },
+      );
 
       const repo = new RssFeedRepository(ContextRepository.create());
       const result = await repo.findByUrl(url);
@@ -219,7 +215,6 @@ describe("RssFeedRepository", () => {
     });
 
     it("should return null when url belongs to a different user", async () => {
-      
       const url = "https://example.com/other-user-feed.xml";
 
       mockAuthContext({ userId: "user-a" });
@@ -242,8 +237,6 @@ describe("RssFeedRepository", () => {
     });
 
     it("should return all feeds across all users", async () => {
-      
-
       mockAuthContext({ userId: "user-a" });
       await DrizzleRepository.create().transaction(async (tx) => {
         const repo1 = new RssFeedRepository(ContextRepository.create(), tx);
@@ -277,8 +270,6 @@ describe("RssFeedRepository", () => {
     });
 
     it("should return id, user_id and url fields", async () => {
-      
-
       mockAuthContext({ userId: "test-user" });
       await DrizzleRepository.create().transaction(async (tx) => {
         const repo = new RssFeedRepository(ContextRepository.create(), tx);
@@ -297,8 +288,6 @@ describe("RssFeedRepository", () => {
     });
 
     it("should return multiple feeds for a single user", async () => {
-      
-
       mockAuthContext({ userId: "test-user" });
       await DrizzleRepository.create().transaction(async (tx) => {
         const repo = new RssFeedRepository(ContextRepository.create(), tx);
@@ -325,15 +314,15 @@ describe("RssFeedRepository", () => {
 
   describe("remove", () => {
     it("should remove an existing feed", async () => {
-      
-
-      const created = await DrizzleRepository.create().transaction(async (tx) => {
-        const repo = new RssFeedRepository(ContextRepository.create(), tx);
-        return await repo.create({
-          url: "https://example.com/feed.xml",
-          title: "Test Feed",
-        });
-      });
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repo = new RssFeedRepository(ContextRepository.create(), tx);
+          return await repo.create({
+            url: "https://example.com/feed.xml",
+            title: "Test Feed",
+          });
+        },
+      );
 
       await DrizzleRepository.create().transaction(async (tx) => {
         const repo = new RssFeedRepository(ContextRepository.create(), tx);
@@ -346,8 +335,6 @@ describe("RssFeedRepository", () => {
     });
 
     it("should throw when removing a non-existent feed", async () => {
-      
-
       await expect(
         DrizzleRepository.create().transaction(async (tx) => {
           const repo = new RssFeedRepository(ContextRepository.create(), tx);
@@ -357,16 +344,16 @@ describe("RssFeedRepository", () => {
     });
 
     it("should not remove a feed belonging to another user", async () => {
-      
-
       mockAuthContext({ userId: "user-a" });
-      const created = await DrizzleRepository.create().transaction(async (tx) => {
-        const repo = new RssFeedRepository(ContextRepository.create(), tx);
-        return await repo.create({
-          url: "https://example.com/feed.xml",
-          title: "Feed A",
-        });
-      });
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          const repo = new RssFeedRepository(ContextRepository.create(), tx);
+          return await repo.create({
+            url: "https://example.com/feed.xml",
+            title: "Feed A",
+          });
+        },
+      );
 
       mockAuthContext({ userId: "user-b" });
       await expect(

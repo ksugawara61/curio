@@ -17,8 +17,8 @@ export class RssFeedRepository {
     this.db = dbOrTx;
   }
 
-  static async findAllForBatch(db: DrizzleDb): Promise<RssFeedBatchItem[]> {
-    return db
+  async findAllForBatch(): Promise<RssFeedBatchItem[]> {
+    return this.db
       .select({
         id: rssFeeds.id,
         user_id: rssFeeds.user_id,

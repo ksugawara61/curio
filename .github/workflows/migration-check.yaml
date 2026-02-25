@@ -43,11 +43,11 @@ jobs:
           TURSO_DATABASE_URL: file:./ci-test.db
         run: |
           # Checkout base branch migrations only
-          git checkout origin/${{ steps.base.outputs.ref }} -- src/libs/drizzle/migrations || true
+          git checkout origin/${{ steps.base.outputs.ref }} -- src/shared/drizzle/migrations || true
           # Apply base migrations to create the database state
           pnpm db:migrate
           # Restore current branch migrations
-          git checkout ${{ github.sha }} -- src/libs/drizzle/migrations
+          git checkout ${{ github.sha }} -- src/shared/drizzle/migrations
 
       - name: Run migration check
         working-directory: apps/graphql

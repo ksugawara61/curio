@@ -22,7 +22,6 @@
       "!**/src/**/generated/*",
       "!**/src/**/*.generated.ts",
       "!**/src/**/*.gen.ts",
-      "!**/src/libs/openapi/schemas",
       "!**/android",
       "!**/ios",
       "!**/node_modules",

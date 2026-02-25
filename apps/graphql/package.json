@@ -15,7 +15,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "generate:openapi": "openapi-typescript openapi/qiita.yaml -o src/generated/openapi/schema.d.ts",
+    "generate:openapi": "openapi-typescript src/shared/openapi/qiita.yaml -o src/shared/openapi/generated/schema.d.ts",
     "scaffold": "scaffdog generate",
     "scaffold:list": "scaffdog list",
     "lint": "eslint .",

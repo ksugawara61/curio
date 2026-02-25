@@ -1,13 +1,20 @@
-import { createQiitaApiClient } from "../../libs/openapi/client";
+import { createQiitaApiClient } from "../../shared/openapi/client";
+import type { IArticleExternalRepository } from "./interface";
 import type { Article } from "./model";
 
-export class ArticleRepository {
+export class ArticleExternalRepository implements IArticleExternalRepository {
+  client: ReturnType<typeof createQiitaApiClient>;
+
+  constructor() {
+    this.client = createQiitaApiClient();
+  }
+
   async fetchArticles(offset = 0, limit = 20): Promise<Article[]> {
     // Qiita API uses page-based pagination, so we need to convert offset/limit to page
     const page = Math.floor(offset / limit) + 1;
     const perPage = limit;
 
-    const response = await createQiitaApiClient().GET("/items", {
+    const response = await this.client.GET("/items", {
       params: {
         query: {
           page,

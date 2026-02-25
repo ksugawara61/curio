@@ -5,7 +5,7 @@ import type {
   UpsertArticleInput,
 } from "./model";
 
-export type IArticleRepository = {
+export type IArticleExternalRepository = {
   fetchArticles(offset?: number, limit?: number): Promise<Article[]>;
 };
 

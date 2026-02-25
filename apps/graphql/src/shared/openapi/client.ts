@@ -1,5 +1,5 @@
 import createFetch from "openapi-fetch";
-import type { paths } from "../../generated/openapi/schema";
+import type { paths } from "./generated/schema";
 
 export const baseUrl = "https://qiita.com/api/v2";
 

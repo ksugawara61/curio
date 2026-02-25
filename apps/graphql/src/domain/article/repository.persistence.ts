@@ -1,7 +1,7 @@
 import { createId } from "@paralleldrive/cuid2";
 import { eq, sql } from "drizzle-orm";
 import { articles } from "../../libs/drizzle/schema";
-import { type DrizzleDb, DrizzleRepository } from "../../shared/drizzle";
+import type { DrizzleDb } from "../../shared/drizzle";
 import type {
   GetRecentArticlesInput,
   PersistedArticle,
@@ -11,8 +11,8 @@ import type {
 export class ArticlePersistenceRepository {
   private db: DrizzleDb;
 
-  constructor(db?: DrizzleDb) {
-    this.db = db ?? DrizzleRepository.create().getDb();
+  constructor(db: DrizzleDb) {
+    this.db = db;
   }
 
   async findManyWithinPeriod(

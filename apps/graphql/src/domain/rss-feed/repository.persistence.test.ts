@@ -80,7 +80,10 @@ describe("RssFeedRepository", () => {
 
   describe("findAll", () => {
     it("should return empty array when no feeds exist", async () => {
-      const repo = new RssFeedRepository(ContextRepository.create());
+      const repo = new RssFeedRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repo.findAll();
       expect(result).toEqual([]);
     });
@@ -105,13 +108,19 @@ describe("RssFeedRepository", () => {
       });
 
       mockAuthContext({ userId: "user-a" });
-      const repoA = new RssFeedRepository(ContextRepository.create());
+      const repoA = new RssFeedRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const resultA = await repoA.findAll();
       expect(resultA).toHaveLength(1);
       expect(resultA[0].url).toBe("https://example.com/feed-a.xml");
 
       mockAuthContext({ userId: "user-b" });
-      const repoB = new RssFeedRepository(ContextRepository.create());
+      const repoB = new RssFeedRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const resultB = await repoB.findAll();
       expect(resultB).toHaveLength(1);
       expect(resultB[0].url).toBe("https://example.com/feed-b.xml");
@@ -136,7 +145,10 @@ describe("RssFeedRepository", () => {
         });
       });
 
-      const repo = new RssFeedRepository(ContextRepository.create());
+      const repo = new RssFeedRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repo.findAll();
 
       expect(result).toHaveLength(2);
@@ -157,7 +169,10 @@ describe("RssFeedRepository", () => {
         },
       );
 
-      const repo = new RssFeedRepository(ContextRepository.create());
+      const repo = new RssFeedRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repo.findById(created.id);
 
       expect(result).not.toBeNull();
@@ -166,7 +181,10 @@ describe("RssFeedRepository", () => {
     });
 
     it("should return null for non-existent id", async () => {
-      const repo = new RssFeedRepository(ContextRepository.create());
+      const repo = new RssFeedRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repo.findById("non-existent-id");
       expect(result).toBeNull();
     });
@@ -184,7 +202,10 @@ describe("RssFeedRepository", () => {
       );
 
       mockAuthContext({ userId: "user-b" });
-      const repo = new RssFeedRepository(ContextRepository.create());
+      const repo = new RssFeedRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repo.findById(created.id);
       expect(result).toBeNull();
     });
@@ -201,7 +222,10 @@ describe("RssFeedRepository", () => {
         },
       );
 
-      const repo = new RssFeedRepository(ContextRepository.create());
+      const repo = new RssFeedRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repo.findByUrl(url);
 
       expect(result).not.toBeNull();
@@ -209,7 +233,10 @@ describe("RssFeedRepository", () => {
     });
 
     it("should return null for non-existent url", async () => {
-      const repo = new RssFeedRepository(ContextRepository.create());
+      const repo = new RssFeedRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repo.findByUrl("https://non-existent.com/feed.xml");
       expect(result).toBeNull();
     });
@@ -224,7 +251,10 @@ describe("RssFeedRepository", () => {
       });
 
       mockAuthContext({ userId: "user-b" });
-      const repo = new RssFeedRepository(ContextRepository.create());
+      const repo = new RssFeedRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repo.findByUrl(url);
       expect(result).toBeNull();
     });
@@ -232,7 +262,9 @@ describe("RssFeedRepository", () => {
 
   describe("findAllForBatch", () => {
     it("should return empty array when no feeds exist", async () => {
-      const result = await RssFeedRepository.findAllForBatch();
+      const result = await RssFeedRepository.findAllForBatch(
+        DrizzleRepository.create().getDb(),
+      );
       expect(result).toEqual([]);
     });
 
@@ -255,7 +287,9 @@ describe("RssFeedRepository", () => {
         });
       });
 
-      const result = await RssFeedRepository.findAllForBatch();
+      const result = await RssFeedRepository.findAllForBatch(
+        DrizzleRepository.create().getDb(),
+      );
 
       expect(result).toHaveLength(2);
 
@@ -279,7 +313,9 @@ describe("RssFeedRepository", () => {
         });
       });
 
-      const result = await RssFeedRepository.findAllForBatch();
+      const result = await RssFeedRepository.findAllForBatch(
+        DrizzleRepository.create().getDb(),
+      );
 
       expect(result).toHaveLength(1);
       expect(result[0]).toHaveProperty("id");
@@ -305,7 +341,9 @@ describe("RssFeedRepository", () => {
         });
       });
 
-      const result = await RssFeedRepository.findAllForBatch();
+      const result = await RssFeedRepository.findAllForBatch(
+        DrizzleRepository.create().getDb(),
+      );
 
       expect(result).toHaveLength(3);
       expect(result.every((f) => f.user_id === "test-user")).toBe(true);
@@ -329,7 +367,10 @@ describe("RssFeedRepository", () => {
         await repo.remove(created.id);
       });
 
-      const repo = new RssFeedRepository(ContextRepository.create());
+      const repo = new RssFeedRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repo.findById(created.id);
       expect(result).toBeNull();
     });
@@ -364,7 +405,10 @@ describe("RssFeedRepository", () => {
       ).rejects.toThrow("No record was found");
 
       mockAuthContext({ userId: "user-a" });
-      const repo = new RssFeedRepository(ContextRepository.create());
+      const repo = new RssFeedRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repo.findById(created.id);
       expect(result).not.toBeNull();
     });

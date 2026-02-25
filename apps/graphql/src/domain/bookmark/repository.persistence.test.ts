@@ -55,7 +55,10 @@ describe("BookmarkRepository", () => {
 
   describe("findMany", () => {
     it("should return empty array when no bookmarks exist", async () => {
-      const repository = new BookmarkRepository(ContextRepository.create());
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repository.findMany();
       expect(result).toEqual([]);
     });
@@ -89,7 +92,10 @@ describe("BookmarkRepository", () => {
         },
       );
 
-      const repository = new BookmarkRepository(ContextRepository.create());
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repository.findMany();
 
       expect(result).toHaveLength(2);
@@ -113,14 +119,20 @@ describe("BookmarkRepository", () => {
         },
       );
 
-      const repository = new BookmarkRepository(ContextRepository.create());
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repository.findById(created.id);
 
       expect(result).toEqual(created);
     });
 
     it("should return null for non-existent id", async () => {
-      const repository = new BookmarkRepository(ContextRepository.create());
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repository.findById("non-existent-id");
       expect(result).toBeNull();
     });
@@ -143,7 +155,10 @@ describe("BookmarkRepository", () => {
         },
       );
 
-      const repository = new BookmarkRepository(ContextRepository.create());
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repository.findByUrl(testUrl);
 
       expect(result).toEqual(created);
@@ -166,7 +181,10 @@ describe("BookmarkRepository", () => {
         },
       );
 
-      const repository = new BookmarkRepository(ContextRepository.create());
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repository.findByUrl(testUrl);
 
       expect(result).not.toBeNull();
@@ -179,7 +197,10 @@ describe("BookmarkRepository", () => {
     });
 
     it("should return null for non-existent url", async () => {
-      const repository = new BookmarkRepository(ContextRepository.create());
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await repository.findByUrl("https://non-existent-url.com");
       expect(result).toBeNull();
     });
@@ -297,7 +318,10 @@ describe("BookmarkRepository", () => {
         await repository.deleteBookmark(created.id);
       });
 
-      const repository = new BookmarkRepository(ContextRepository.create());
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const fetched = await repository.findById(created.id);
       expect(fetched).toBeNull();
     });
@@ -359,7 +383,10 @@ describe("BookmarkRepository", () => {
         },
       );
 
-      const repository = new BookmarkRepository(ContextRepository.create());
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const found = await repository.findById(created.id);
 
       expect(found).not.toBeNull();

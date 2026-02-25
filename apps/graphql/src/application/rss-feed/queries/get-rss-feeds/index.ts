@@ -3,6 +3,7 @@ import type { IRssFeedRepository } from "../../../../domain/rss-feed/interface";
 import type { RssFeed } from "../../../../domain/rss-feed/model";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import type { BaseApplication } from "../../../base";
 
 export class GetRssFeeds implements BaseApplication<void, RssFeed[]> {
@@ -24,6 +25,9 @@ export class GetRssFeeds implements BaseApplication<void, RssFeed[]> {
 }
 
 export const rssFeeds = async (): Promise<RssFeed[]> => {
-  const repository = new RssFeedRepository(ContextRepository.create());
+  const repository = new RssFeedRepository(
+    ContextRepository.create(),
+    DrizzleRepository.create().getDb(),
+  );
   return new GetRssFeeds(repository).invoke();
 };

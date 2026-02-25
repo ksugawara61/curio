@@ -3,6 +3,7 @@ import type { IBookmarkRepository } from "../../../../domain/bookmark/interface"
 import type { Bookmark } from "../../../../domain/bookmark/model";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import type { BaseApplication } from "../../../base";
 
 export class GetBookmarks implements BaseApplication<void, Bookmark[]> {
@@ -24,6 +25,9 @@ export class GetBookmarks implements BaseApplication<void, Bookmark[]> {
 }
 
 export const bookmarks = async (): Promise<Bookmark[]> => {
-  const repository = new BookmarkRepository(ContextRepository.create());
+  const repository = new BookmarkRepository(
+    ContextRepository.create(),
+    DrizzleRepository.create().getDb(),
+  );
   return new GetBookmarks(repository).invoke();
 };

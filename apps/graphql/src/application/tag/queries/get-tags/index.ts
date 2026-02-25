@@ -3,6 +3,7 @@ import type { ITagRepository } from "../../../../domain/tag/interface";
 import type { Tag } from "../../../../domain/tag/model";
 import { TagRepository } from "../../../../domain/tag/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
+import { DrizzleRepository } from "../../../../shared/drizzle";
 import type { BaseApplication } from "../../../base";
 
 export class GetTags implements BaseApplication<void, Tag[]> {
@@ -24,6 +25,9 @@ export class GetTags implements BaseApplication<void, Tag[]> {
 }
 
 export const tags = async (): Promise<Tag[]> => {
-  const repository = new TagRepository(ContextRepository.create());
+  const repository = new TagRepository(
+    ContextRepository.create(),
+    DrizzleRepository.create().getDb(),
+  );
   return new GetTags(repository).invoke();
 };

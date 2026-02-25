@@ -2,11 +2,7 @@ import { createId } from "@paralleldrive/cuid2";
 import { and, eq } from "drizzle-orm";
 import { tags } from "../../libs/drizzle/schema";
 import type { ContextRepository } from "../../shared/context";
-import {
-  type DrizzleDb,
-  DrizzleRepository,
-  type Transaction,
-} from "../../shared/drizzle";
+import type { DrizzleDb, Transaction } from "../../shared/drizzle";
 import type { CreateTagInput, Tag, UpdateTagInput } from "./model";
 
 export class TagRepository {
@@ -15,10 +11,10 @@ export class TagRepository {
 
   constructor(
     contextRepository: ContextRepository,
-    dbOrTx?: DrizzleDb | Transaction,
+    dbOrTx: DrizzleDb | Transaction,
   ) {
     this.contextRepository = contextRepository;
-    this.db = dbOrTx ?? DrizzleRepository.create().getDb();
+    this.db = dbOrTx;
   }
 
   async findAll(): Promise<Tag[]> {

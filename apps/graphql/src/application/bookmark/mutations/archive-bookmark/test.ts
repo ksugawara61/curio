@@ -44,7 +44,10 @@ describe("archiveBookmark", () => {
 
       await archiveBookmark(bookmark.id);
 
-      const repository = new BookmarkRepository(ContextRepository.create());
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const allBookmarks = await repository.findMany();
       const found = allBookmarks.find((b) => b.id === bookmark.id);
       expect(found).toBeUndefined();
@@ -66,7 +69,10 @@ describe("archiveBookmark", () => {
 
       await archiveBookmark(bookmark.id);
 
-      const repository = new BookmarkRepository(ContextRepository.create());
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const archivedBookmarks = await repository.findManyArchived();
       const found = archivedBookmarks.find((b) => b.id === bookmark.id);
       expect(found).toBeDefined();

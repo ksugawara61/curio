@@ -25,7 +25,10 @@ describe("deleteBookmark", () => {
 
       expect(result).toBe(true);
 
-      const repository = new BookmarkRepository(ContextRepository.create());
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const deletedBookmark = await repository.findById(bookmark.id);
       expect(deletedBookmark).toBeNull();
     });

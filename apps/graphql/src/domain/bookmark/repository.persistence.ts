@@ -2,11 +2,7 @@ import { createId } from "@paralleldrive/cuid2";
 import { and, eq, isNotNull, isNull } from "drizzle-orm";
 import { bookmarks, bookmarkTags, tags } from "../../libs/drizzle/schema";
 import type { ContextRepository } from "../../shared/context";
-import {
-  type DrizzleDb,
-  DrizzleRepository,
-  type Transaction,
-} from "../../shared/drizzle";
+import type { DrizzleDb, Transaction } from "../../shared/drizzle";
 import { TagRepository } from "../tag/repository.persistence";
 import type {
   Bookmark,
@@ -60,10 +56,10 @@ export class BookmarkRepository {
 
   constructor(
     contextRepository: ContextRepository,
-    dbOrTx?: DrizzleDb | Transaction,
+    dbOrTx: DrizzleDb | Transaction,
   ) {
     this.contextRepository = contextRepository;
-    this.db = dbOrTx ?? DrizzleRepository.create().getDb();
+    this.db = dbOrTx;
     this.tagRepository = new TagRepository(contextRepository, this.db);
   }
 

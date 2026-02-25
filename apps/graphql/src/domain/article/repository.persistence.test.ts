@@ -19,7 +19,9 @@ describe("ArticlePersistenceRepository", () => {
     it("should insert a new article", async () => {
       const feed = await setupFeed("test-user", "https://example.com/feed.xml");
 
-      const repo = new ArticlePersistenceRepository();
+      const repo = new ArticlePersistenceRepository(
+        DrizzleRepository.create().getDb(),
+      );
       await repo.upsert({
         user_id: "test-user",
         rss_feed_id: feed.id,
@@ -47,7 +49,9 @@ describe("ArticlePersistenceRepository", () => {
     it("should insert an article with only required fields", async () => {
       const feed = await setupFeed("test-user", "https://example.com/feed.xml");
 
-      const repo = new ArticlePersistenceRepository();
+      const repo = new ArticlePersistenceRepository(
+        DrizzleRepository.create().getDb(),
+      );
       await repo.upsert({
         user_id: "test-user",
         rss_feed_id: feed.id,
@@ -70,7 +74,9 @@ describe("ArticlePersistenceRepository", () => {
       const feed = await setupFeed("test-user", "https://example.com/feed.xml");
       const articleUrl = "https://example.com/article-update";
 
-      const repo = new ArticlePersistenceRepository();
+      const repo = new ArticlePersistenceRepository(
+        DrizzleRepository.create().getDb(),
+      );
       await repo.upsert({
         user_id: "test-user",
         rss_feed_id: feed.id,
@@ -103,7 +109,9 @@ describe("ArticlePersistenceRepository", () => {
       const feed2 = await setupFeed("user-b", "https://example.com/feed2.xml");
       const articleUrl = "https://example.com/shared-article";
 
-      const repo = new ArticlePersistenceRepository();
+      const repo = new ArticlePersistenceRepository(
+        DrizzleRepository.create().getDb(),
+      );
       await repo.upsert({
         user_id: "user-a",
         rss_feed_id: feed1.id,

@@ -31,7 +31,10 @@ describe("GetBookmarks", () => {
         });
       });
 
-      const repository = new BookmarkRepository(ContextRepository.create());
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await new GetBookmarks(repository).invoke();
 
       expect(result).toHaveLength(2);
@@ -43,7 +46,10 @@ describe("GetBookmarks", () => {
     });
 
     it("should return empty array when no bookmarks exist", async () => {
-      const repository = new BookmarkRepository(ContextRepository.create());
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
       const result = await new GetBookmarks(repository).invoke();
 
       expect(result).toEqual([]);

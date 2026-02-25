@@ -2,11 +2,7 @@ import { createId } from "@paralleldrive/cuid2";
 import { and, eq } from "drizzle-orm";
 import { rssFeeds } from "../../libs/drizzle/schema";
 import type { ContextRepository } from "../../shared/context";
-import {
-  type DrizzleDb,
-  DrizzleRepository,
-  type Transaction,
-} from "../../shared/drizzle";
+import type { DrizzleDb, Transaction } from "../../shared/drizzle";
 import type { CreateRssFeedInput, RssFeed, RssFeedBatchItem } from "./model";
 
 export class RssFeedRepository {
@@ -15,15 +11,14 @@ export class RssFeedRepository {
 
   constructor(
     contextRepository: ContextRepository,
-    dbOrTx?: DrizzleDb | Transaction,
+    dbOrTx: DrizzleDb | Transaction,
   ) {
     this.contextRepository = contextRepository;
-    this.db = dbOrTx ?? DrizzleRepository.create().getDb();
+    this.db = dbOrTx;
   }
 
-  static async findAllForBatch(db?: DrizzleDb): Promise<RssFeedBatchItem[]> {
-    const database = db ?? DrizzleRepository.create().getDb();
-    return database
+  static async findAllForBatch(db: DrizzleDb): Promise<RssFeedBatchItem[]> {
+    return db
       .select({
         id: rssFeeds.id,
         user_id: rssFeeds.user_id,

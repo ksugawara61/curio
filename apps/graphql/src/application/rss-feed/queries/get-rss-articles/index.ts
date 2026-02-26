@@ -8,38 +8,39 @@ import { RssFeedExternalRepository } from "../../../../domain/rss-feed/repositor
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
-import type { BaseApplication } from "../../../base";
 
-export class GetRssArticles implements BaseApplication<string, RssArticle[]> {
-  constructor(
-    private readonly feedRepository: IRssFeedRepository,
-    private readonly externalRepository: IRssFeedExternalRepository,
-  ) {}
-
-  async invoke(id: string): Promise<RssArticle[]> {
-    try {
-      const feed = await this.feedRepository.findById(id);
-      if (!feed) {
-        throw new ServiceError("RSS feed not found", {
-          statusCode: 404,
-          code: "NOT_FOUND",
-        });
-      }
-      return await this.externalRepository.fetchArticles(feed.url);
-    } catch (error) {
-      if (error instanceof ServiceError) {
-        throw error;
-      }
-      throw new ServiceError(
-        `Failed to fetch RSS articles: ${error instanceof Error ? error.message : "Unknown error"}`,
-        {
-          statusCode: 500,
-          code: "INTERNAL_ERROR",
-        },
-      );
+const getRssArticlesUseCase = async (
+  id: string,
+  {
+    feedRepository,
+    externalRepository,
+  }: {
+    feedRepository: IRssFeedRepository;
+    externalRepository: IRssFeedExternalRepository;
+  },
+): Promise<RssArticle[]> => {
+  try {
+    const feed = await feedRepository.findById(id);
+    if (!feed) {
+      throw new ServiceError("RSS feed not found", {
+        statusCode: 404,
+        code: "NOT_FOUND",
+      });
     }
+    return await externalRepository.fetchArticles(feed.url);
+  } catch (error) {
+    if (error instanceof ServiceError) {
+      throw error;
+    }
+    throw new ServiceError(
+      `Failed to fetch RSS articles: ${error instanceof Error ? error.message : "Unknown error"}`,
+      {
+        statusCode: 500,
+        code: "INTERNAL_ERROR",
+      },
+    );
   }
-}
+};
 
 export const rssArticles = async (id: string): Promise<RssArticle[]> => {
   const feedRepository = new RssFeedRepository(
@@ -47,5 +48,5 @@ export const rssArticles = async (id: string): Promise<RssArticle[]> => {
     DrizzleRepository.create().getDb(),
   );
   const externalRepository = new RssFeedExternalRepository();
-  return new GetRssArticles(feedRepository, externalRepository).invoke(id);
+  return getRssArticlesUseCase(id, { feedRepository, externalRepository });
 };

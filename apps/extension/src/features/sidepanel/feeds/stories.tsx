@@ -38,14 +38,6 @@ export const Empty: Story = {
   },
 };
 
-export const Loading: Story = {
-  parameters: {
-    msw: {
-      handlers: [RecentArticlesQueryMocks.Loading, RssFeedsQueryMocks.Loading],
-    },
-  },
-};
-
 export const ErrorState: Story = {
   parameters: {
     msw: {

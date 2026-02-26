@@ -1,18 +1,18 @@
-export type Tag = {
+export type QiitaArticleTag = {
   name: string;
 };
 
-export type User = {
+export type QiitaArticleUser = {
   name: string | null;
 };
 
-export type Article = {
+export type QiitaArticle = {
   id: string;
   title: string;
   body: string;
   url: string;
-  user: User;
-  tags: Tag[];
+  user: QiitaArticleUser;
+  tags: QiitaArticleTag[];
   created_at: string;
   updated_at: string;
 };
@@ -42,4 +42,32 @@ export type UpsertArticleInput = {
 
 export type GetRecentArticlesInput = {
   hours: number;
+};
+
+export type ArticleSource = "qiita" | "database" | "rss";
+
+export type GetArticlesInput = {
+  source: ArticleSource;
+  // Qiita-specific
+  offset?: number;
+  limit?: number;
+  // Database-specific
+  hours?: number;
+  // RSS-specific
+  feedId?: string;
+};
+
+export type Article = {
+  id?: string | null;
+  title: string;
+  url: string;
+  description?: string | null;
+  thumbnail_url?: string | null;
+  pub_date?: string | null;
+  body?: string | null;
+  author?: string | null;
+  tags?: string[] | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  source: ArticleSource;
 };

@@ -4,28 +4,28 @@ import { RssArticlesQuery } from "./RssArticlesQuery";
 
 const mockRssArticles = [
   {
-    __typename: "RssArticle" as const,
+    __typename: "Article" as const,
     title: "Getting Started with React",
-    link: "https://example.com/react-intro",
+    url: "https://example.com/react-intro",
     description: "A beginner's guide to React development",
-    pubDate: "Mon, 01 Jan 2024 00:00:00 GMT",
-    thumbnailUrl: "https://example.com/react-thumb.jpg",
+    pub_date: "Mon, 01 Jan 2024 00:00:00 GMT",
+    thumbnail_url: "https://example.com/react-thumb.jpg",
   },
   {
-    __typename: "RssArticle" as const,
+    __typename: "Article" as const,
     title: "TypeScript Best Practices",
-    link: "https://example.com/ts-best-practices",
+    url: "https://example.com/ts-best-practices",
     description: "Learn the best practices for TypeScript",
-    pubDate: "Tue, 02 Jan 2024 00:00:00 GMT",
-    thumbnailUrl: null,
+    pub_date: "Tue, 02 Jan 2024 00:00:00 GMT",
+    thumbnail_url: null,
   },
   {
-    __typename: "RssArticle" as const,
+    __typename: "Article" as const,
     title: "Understanding GraphQL",
-    link: "https://example.com/graphql-guide",
+    url: "https://example.com/graphql-guide",
     description: null,
-    pubDate: null,
-    thumbnailUrl: null,
+    pub_date: null,
+    thumbnail_url: null,
   },
 ];
 
@@ -33,12 +33,12 @@ export const RssArticlesQueryMocks = {
   Loading: createMockQuery(RssArticlesQuery, mockLoadingResolver),
   Success: createMockQuery(RssArticlesQuery, () => {
     return HttpResponse.json({
-      data: { rssArticles: mockRssArticles },
+      data: { articles: mockRssArticles },
     });
   }),
   Empty: createMockQuery(RssArticlesQuery, () => {
     return HttpResponse.json({
-      data: { rssArticles: [] },
+      data: { articles: [] },
     });
   }),
   Error: createMockQuery(RssArticlesQuery, () => {

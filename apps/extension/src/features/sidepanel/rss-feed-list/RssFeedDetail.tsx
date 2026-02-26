@@ -10,7 +10,7 @@ type Props = {
 
 export const RssFeedDetail: FC<Props> = ({ feedId, feedTitle, onBack }) => {
   const { data } = useSuspenseQuery(RssArticlesQuery, {
-    variables: { id: feedId },
+    variables: { feedId },
   });
 
   return (
@@ -22,31 +22,31 @@ export const RssFeedDetail: FC<Props> = ({ feedId, feedTitle, onBack }) => {
         <span className="font-semibold text-lg">{feedTitle}</span>
       </div>
 
-      {!data?.rssArticles || data.rssArticles.length === 0 ? (
+      {!data?.articles || data.articles.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-8 text-center">
           <p className="mt-2 text-base-content/70">No articles in this feed</p>
         </div>
       ) : (
         <>
           <span className="badge badge-neutral self-start">
-            {data.rssArticles.length} articles
+            {data.articles.length} articles
           </span>
-          {data.rssArticles.map((article, index) => (
+          {data.articles.map((article, index) => (
             <div
-              key={`${article.link}-${index}`}
+              key={`${article.url}-${index}`}
               className="card bg-base-200 shadow-sm"
             >
               <div className="card-body p-4">
-                {article.thumbnailUrl && (
+                {article.thumbnail_url && (
                   <img
-                    src={article.thumbnailUrl}
+                    src={article.thumbnail_url}
                     alt={article.title}
                     className="h-32 w-full rounded object-cover"
                   />
                 )}
                 <h3 className="card-title text-base">
                   <a
-                    href={article.link}
+                    href={article.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="link link-primary"
@@ -59,9 +59,9 @@ export const RssFeedDetail: FC<Props> = ({ feedId, feedTitle, onBack }) => {
                     {article.description}
                   </p>
                 )}
-                {article.pubDate && (
+                {article.pub_date && (
                   <div className="text-xs text-base-content/50">
-                    {new Date(article.pubDate).toLocaleDateString()}
+                    {new Date(article.pub_date).toLocaleDateString()}
                   </div>
                 )}
               </div>

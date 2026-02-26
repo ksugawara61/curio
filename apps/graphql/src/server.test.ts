@@ -6,11 +6,13 @@ import { server } from "./server";
 describe("GraphQL Resolvers", () => {
   describe("Query", () => {
     describe("articles", () => {
-      it("should return an array of articles", async () => {
+      it("should return an array of articles from Qiita", async () => {
         mockServer.use(...ArticleMocks.Success);
-        const offset = 0;
-        const limit = 20;
-        const result = await server.Query.articles(offset, limit);
+        const result = await server.Query.articles({
+          source: "qiita",
+          offset: 0,
+          limit: 20,
+        });
 
         expect(result.length).toBeGreaterThan(0);
         for (const article of result) {
@@ -18,10 +20,11 @@ describe("GraphQL Resolvers", () => {
           expect(article).toHaveProperty("title");
           expect(article).toHaveProperty("body");
           expect(article).toHaveProperty("url");
-          expect(article).toHaveProperty("user");
+          expect(article).toHaveProperty("author");
           expect(article).toHaveProperty("tags");
           expect(article).toHaveProperty("created_at");
           expect(article).toHaveProperty("updated_at");
+          expect(article.source).toBe("qiita");
         }
       });
     });

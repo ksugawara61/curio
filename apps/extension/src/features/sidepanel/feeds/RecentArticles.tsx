@@ -131,7 +131,14 @@ export const RecentArticles: FC = () => {
                   )}
                   {article.pub_date && (
                     <div className="text-xs text-base-content/50">
-                      {new Date(article.pub_date).toLocaleDateString()}
+                      {new Date(article.pub_date).toLocaleString("ja-JP", {
+                        timeZone: "Asia/Tokyo",
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </div>
                   )}
                 </div>

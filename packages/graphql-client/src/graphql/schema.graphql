@@ -1,3 +1,10 @@
+input GetArticlesInputInput {
+  source: ArticleSourceInput!
+  offset: Number
+  limit: Number
+  hours: Number
+  feedId: String
+}
 input CreateBookmarkInputInput {
   title: String!
   url: String!
@@ -18,31 +25,27 @@ input CreateTagInputInput {
   name: String!
 }
 type Query {
-  articles(offset: Number, limit: Number): [Article!]!
-  recentArticles(hours: Number): [PersistedArticle!]!
+  articles(input: GetArticlesInputInput!): [Article!]!
   bookmarks: [Bookmark!]!
   archivedBookmarks: [Bookmark!]!
   bookmark(id: String, uri: String): Bookmark
   tags: [Tag!]!
-  rssArticles(id: String!): [RssArticle!]!
   rssFeeds: [RssFeed!]!
   fetchUrlMetadata(url: String!): UrlMetadata!
 }
 type Article {
-  id: String!
+  id: String
   title: String!
-  body: String!
   url: String!
-  user: User!
-  tags: [Tag_1!]!
-  created_at: String!
-  updated_at: String!
-}
-type User {
-  name: String
-}
-type Tag_1 {
-  name: String!
+  description: String
+  thumbnail_url: String
+  pub_date: String
+  body: String
+  author: String
+  tags: [String!]
+  created_at: String
+  updated_at: String
+  source: ArticleSource!
 }
 type Bookmark {
   id: String!
@@ -61,25 +64,6 @@ type Tag {
   name: String!
   created_at: Date!
   updated_at: Date!
-}
-type PersistedArticle {
-  id: String!
-  user_id: String!
-  rss_feed_id: String!
-  title: String!
-  url: String!
-  description: String
-  thumbnail_url: String
-  pub_date: String
-  created_at: Date!
-  updated_at: Date!
-}
-type RssArticle {
-  title: String!
-  link: String!
-  description: String
-  pubDate: String
-  thumbnailUrl: String
 }
 type RssFeed {
   id: String!
@@ -116,3 +100,13 @@ scalar Date
 scalar JSON
 scalar String
 scalar Boolean
+enum ArticleSource {
+  qiita
+  database
+  rss
+}
+enum ArticleSourceInput {
+  qiita
+  database
+  rss
+}

@@ -1,14 +1,15 @@
 import { graphql } from "@curio/graphql-client";
 
 export const RssArticlesQuery = graphql(`
-  query RssArticlesList($id: String!) {
-    rssArticles(id: $id) {
+  query RssArticlesList($feedId: String!) {
+    articles(input: { source: rss, feedId: $feedId }) {
       __typename
       description
-      link
-      pubDate
-      thumbnailUrl
+      id
+      pub_date
+      thumbnail_url
       title
+      url
     }
   }
 `);

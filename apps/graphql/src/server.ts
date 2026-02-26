@@ -1,5 +1,4 @@
 import { articles } from "./application/article/queries/get-articles";
-import { recentArticles } from "./application/article/queries/get-recent-articles";
 import { archiveBookmark } from "./application/bookmark/mutations/archive-bookmark";
 import { createBookmark } from "./application/bookmark/mutations/create-bookmark";
 import { deleteBookmark } from "./application/bookmark/mutations/delete-bookmark";
@@ -10,7 +9,6 @@ import { bookmark } from "./application/bookmark/queries/get-bookmark";
 import { bookmarks } from "./application/bookmark/queries/get-bookmarks";
 import { createRssFeed } from "./application/rss-feed/mutations/create-rss-feed";
 import { deleteRssFeed } from "./application/rss-feed/mutations/delete-rss-feed";
-import { rssArticles } from "./application/rss-feed/queries/get-rss-articles";
 import { rssFeeds } from "./application/rss-feed/queries/get-rss-feeds";
 import { createTag } from "./application/tag/mutations/create-tag";
 import { tags } from "./application/tag/queries/get-tags";
@@ -20,12 +18,10 @@ import { withAuth } from "./middleware/auth";
 export const server = {
   Query: {
     articles: withAuth(articles),
-    recentArticles: withAuth(recentArticles),
     bookmarks: withAuth(bookmarks),
     archivedBookmarks: withAuth(archivedBookmarks),
     bookmark: withAuth(bookmark),
     tags: withAuth(tags),
-    rssArticles: withAuth(rssArticles),
     rssFeeds: withAuth(rssFeeds),
     fetchUrlMetadata: withAuth(fetchUrlMetadata),
   },

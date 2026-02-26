@@ -4,7 +4,7 @@ import { RecentArticlesQuery } from "./RecentArticlesQuery";
 
 export const RecentArticleList: FC = () => {
   const { data } = useSuspenseQuery(RecentArticlesQuery);
-  const articles = data?.recentArticles ?? [];
+  const articles = data?.articles ?? [];
 
   if (articles.length === 0) {
     return (
@@ -57,9 +57,10 @@ export const RecentArticleList: FC = () => {
               </p>
             )}
             <div className="text-xs text-base-content/50">
-              {article.pub_date
-                ? new Date(article.pub_date).toLocaleDateString()
-                : new Date(article.created_at).toLocaleDateString()}
+              {(article.pub_date ?? article.created_at) &&
+                new Date(
+                  (article.pub_date ?? article.created_at) as string,
+                ).toLocaleDateString()}
             </div>
           </div>
         </div>

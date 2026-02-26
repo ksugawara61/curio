@@ -1,12 +1,12 @@
 import type {
-  Article,
   GetRecentArticlesInput,
   PersistedArticle,
+  QiitaArticle,
   UpsertArticleInput,
 } from "./model";
 
 export type IArticleExternalRepository = {
-  fetchArticles(offset?: number, limit?: number): Promise<Article[]>;
+  fetchArticles(offset?: number, limit?: number): Promise<QiitaArticle[]>;
 };
 
 export type IArticlePersistenceRepository = {

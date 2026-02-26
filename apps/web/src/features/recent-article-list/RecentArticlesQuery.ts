@@ -2,7 +2,7 @@ import { graphql } from "@curio/graphql-client";
 
 export const RecentArticlesQuery = graphql(`
   query RecentArticlesList {
-    recentArticles {
+    articles(input: { source: database }) {
       id
       title
       url

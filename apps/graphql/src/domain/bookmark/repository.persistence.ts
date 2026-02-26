@@ -368,18 +368,11 @@ export class BookmarkRepository {
     }
   }
 
+  // biome-ignore lint/suspicious/useAdjacentOverloadSignatures: static factory, not an overload of the instance create(input) method
   static create(): BookmarkRepository {
     return new BookmarkRepository(
       ContextRepository.create(),
       DrizzleRepository.create().getDb(),
-    );
-  }
-
-  static async withTransaction<T>(
-    fn: (repository: BookmarkRepository) => Promise<T>,
-  ): Promise<T> {
-    return DrizzleRepository.create().transaction(async (tx) =>
-      fn(new BookmarkRepository(ContextRepository.create(), tx)),
     );
   }
 

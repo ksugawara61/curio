@@ -128,18 +128,11 @@ export class TagRepository {
       .where(and(eq(tags.id, id), eq(tags.user_id, userId)));
   }
 
+  // biome-ignore lint/suspicious/useAdjacentOverloadSignatures: static factory, not an overload of the instance create(input) method
   static create(): TagRepository {
     return new TagRepository(
       ContextRepository.create(),
       DrizzleRepository.create().getDb(),
-    );
-  }
-
-  static async withTransaction<T>(
-    fn: (repository: TagRepository) => Promise<T>,
-  ): Promise<T> {
-    return DrizzleRepository.create().transaction(async (tx) =>
-      fn(new TagRepository(ContextRepository.create(), tx)),
     );
   }
 }

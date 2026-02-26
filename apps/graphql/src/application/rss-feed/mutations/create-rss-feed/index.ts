@@ -7,7 +7,7 @@ import type {
 } from "../../../../domain/rss-feed/interface";
 import type { RssFeed } from "../../../../domain/rss-feed/model";
 import { RssFeedExternalRepository } from "../../../../domain/rss-feed/repository.external";
-import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
+import { withTransaction } from "../../../../domain/shared/transaction";
 import { fetchAndValidateRssFeed, rssFeedUrlSchema } from "./validate";
 
 const createRssFeedUseCase = async (
@@ -92,8 +92,8 @@ const syncRssFeedArticlesUseCase = async (
 
 export const createRssFeed = async (url: string): Promise<RssFeed> => {
   // Phase 1: フィード作成をトランザクション内で実行
-  const feed = await RssFeedRepository.withTransaction(async (repository) =>
-    createRssFeedUseCase(url, { repository }),
+  const feed = await withTransaction(async ({ rssFeed }) =>
+    createRssFeedUseCase(url, { repository: rssFeed }),
   );
 
   // Phase 2: 記事の初期同期はトランザクション外でベストエフォート実行

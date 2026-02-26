@@ -136,20 +136,13 @@ export class RssFeedRepository {
       .where(and(eq(rssFeeds.id, id), eq(rssFeeds.user_id, userId)));
   }
 
+  // biome-ignore lint/suspicious/useAdjacentOverloadSignatures: static factory, not an overload of the instance create(input) method
   static create(
     env?: Parameters<(typeof DrizzleRepository)["create"]>[0],
   ): RssFeedRepository {
     return new RssFeedRepository(
       ContextRepository.create(),
       DrizzleRepository.create(env).getDb(),
-    );
-  }
-
-  static async withTransaction<T>(
-    fn: (repository: RssFeedRepository) => Promise<T>,
-  ): Promise<T> {
-    return DrizzleRepository.create().transaction(async (tx) =>
-      fn(new RssFeedRepository(ContextRepository.create(), tx)),
     );
   }
 }

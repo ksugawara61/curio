@@ -1,7 +1,11 @@
 import { createId } from "@paralleldrive/cuid2";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { ContextRepository } from "../../shared/context";
-import { type DrizzleDb, DrizzleRepository } from "../../shared/drizzle";
+import {
+  type DrizzleDb,
+  DrizzleRepository,
+  type Transaction,
+} from "../../shared/drizzle";
 import { rssFeeds } from "../rss-feed/schema";
 import type { GetRecentArticlesInput, UpsertArticleInput } from "./interface";
 import type { PersistedArticle } from "./model";
@@ -9,9 +13,12 @@ import { articles } from "./schema";
 
 export class ArticlePersistenceRepository {
   private contextRepository: ContextRepository;
-  private db: DrizzleDb;
+  private db: DrizzleDb | Transaction;
 
-  constructor(contextRepository: ContextRepository, db: DrizzleDb) {
+  constructor(
+    contextRepository: ContextRepository,
+    db: DrizzleDb | Transaction,
+  ) {
     this.contextRepository = contextRepository;
     this.db = db;
   }

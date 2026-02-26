@@ -13,12 +13,6 @@ export type RssFeedBatchItem = {
   url: string;
 };
 
-export type CreateRssFeedInput = {
-  url: string;
-  title: string;
-  description?: string;
-};
-
 export type RssArticle = {
   title: string;
   link: string;

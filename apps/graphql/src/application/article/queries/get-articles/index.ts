@@ -2,7 +2,7 @@ import { ServiceError } from "@getcronit/pylon";
 import type { IArticleExternalRepository } from "../../../../domain/article/interface";
 import type {
   Article,
-  GetArticlesInput,
+  ArticleSource,
   PersistedArticle,
   QiitaArticle,
 } from "../../../../domain/article/model";
@@ -17,6 +17,17 @@ import { RssFeedExternalRepository } from "../../../../domain/rss-feed/repositor
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
+
+export type GetArticlesInput = {
+  source: ArticleSource;
+  // Qiita-specific
+  offset?: number;
+  limit?: number;
+  // Database-specific
+  hours?: number;
+  // RSS-specific
+  feedId?: string;
+};
 
 const mapQiitaArticle = (item: QiitaArticle): Article => ({
   id: item.id,

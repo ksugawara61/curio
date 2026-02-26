@@ -1,9 +1,10 @@
-import type {
-  CreateRssFeedInput,
-  RssArticle,
-  RssFeed,
-  RssFeedBatchItem,
-} from "./model";
+import type { RssArticle, RssFeed, RssFeedBatchItem } from "./model";
+
+export type CreateRssFeedInput = {
+  url: string;
+  title: string;
+  description?: string;
+};
 
 export type IRssFeedRepository = {
   findAll(): Promise<RssFeed[]>;

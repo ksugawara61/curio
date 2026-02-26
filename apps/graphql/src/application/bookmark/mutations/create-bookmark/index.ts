@@ -1,13 +1,18 @@
 import { ServiceError } from "@getcronit/pylon";
 import type { IBookmarkRepository } from "../../../../domain/bookmark/interface";
-import type {
-  Bookmark,
-  CreateBookmarkInput,
-} from "../../../../domain/bookmark/model";
+import type { Bookmark } from "../../../../domain/bookmark/model";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
-export type { CreateBookmarkInput };
+
+export type CreateBookmarkInput = {
+  title: string;
+  url: string;
+  description?: string;
+  note?: string;
+  thumbnail?: string;
+  tagNames?: string[];
+};
 
 const createBookmarkUseCase = async (
   input: CreateBookmarkInput,

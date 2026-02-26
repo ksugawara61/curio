@@ -30,32 +30,7 @@ export type PersistedArticle = {
   updated_at: Date;
 };
 
-export type UpsertArticleInput = {
-  user_id: string;
-  rss_feed_id: string;
-  title: string;
-  url: string;
-  description?: string | null;
-  thumbnail_url?: string | null;
-  pub_date?: string | null;
-};
-
-export type GetRecentArticlesInput = {
-  hours: number;
-};
-
 export type ArticleSource = "qiita" | "database" | "rss";
-
-export type GetArticlesInput = {
-  source: ArticleSource;
-  // Qiita-specific
-  offset?: number;
-  limit?: number;
-  // Database-specific
-  hours?: number;
-  // RSS-specific
-  feedId?: string;
-};
 
 export type Article = {
   id?: string | null;

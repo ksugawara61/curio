@@ -1,11 +1,8 @@
 import { createId } from "@paralleldrive/cuid2";
 import { eq, sql } from "drizzle-orm";
 import type { DrizzleDb } from "../../shared/drizzle";
-import type {
-  GetRecentArticlesInput,
-  PersistedArticle,
-  UpsertArticleInput,
-} from "./model";
+import type { GetRecentArticlesInput, UpsertArticleInput } from "./interface";
+import type { PersistedArticle } from "./model";
 import { articles } from "./schema";
 
 export class ArticlePersistenceRepository {

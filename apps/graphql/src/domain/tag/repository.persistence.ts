@@ -2,7 +2,8 @@ import { createId } from "@paralleldrive/cuid2";
 import { and, eq } from "drizzle-orm";
 import type { ContextRepository } from "../../shared/context";
 import type { DrizzleDb, Transaction } from "../../shared/drizzle";
-import type { CreateTagInput, Tag, UpdateTagInput } from "./model";
+import type { CreateTagInput, UpdateTagInput } from "./interface";
+import type { Tag } from "./model";
 import { tags } from "./schema";
 
 export class TagRepository {

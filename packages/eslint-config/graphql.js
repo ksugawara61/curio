@@ -83,7 +83,30 @@ export const createGraphQLServerConfig = (dirname, options = {}) => {
 
   const baseConfig = createBaseConfig({ tsconfigRootDir: dirname, ignores, files });
 
-  return tseslint.config(...baseConfig);
+  return tseslint.config(
+    ...baseConfig,
+    // Restrict DrizzleRepository (getDb, transaction) to the domain layer only.
+    // Application layer must use static factory methods on domain repositories instead.
+    // Test files are excluded: integration tests legitimately access the DB directly for assertions.
+    {
+      files: ["src/**/*.{js,mjs,ts,mts}"],
+      ignores: [...ignores, "src/domain/**", "**/*.test.{ts,mts}", "**/test.{ts,mts}", "src/libs/test/**"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                group: ["**/shared/drizzle*"],
+                message:
+                  "DrizzleRepository (getDb, transaction) can only be used in the domain layer (src/domain/**). Add static factory methods to domain repositories instead.",
+              },
+            ],
+          },
+        ],
+      },
+    },
+  );
 };
 
 export default createGraphQLServerConfig;

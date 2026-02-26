@@ -1,7 +1,7 @@
 import { createId } from "@paralleldrive/cuid2";
 import { and, eq, inArray, sql } from "drizzle-orm";
-import type { ContextRepository } from "../../shared/context";
-import type { DrizzleDb } from "../../shared/drizzle";
+import { ContextRepository } from "../../shared/context";
+import { type DrizzleDb, DrizzleRepository } from "../../shared/drizzle";
 import { rssFeeds } from "../rss-feed/schema";
 import type { GetRecentArticlesInput, UpsertArticleInput } from "./interface";
 import type { PersistedArticle } from "./model";
@@ -116,5 +116,14 @@ export class ArticlePersistenceRepository {
       created_at: new Date(updated.created_at),
       updated_at: new Date(updated.updated_at),
     };
+  }
+
+  static create(
+    env?: Parameters<(typeof DrizzleRepository)["create"]>[0],
+  ): ArticlePersistenceRepository {
+    return new ArticlePersistenceRepository(
+      ContextRepository.create(),
+      DrizzleRepository.create(env).getDb(),
+    );
   }
 }

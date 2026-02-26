@@ -1,7 +1,11 @@
 import { createId } from "@paralleldrive/cuid2";
 import { and, eq } from "drizzle-orm";
-import type { ContextRepository } from "../../shared/context";
-import type { DrizzleDb, Transaction } from "../../shared/drizzle";
+import { ContextRepository } from "../../shared/context";
+import {
+  type DrizzleDb,
+  DrizzleRepository,
+  type Transaction,
+} from "../../shared/drizzle";
 import type { CreateTagInput, UpdateTagInput } from "./interface";
 import type { Tag } from "./model";
 import { tags } from "./schema";
@@ -122,5 +126,20 @@ export class TagRepository {
     await this.db
       .delete(tags)
       .where(and(eq(tags.id, id), eq(tags.user_id, userId)));
+  }
+
+  static create(): TagRepository {
+    return new TagRepository(
+      ContextRepository.create(),
+      DrizzleRepository.create().getDb(),
+    );
+  }
+
+  static async withTransaction<T>(
+    fn: (repository: TagRepository) => Promise<T>,
+  ): Promise<T> {
+    return DrizzleRepository.create().transaction(async (tx) =>
+      fn(new TagRepository(ContextRepository.create(), tx)),
+    );
   }
 }

@@ -2,8 +2,6 @@ import { ServiceError } from "@getcronit/pylon";
 import type { ITagRepository } from "../../../../domain/tag/interface";
 import type { Tag } from "../../../../domain/tag/model";
 import { TagRepository } from "../../../../domain/tag/repository.persistence";
-import { ContextRepository } from "../../../../shared/context";
-import { DrizzleRepository } from "../../../../shared/drizzle";
 
 export type CreateTagInput = {
   name: string;
@@ -27,8 +25,7 @@ const createTagUseCase = async (
 };
 
 export const createTag = async (input: CreateTagInput): Promise<Tag> => {
-  return await DrizzleRepository.create().transaction(async (tx) => {
-    const repository = new TagRepository(ContextRepository.create(), tx);
-    return createTagUseCase(input, { repository });
-  });
+  return TagRepository.withTransaction(async (repository) =>
+    createTagUseCase(input, { repository }),
+  );
 };

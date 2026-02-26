@@ -1,7 +1,11 @@
 import { createId } from "@paralleldrive/cuid2";
 import { and, eq, isNotNull, isNull } from "drizzle-orm";
-import type { ContextRepository } from "../../shared/context";
-import type { DrizzleDb, Transaction } from "../../shared/drizzle";
+import { ContextRepository } from "../../shared/context";
+import {
+  type DrizzleDb,
+  DrizzleRepository,
+  type Transaction,
+} from "../../shared/drizzle";
 import { TagRepository } from "../tag/repository.persistence";
 import { tags } from "../tag/schema";
 import type { CreateBookmarkInput, UpdateBookmarkInput } from "./interface";
@@ -362,6 +366,21 @@ export class BookmarkRepository {
     if (result.length === 0) {
       throw new Error("No record was found");
     }
+  }
+
+  static create(): BookmarkRepository {
+    return new BookmarkRepository(
+      ContextRepository.create(),
+      DrizzleRepository.create().getDb(),
+    );
+  }
+
+  static async withTransaction<T>(
+    fn: (repository: BookmarkRepository) => Promise<T>,
+  ): Promise<T> {
+    return DrizzleRepository.create().transaction(async (tx) =>
+      fn(new BookmarkRepository(ContextRepository.create(), tx)),
+    );
   }
 
   private groupBookmarksWithTags(

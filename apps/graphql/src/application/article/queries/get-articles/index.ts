@@ -15,8 +15,6 @@ import type {
 import type { RssArticle } from "../../../../domain/rss-feed/model";
 import { RssFeedExternalRepository } from "../../../../domain/rss-feed/repository.external";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
-import { ContextRepository } from "../../../../shared/context";
-import { DrizzleRepository } from "../../../../shared/drizzle";
 
 export type GetArticlesInput = {
   source: ArticleSource;
@@ -76,12 +74,8 @@ const getQiitaArticles = async (
 
 const getDatabaseArticles = async (
   input: GetArticlesInput,
-  contextRepository: ContextRepository,
 ): Promise<Article[]> => {
-  const repository = new ArticlePersistenceRepository(
-    contextRepository,
-    DrizzleRepository.create().getDb(),
-  );
+  const repository = ArticlePersistenceRepository.create();
   const items = await repository.findManyWithinPeriod({
     hours: input.hours ?? 48,
   });
@@ -118,13 +112,10 @@ export const articles = async (input: GetArticlesInput): Promise<Article[]> => {
         return await getQiitaArticles(input, repository);
       }
       case "database": {
-        return await getDatabaseArticles(input, ContextRepository.create());
+        return await getDatabaseArticles(input);
       }
       case "rss": {
-        const feedRepository = new RssFeedRepository(
-          ContextRepository.create(),
-          DrizzleRepository.create().getDb(),
-        );
+        const feedRepository = RssFeedRepository.create();
         const externalRepository = new RssFeedExternalRepository();
         return await getRssArticles(input, feedRepository, externalRepository);
       }

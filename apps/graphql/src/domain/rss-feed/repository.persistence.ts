@@ -1,7 +1,11 @@
 import { createId } from "@paralleldrive/cuid2";
 import { and, eq } from "drizzle-orm";
-import type { ContextRepository } from "../../shared/context";
-import type { DrizzleDb, Transaction } from "../../shared/drizzle";
+import { ContextRepository } from "../../shared/context";
+import {
+  type DrizzleDb,
+  DrizzleRepository,
+  type Transaction,
+} from "../../shared/drizzle";
 import type { CreateRssFeedInput } from "./interface";
 import type { RssFeed, RssFeedBatchItem } from "./model";
 import { rssFeeds } from "./schema";
@@ -130,5 +134,22 @@ export class RssFeedRepository {
     await this.db
       .delete(rssFeeds)
       .where(and(eq(rssFeeds.id, id), eq(rssFeeds.user_id, userId)));
+  }
+
+  static create(
+    env?: Parameters<(typeof DrizzleRepository)["create"]>[0],
+  ): RssFeedRepository {
+    return new RssFeedRepository(
+      ContextRepository.create(),
+      DrizzleRepository.create(env).getDb(),
+    );
+  }
+
+  static async withTransaction<T>(
+    fn: (repository: RssFeedRepository) => Promise<T>,
+  ): Promise<T> {
+    return DrizzleRepository.create().transaction(async (tx) =>
+      fn(new RssFeedRepository(ContextRepository.create(), tx)),
+    );
   }
 }

@@ -15,6 +15,7 @@ export const articles = sqliteTable(
     description: text("description"),
     thumbnail_url: text("thumbnail_url"),
     pub_date: text("pub_date"),
+    read_at: text("read_at"),
     created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
     updated_at: text("updated_at").default(sql`(datetime('now'))`).notNull(),
   },

@@ -48,6 +48,7 @@ const mapPersistedArticle = (item: PersistedArticle): Article => ({
   description: item.description ?? null,
   thumbnail_url: item.thumbnail_url ?? null,
   pub_date: item.pub_date ?? null,
+  read_at: item.read_at ? item.read_at.toISOString() : null,
   created_at: item.created_at.toISOString(),
   updated_at: item.updated_at.toISOString(),
   source: "database",
@@ -78,10 +79,10 @@ const getDatabaseArticles = async (
   contextRepository: ContextRepository,
 ): Promise<Article[]> => {
   const repository = new ArticlePersistenceRepository(
+    contextRepository,
     DrizzleRepository.create().getDb(),
   );
-  const userId = contextRepository.getUserId();
-  const items = await repository.findManyWithinPeriod(userId, {
+  const items = await repository.findManyWithinPeriod({
     hours: input.hours ?? 48,
   });
   return items.map(mapPersistedArticle);

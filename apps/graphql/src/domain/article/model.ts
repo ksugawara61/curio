@@ -26,6 +26,7 @@ export type PersistedArticle = {
   description?: string | null;
   thumbnail_url?: string | null;
   pub_date?: string | null;
+  read_at?: Date | null;
   created_at: Date;
   updated_at: Date;
 };
@@ -42,6 +43,7 @@ export type Article = {
   body?: string | null;
   author?: string | null;
   tags?: string[] | null;
+  read_at?: string | null;
   created_at?: string | null;
   updated_at?: string | null;
   source: ArticleSource;

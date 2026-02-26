@@ -1,23 +1,26 @@
 import { createId } from "@paralleldrive/cuid2";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
+import type { ContextRepository } from "../../shared/context";
 import type { DrizzleDb } from "../../shared/drizzle";
 import type { GetRecentArticlesInput, UpsertArticleInput } from "./interface";
 import type { PersistedArticle } from "./model";
 import { articles } from "./schema";
 
 export class ArticlePersistenceRepository {
+  private contextRepository: ContextRepository;
   private db: DrizzleDb;
 
-  constructor(db: DrizzleDb) {
+  constructor(contextRepository: ContextRepository, db: DrizzleDb) {
+    this.contextRepository = contextRepository;
     this.db = db;
   }
 
   async findManyWithinPeriod(
-    userId: string,
     input: GetRecentArticlesInput,
   ): Promise<PersistedArticle[]> {
     const { hours } = input;
     const threshold = new Date(Date.now() - hours * 60 * 60 * 1000);
+    const userId = this.contextRepository.getUserId();
 
     const result = await this.db
       .select()
@@ -35,6 +38,7 @@ export class ArticlePersistenceRepository {
         description: row.description,
         thumbnail_url: row.thumbnail_url,
         pub_date: row.pub_date,
+        read_at: row.read_at ? new Date(row.read_at) : null,
         created_at: new Date(row.created_at),
         updated_at: new Date(row.updated_at),
       }))
@@ -70,5 +74,31 @@ export class ArticlePersistenceRepository {
           updated_at: sql`(datetime('now'))`,
         },
       });
+  }
+
+  async markAsRead(id: string): Promise<PersistedArticle> {
+    const userId = this.contextRepository.getUserId();
+    const now = new Date().toISOString();
+    const [updated] = await this.db
+      .update(articles)
+      .set({ read_at: now, updated_at: now })
+      .where(and(eq(articles.id, id), eq(articles.user_id, userId)))
+      .returning();
+    if (!updated) {
+      throw new Error("No record was found");
+    }
+    return {
+      id: updated.id,
+      user_id: updated.user_id,
+      rss_feed_id: updated.rss_feed_id,
+      title: updated.title,
+      url: updated.url,
+      description: updated.description,
+      thumbnail_url: updated.thumbnail_url,
+      pub_date: updated.pub_date,
+      read_at: updated.read_at ? new Date(updated.read_at) : null,
+      created_at: new Date(updated.created_at),
+      updated_at: new Date(updated.updated_at),
+    };
   }
 }

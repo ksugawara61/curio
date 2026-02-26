@@ -7,6 +7,7 @@ export const RecentArticlesQuery = graphql(`
       description
       id
       pub_date
+      read_at
       thumbnail_url
       title
       url

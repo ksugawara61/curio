@@ -11,6 +11,7 @@ const mockRecentArticles = [
     description: "A beginner's guide to React development",
     pub_date: "Mon, 01 Jan 2024 00:00:00 GMT",
     thumbnail_url: "https://example.com/react-thumb.jpg",
+    read_at: null,
   },
   {
     __typename: "Article" as const,
@@ -20,6 +21,7 @@ const mockRecentArticles = [
     description: "Learn the best practices for TypeScript",
     pub_date: "Tue, 02 Jan 2024 00:00:00 GMT",
     thumbnail_url: null,
+    read_at: "2024-01-02T00:00:00.000Z",
   },
   {
     __typename: "Article" as const,
@@ -29,6 +31,7 @@ const mockRecentArticles = [
     description: null,
     pub_date: null,
     thumbnail_url: null,
+    read_at: null,
   },
 ];
 

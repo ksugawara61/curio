@@ -43,9 +43,23 @@ type Article {
   body: String
   author: String
   tags: [String!]
+  read_at: String
   created_at: String
   updated_at: String
   source: ArticleSource!
+}
+type PersistedArticle {
+  id: String!
+  user_id: String!
+  rss_feed_id: String!
+  title: String!
+  url: String!
+  description: String
+  thumbnail_url: String
+  pub_date: String
+  read_at: Date
+  created_at: Date!
+  updated_at: Date!
 }
 type Bookmark {
   id: String!
@@ -79,6 +93,7 @@ type UrlMetadata {
   thumbnail: String
 }
 type Mutation {
+  markArticleAsRead(id: String!): PersistedArticle!
   createBookmark(input: CreateBookmarkInputInput!): Bookmark!
   updateBookmark(id: String!, input: UpdateBookmarkInputInput!): Bookmark!
   archiveBookmark(id: String!): Bookmark!

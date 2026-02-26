@@ -368,6 +368,10 @@ export class BookmarkRepository {
     }
   }
 
+  static inTransaction(tx: Transaction): BookmarkRepository {
+    return new BookmarkRepository(ContextRepository.create(), tx);
+  }
+
   // biome-ignore lint/suspicious/useAdjacentOverloadSignatures: static factory, not an overload of the instance create(input) method
   static create(): BookmarkRepository {
     return new BookmarkRepository(

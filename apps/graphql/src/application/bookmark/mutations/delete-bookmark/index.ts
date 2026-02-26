@@ -1,5 +1,6 @@
 import { ServiceError } from "@getcronit/pylon";
 import type { IBookmarkRepository } from "../../../../domain/bookmark/interface";
+import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { withTransaction } from "../../../../domain/shared/transaction";
 
 const deleteBookmarkUseCase = async (
@@ -30,7 +31,9 @@ const deleteBookmarkUseCase = async (
 };
 
 export const deleteBookmark = async (id: string): Promise<boolean> => {
-  return withTransaction(async ({ bookmark }) =>
-    deleteBookmarkUseCase(id, { repository: bookmark }),
+  return withTransaction(async (tx) =>
+    deleteBookmarkUseCase(id, {
+      repository: BookmarkRepository.inTransaction(tx),
+    }),
   );
 };

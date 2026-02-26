@@ -125,6 +125,10 @@ export class ArticlePersistenceRepository {
     };
   }
 
+  static inTransaction(tx: Transaction): ArticlePersistenceRepository {
+    return new ArticlePersistenceRepository(ContextRepository.create(), tx);
+  }
+
   static create(
     env?: Parameters<(typeof DrizzleRepository)["create"]>[0],
   ): ArticlePersistenceRepository {

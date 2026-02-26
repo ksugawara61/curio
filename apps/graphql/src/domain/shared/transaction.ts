@@ -1,52 +1,30 @@
-import { ContextRepository } from "../../shared/context";
-import { DrizzleRepository } from "../../shared/drizzle";
-import { ArticlePersistenceRepository } from "../article/repository.persistence";
-import { BookmarkRepository } from "../bookmark/repository.persistence";
-import { RssFeedRepository } from "../rss-feed/repository.persistence";
-import { TagRepository } from "../tag/repository.persistence";
+import { DrizzleRepository, type Transaction } from "../../shared/drizzle";
 
-/**
- * All persistence repositories scoped to a single database transaction.
- * Use this type as the parameter of the callback passed to `withTransaction`.
- */
-export type TransactionRepositories = {
-  bookmark: BookmarkRepository;
-  tag: TagRepository;
-  rssFeed: RssFeedRepository;
-  article: ArticlePersistenceRepository;
-};
+export type { Transaction };
 
 /**
  * Runs `fn` inside a single database transaction.
  *
- * All repositories provided to `fn` share the same transaction, so writes
- * from multiple repositories are committed or rolled back atomically.
+ * Each repository has a static `inTransaction(tx)` factory method.
+ * Pass `tx` to the repositories you need — only those repositories
+ * participate in the transaction, and adding new repositories never
+ * requires touching this file.
  *
  * @example Single repository
  * ```ts
- * return withTransaction(async ({ bookmark }) =>
- *   createBookmarkUseCase(input, { repository: bookmark }),
+ * return withTransaction(async (tx) =>
+ *   createBookmarkUseCase(input, { repository: BookmarkRepository.inTransaction(tx) }),
  * );
  * ```
  *
  * @example Multiple repositories in one atomic operation
  * ```ts
- * return withTransaction(async ({ bookmark, rssFeed }) => {
- *   const feed = await rssFeed.create(feedInput);
- *   return bookmark.create({ ...bookmarkInput, url: feed.url });
+ * return withTransaction(async (tx) => {
+ *   const feed = await RssFeedRepository.inTransaction(tx).create(feedInput);
+ *   return BookmarkRepository.inTransaction(tx).create({ ...bookmarkInput, url: feed.url });
  * });
  * ```
  */
-export const withTransaction = async <T>(
-  fn: (repos: TransactionRepositories) => Promise<T>,
-): Promise<T> => {
-  return DrizzleRepository.create().transaction(async (tx) => {
-    const ctx = ContextRepository.create();
-    return fn({
-      bookmark: new BookmarkRepository(ctx, tx),
-      tag: new TagRepository(ctx, tx),
-      rssFeed: new RssFeedRepository(ctx, tx),
-      article: new ArticlePersistenceRepository(ctx, tx),
-    });
-  });
-};
+export const withTransaction = <T>(
+  fn: (tx: Transaction) => Promise<T>,
+): Promise<T> => DrizzleRepository.create().transaction(fn);

@@ -128,6 +128,10 @@ export class TagRepository {
       .where(and(eq(tags.id, id), eq(tags.user_id, userId)));
   }
 
+  static inTransaction(tx: Transaction): TagRepository {
+    return new TagRepository(ContextRepository.create(), tx);
+  }
+
   // biome-ignore lint/suspicious/useAdjacentOverloadSignatures: static factory, not an overload of the instance create(input) method
   static create(): TagRepository {
     return new TagRepository(

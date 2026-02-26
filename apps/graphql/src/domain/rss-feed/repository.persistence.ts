@@ -136,6 +136,10 @@ export class RssFeedRepository {
       .where(and(eq(rssFeeds.id, id), eq(rssFeeds.user_id, userId)));
   }
 
+  static inTransaction(tx: Transaction): RssFeedRepository {
+    return new RssFeedRepository(ContextRepository.create(), tx);
+  }
+
   // biome-ignore lint/suspicious/useAdjacentOverloadSignatures: static factory, not an overload of the instance create(input) method
   static create(
     env?: Parameters<(typeof DrizzleRepository)["create"]>[0],

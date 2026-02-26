@@ -1,6 +1,7 @@
 import { ServiceError } from "@getcronit/pylon";
 import type { IBookmarkRepository } from "../../../../domain/bookmark/interface";
 import type { Bookmark } from "../../../../domain/bookmark/model";
+import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { withTransaction } from "../../../../domain/shared/transaction";
 
 const archiveBookmarkUseCase = async (
@@ -30,7 +31,9 @@ const archiveBookmarkUseCase = async (
 };
 
 export const archiveBookmark = async (id: string): Promise<Bookmark> => {
-  return withTransaction(async ({ bookmark }) =>
-    archiveBookmarkUseCase(id, { repository: bookmark }),
+  return withTransaction(async (tx) =>
+    archiveBookmarkUseCase(id, {
+      repository: BookmarkRepository.inTransaction(tx),
+    }),
   );
 };

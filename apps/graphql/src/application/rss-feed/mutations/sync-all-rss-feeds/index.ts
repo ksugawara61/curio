@@ -60,7 +60,10 @@ export const syncAllRssFeeds = async (
     drizzle.getDb(),
   );
   const externalRepository = new RssFeedExternalRepository();
-  const articleRepository = new ArticlePersistenceRepository(drizzle.getDb());
+  const articleRepository = new ArticlePersistenceRepository(
+    ContextRepository.create(),
+    drizzle.getDb(),
+  );
   return syncAllRssFeedsUseCase({
     rssFeedRepository,
     externalRepository,

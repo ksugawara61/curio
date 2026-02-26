@@ -111,7 +111,10 @@ export const createRssFeed = async (url: string): Promise<RssFeed> => {
   try {
     await syncRssFeedArticlesUseCase(feed, {
       externalRepository: new RssFeedExternalRepository(),
-      articleRepository: new ArticlePersistenceRepository(drizzle.getDb()),
+      articleRepository: new ArticlePersistenceRepository(
+        contextRepository,
+        drizzle.getDb(),
+      ),
       contextRepository,
     });
   } catch (error) {

@@ -19,6 +19,7 @@ const setupFeedAndArticle = async (userId: string) => {
   });
 
   const repo = new ArticlePersistenceRepository(
+    ContextRepository.create(),
     DrizzleRepository.create().getDb(),
   );
   await repo.upsert({
@@ -29,7 +30,7 @@ const setupFeedAndArticle = async (userId: string) => {
     pub_date: new Date().toISOString(),
   });
 
-  const articles = await repo.findManyWithinPeriod(userId, { hours: 48 });
+  const articles = await repo.findManyWithinPeriod({ hours: 48 });
   const article = articles.find((a) => a.url === "https://example.com/article");
   if (!article) throw new Error("Article not found in setup");
   return article;

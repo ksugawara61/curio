@@ -6,12 +6,11 @@ import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
 
 const markArticleAsReadUseCase = async (
-  userId: string,
   id: string,
   { repository }: { repository: IArticlePersistenceRepository },
 ): Promise<PersistedArticle> => {
   try {
-    return await repository.markAsRead(userId, id);
+    return await repository.markAsRead(id);
   } catch (error) {
     if (
       error instanceof Error &&
@@ -35,8 +34,9 @@ const markArticleAsReadUseCase = async (
 export const markArticleAsRead = async (
   id: string,
 ): Promise<PersistedArticle> => {
-  const db = DrizzleRepository.create().getDb();
-  const userId = ContextRepository.create().getUserId();
-  const repository = new ArticlePersistenceRepository(db);
-  return markArticleAsReadUseCase(userId, id, { repository });
+  const repository = new ArticlePersistenceRepository(
+    ContextRepository.create(),
+    DrizzleRepository.create().getDb(),
+  );
+  return markArticleAsReadUseCase(id, { repository });
 };

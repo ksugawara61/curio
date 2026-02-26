@@ -79,10 +79,10 @@ const getDatabaseArticles = async (
   contextRepository: ContextRepository,
 ): Promise<Article[]> => {
   const repository = new ArticlePersistenceRepository(
+    contextRepository,
     DrizzleRepository.create().getDb(),
   );
-  const userId = contextRepository.getUserId();
-  const items = await repository.findManyWithinPeriod(userId, {
+  const items = await repository.findManyWithinPeriod({
     hours: input.hours ?? 48,
   });
   return items.map(mapPersistedArticle);

@@ -67,6 +67,7 @@ describe("articles (source: database)", () => {
   it("should return articles within the specified hours", async () => {
     const feed = await setupFeed("test-user", "https://example.com/feed.xml");
     const repo = new ArticlePersistenceRepository(
+      ContextRepository.create(),
       DrizzleRepository.create().getDb(),
     );
 
@@ -98,6 +99,7 @@ describe("articles (source: database)", () => {
   it("should exclude articles older than the specified hours", async () => {
     const feed = await setupFeed("test-user", "https://example.com/feed.xml");
     const repo = new ArticlePersistenceRepository(
+      ContextRepository.create(),
       DrizzleRepository.create().getDb(),
     );
 
@@ -120,6 +122,7 @@ describe("articles (source: database)", () => {
     const feed1 = await setupFeed("user-a", "https://example.com/feed1.xml");
     const feed2 = await setupFeed("user-b", "https://example.com/feed2.xml");
     const repo = new ArticlePersistenceRepository(
+      ContextRepository.create(),
       DrizzleRepository.create().getDb(),
     );
 

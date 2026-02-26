@@ -20,6 +20,7 @@ describe("ArticlePersistenceRepository", () => {
       const feed = await setupFeed("test-user", "https://example.com/feed.xml");
 
       const repo = new ArticlePersistenceRepository(
+        ContextRepository.create(),
         DrizzleRepository.create().getDb(),
       );
       await repo.upsert({
@@ -50,6 +51,7 @@ describe("ArticlePersistenceRepository", () => {
       const feed = await setupFeed("test-user", "https://example.com/feed.xml");
 
       const repo = new ArticlePersistenceRepository(
+        ContextRepository.create(),
         DrizzleRepository.create().getDb(),
       );
       await repo.upsert({
@@ -75,6 +77,7 @@ describe("ArticlePersistenceRepository", () => {
       const articleUrl = "https://example.com/article-update";
 
       const repo = new ArticlePersistenceRepository(
+        ContextRepository.create(),
         DrizzleRepository.create().getDb(),
       );
       await repo.upsert({
@@ -110,6 +113,7 @@ describe("ArticlePersistenceRepository", () => {
       const articleUrl = "https://example.com/shared-article";
 
       const repo = new ArticlePersistenceRepository(
+        ContextRepository.create(),
         DrizzleRepository.create().getDb(),
       );
       await repo.upsert({

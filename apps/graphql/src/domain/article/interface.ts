@@ -21,8 +21,7 @@ export type IArticleExternalRepository = {
 export type IArticlePersistenceRepository = {
   upsert(input: UpsertArticleInput): Promise<void>;
   findManyWithinPeriod(
-    userId: string,
     input: GetRecentArticlesInput,
   ): Promise<PersistedArticle[]>;
-  markAsRead(userId: string, id: string): Promise<PersistedArticle>;
+  markAsRead(id: string): Promise<PersistedArticle>;
 };

@@ -4,8 +4,8 @@ export const RssArticlesQuery = graphql(`
   query RssArticlesList($feedId: String!) {
     articles(input: { source: rss, feedId: $feedId }) {
       __typename
-      id
       description
+      id
       pub_date
       thumbnail_url
       title

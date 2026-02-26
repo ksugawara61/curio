@@ -1,3 +1,4 @@
+import { markArticleAsRead } from "./application/article/mutations/mark-article-as-read";
 import { articles } from "./application/article/queries/get-articles";
 import { archiveBookmark } from "./application/bookmark/mutations/archive-bookmark";
 import { createBookmark } from "./application/bookmark/mutations/create-bookmark";
@@ -26,6 +27,7 @@ export const server = {
     fetchUrlMetadata: withAuth(fetchUrlMetadata),
   },
   Mutation: {
+    markArticleAsRead: withAuth(markArticleAsRead),
     createBookmark: withAuth(createBookmark),
     updateBookmark: withAuth(updateBookmark),
     archiveBookmark: withAuth(archiveBookmark),

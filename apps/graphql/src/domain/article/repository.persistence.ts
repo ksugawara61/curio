@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import type { DrizzleDb } from "../../shared/drizzle";
 import type { GetRecentArticlesInput, UpsertArticleInput } from "./interface";
 import type { PersistedArticle } from "./model";
@@ -35,6 +35,7 @@ export class ArticlePersistenceRepository {
         description: row.description,
         thumbnail_url: row.thumbnail_url,
         pub_date: row.pub_date,
+        read_at: row.read_at ? new Date(row.read_at) : null,
         created_at: new Date(row.created_at),
         updated_at: new Date(row.updated_at),
       }))
@@ -70,5 +71,30 @@ export class ArticlePersistenceRepository {
           updated_at: sql`(datetime('now'))`,
         },
       });
+  }
+
+  async markAsRead(userId: string, id: string): Promise<PersistedArticle> {
+    const now = new Date().toISOString();
+    const [updated] = await this.db
+      .update(articles)
+      .set({ read_at: now, updated_at: now })
+      .where(and(eq(articles.id, id), eq(articles.user_id, userId)))
+      .returning();
+    if (!updated) {
+      throw new Error("No record was found");
+    }
+    return {
+      id: updated.id,
+      user_id: updated.user_id,
+      rss_feed_id: updated.rss_feed_id,
+      title: updated.title,
+      url: updated.url,
+      description: updated.description,
+      thumbnail_url: updated.thumbnail_url,
+      pub_date: updated.pub_date,
+      read_at: updated.read_at ? new Date(updated.read_at) : null,
+      created_at: new Date(updated.created_at),
+      updated_at: new Date(updated.updated_at),
+    };
   }
 }

@@ -24,4 +24,5 @@ export type IArticlePersistenceRepository = {
     userId: string,
     input: GetRecentArticlesInput,
   ): Promise<PersistedArticle[]>;
+  markAsRead(userId: string, id: string): Promise<PersistedArticle>;
 };

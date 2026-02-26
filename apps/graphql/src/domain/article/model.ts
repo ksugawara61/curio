@@ -19,7 +19,6 @@ export type QiitaArticle = {
 
 export type PersistedArticle = {
   id: string;
-  user_id: string;
   rss_feed_id: string;
   title: string;
   url: string;

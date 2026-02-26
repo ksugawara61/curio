@@ -57,6 +57,13 @@
       "when": 1772100909034,
       "tag": "0007_known_orphan",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1772111340505,
+      "tag": "0008_silent_vermin",
+      "breakpoints": true
     }
   ]
 }

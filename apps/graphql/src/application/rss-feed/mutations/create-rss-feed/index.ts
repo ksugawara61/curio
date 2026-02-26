@@ -73,19 +73,15 @@ const syncRssFeedArticlesUseCase = async (
   {
     externalRepository,
     articleRepository,
-    contextRepository,
   }: {
     externalRepository: IRssFeedExternalRepository;
     articleRepository: IArticlePersistenceRepository;
-    contextRepository: ContextRepository;
   },
 ): Promise<void> => {
-  const userId = contextRepository.getUserId();
   const rssArticles = await externalRepository.fetchArticles(feed.url);
   for (const article of rssArticles) {
     if (!article.link) continue;
     await articleRepository.upsert({
-      user_id: userId,
       rss_feed_id: feed.id,
       title: article.title,
       url: article.link,
@@ -115,7 +111,6 @@ export const createRssFeed = async (url: string): Promise<RssFeed> => {
         contextRepository,
         drizzle.getDb(),
       ),
-      contextRepository,
     });
   } catch (error) {
     console.error(

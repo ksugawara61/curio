@@ -44,7 +44,6 @@ describe("syncAllRssFeeds", () => {
       expect(article1?.description).toBe("Description 1");
       expect(article1?.pub_date).toBe("Mon, 01 Jan 2024 00:00:00 GMT");
       expect(article1?.thumbnail_url).toBe("https://example.com/img1.jpg");
-      expect(article1?.user_id).toBe("test-user");
       expect(article1?.rss_feed_id).toBe(feed.id);
 
       const article2 = rows.find(
@@ -81,9 +80,6 @@ describe("syncAllRssFeeds", () => {
 
       const rows = await db.select().from(articles);
       expect(rows).toHaveLength(2);
-
-      const userIds = rows.map((r) => r.user_id).sort();
-      expect(userIds).toEqual(["user-a", "user-b"]);
     });
 
     it("should upsert articles on repeated runs (update existing)", async () => {

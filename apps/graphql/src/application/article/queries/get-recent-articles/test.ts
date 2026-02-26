@@ -4,7 +4,7 @@ import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persis
 import { mockAuthContext } from "../../../../libs/test/authHelper";
 import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
-import { GetRecentArticles } from ".";
+import { recentArticles } from ".";
 
 const setupFeed = async (userId: string, url: string) => {
   mockAuthContext({ userId });
@@ -14,7 +14,7 @@ const setupFeed = async (userId: string, url: string) => {
   });
 };
 
-describe("GetRecentArticles", () => {
+describe("recentArticles", () => {
   describe("正常系", () => {
     it("should return articles with pub_date within the specified hours", async () => {
       const feed = await setupFeed("test-user", "https://example.com/feed.xml");
@@ -35,12 +35,7 @@ describe("GetRecentArticles", () => {
         pub_date: recentPubDate,
       });
 
-      const result = await new GetRecentArticles(
-        repo,
-        ContextRepository.create(),
-      ).invoke({
-        hours: 48,
-      });
+      const result = await recentArticles(48);
 
       expect(result).toHaveLength(1);
       expect(result[0]).toHaveProperty("id");
@@ -70,12 +65,7 @@ describe("GetRecentArticles", () => {
         pub_date: oldPubDate,
       });
 
-      const result = await new GetRecentArticles(
-        repo,
-        ContextRepository.create(),
-      ).invoke({
-        hours: 48,
-      });
+      const result = await recentArticles(48);
 
       expect(result).toHaveLength(0);
     });
@@ -94,27 +84,14 @@ describe("GetRecentArticles", () => {
         pub_date: null,
       });
 
-      const result = await new GetRecentArticles(
-        repo,
-        ContextRepository.create(),
-      ).invoke({
-        hours: 48,
-      });
+      const result = await recentArticles(48);
 
       expect(result).toHaveLength(1);
       expect(result[0].title).toBe("No PubDate Article");
     });
 
     it("should return empty array when no articles exist", async () => {
-      const repo = new ArticlePersistenceRepository(
-        DrizzleRepository.create().getDb(),
-      );
-      const result = await new GetRecentArticles(
-        repo,
-        ContextRepository.create(),
-      ).invoke({
-        hours: 48,
-      });
+      const result = await recentArticles(48);
 
       expect(result).toEqual([]);
       expect(result).toHaveLength(0);
@@ -147,12 +124,7 @@ describe("GetRecentArticles", () => {
       });
 
       mockAuthContext({ userId: "user-a" });
-      const result = await new GetRecentArticles(
-        repo,
-        ContextRepository.create(),
-      ).invoke({
-        hours: 48,
-      });
+      const result = await recentArticles(48);
 
       expect(result).toHaveLength(1);
       expect(result[0].title).toBe("User A Article");
@@ -178,12 +150,7 @@ describe("GetRecentArticles", () => {
         pub_date: recentRfc2822,
       });
 
-      const result = await new GetRecentArticles(
-        repo,
-        ContextRepository.create(),
-      ).invoke({
-        hours: 48,
-      });
+      const result = await recentArticles(48);
 
       expect(result).toHaveLength(1);
       expect(result[0].title).toBe("RSS Article");

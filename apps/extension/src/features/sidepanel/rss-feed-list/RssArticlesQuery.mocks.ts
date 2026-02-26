@@ -5,6 +5,7 @@ import { RssArticlesQuery } from "./RssArticlesQuery";
 const mockRssArticles = [
   {
     __typename: "Article" as const,
+    id: null,
     title: "Getting Started with React",
     url: "https://example.com/react-intro",
     description: "A beginner's guide to React development",
@@ -13,6 +14,7 @@ const mockRssArticles = [
   },
   {
     __typename: "Article" as const,
+    id: null,
     title: "TypeScript Best Practices",
     url: "https://example.com/ts-best-practices",
     description: "Learn the best practices for TypeScript",
@@ -21,6 +23,7 @@ const mockRssArticles = [
   },
   {
     __typename: "Article" as const,
+    id: null,
     title: "Understanding GraphQL",
     url: "https://example.com/graphql-guide",
     description: null,

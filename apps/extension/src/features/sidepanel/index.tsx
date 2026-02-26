@@ -6,7 +6,7 @@ import { SignOutButton } from "../../shared/components/sign-out-button";
 import { useCurrentTab } from "../../shared/hooks/useCurrentTab";
 import { BookmarkCheck } from "./bookmark-check";
 import { BookmarkList } from "./bookmark-list";
-import { RssFeedList } from "./rss-feed-list";
+import { FeedsTab } from "./feeds";
 import { Settings } from "./settings";
 
 type TabType = "current" | "bookmarks" | "feeds" | "settings";
@@ -77,7 +77,7 @@ export const SidePanel: FC<Props> = ({ initialUrl, initialTitle }) => {
         {activeTab === "feeds" && (
           <ErrorBoundary FallbackComponent={ErrorFallback}>
             <Suspense fallback={<Loading />}>
-              <RssFeedList />
+              <FeedsTab />
             </Suspense>
           </ErrorBoundary>
         )}

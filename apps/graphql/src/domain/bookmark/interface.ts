@@ -1,8 +1,22 @@
-import type {
-  Bookmark,
-  CreateBookmarkInput,
-  UpdateBookmarkInput,
-} from "./model";
+import type { Bookmark } from "./model";
+
+export type CreateBookmarkInput = {
+  title: string;
+  url: string;
+  description?: string;
+  note?: string;
+  thumbnail?: string;
+  tagNames?: string[];
+};
+
+export type UpdateBookmarkInput = {
+  title?: string;
+  url?: string;
+  description?: string;
+  note?: string;
+  thumbnail?: string;
+  tagNames?: string[];
+};
 
 export type IBookmarkRepository = {
   findMany(): Promise<Bookmark[]>;

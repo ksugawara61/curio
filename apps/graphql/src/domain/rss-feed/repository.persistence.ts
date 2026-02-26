@@ -2,7 +2,8 @@ import { createId } from "@paralleldrive/cuid2";
 import { and, eq } from "drizzle-orm";
 import type { ContextRepository } from "../../shared/context";
 import type { DrizzleDb, Transaction } from "../../shared/drizzle";
-import type { CreateRssFeedInput, RssFeed, RssFeedBatchItem } from "./model";
+import type { CreateRssFeedInput } from "./interface";
+import type { RssFeed, RssFeedBatchItem } from "./model";
 import { rssFeeds } from "./schema";
 
 export class RssFeedRepository {

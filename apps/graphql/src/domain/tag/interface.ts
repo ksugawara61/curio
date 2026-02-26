@@ -1,4 +1,12 @@
-import type { CreateTagInput, Tag, UpdateTagInput } from "./model";
+import type { Tag } from "./model";
+
+export type CreateTagInput = {
+  name: string;
+};
+
+export type UpdateTagInput = {
+  name?: string;
+};
 
 export type ITagRepository = {
   findAll(): Promise<Tag[]>;

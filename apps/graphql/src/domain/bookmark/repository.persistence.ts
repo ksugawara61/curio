@@ -4,11 +4,8 @@ import type { ContextRepository } from "../../shared/context";
 import type { DrizzleDb, Transaction } from "../../shared/drizzle";
 import { TagRepository } from "../tag/repository.persistence";
 import { tags } from "../tag/schema";
-import type {
-  Bookmark,
-  CreateBookmarkInput,
-  UpdateBookmarkInput,
-} from "./model";
+import type { CreateBookmarkInput, UpdateBookmarkInput } from "./interface";
+import type { Bookmark } from "./model";
 import { bookmarks, bookmarkTags } from "./schema";
 
 const bookmarkSelectFields = {

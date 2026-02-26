@@ -1,10 +1,13 @@
 import { ServiceError } from "@getcronit/pylon";
 import type { ITagRepository } from "../../../../domain/tag/interface";
-import type { CreateTagInput, Tag } from "../../../../domain/tag/model";
+import type { Tag } from "../../../../domain/tag/model";
 import { TagRepository } from "../../../../domain/tag/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
-export type { CreateTagInput };
+
+export type CreateTagInput = {
+  name: string;
+};
 
 const createTagUseCase = async (
   input: CreateTagInput,

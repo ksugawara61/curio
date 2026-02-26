@@ -1,7 +1,6 @@
 import type { PersistedArticle, QiitaArticle } from "./model";
 
 export type UpsertArticleInput = {
-  user_id: string;
   rss_feed_id: string;
   title: string;
   url: string;

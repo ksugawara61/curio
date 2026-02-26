@@ -76,7 +76,6 @@ describe("articles (source: database)", () => {
     ).toISOString();
 
     await repo.upsert({
-      user_id: "test-user",
       rss_feed_id: feed.id,
       title: "Recent Article",
       url: "https://example.com/recent",
@@ -106,7 +105,6 @@ describe("articles (source: database)", () => {
     const oldPubDate = new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString();
 
     await repo.upsert({
-      user_id: "test-user",
       rss_feed_id: feed.id,
       title: "Old Article",
       url: "https://example.com/old",
@@ -131,14 +129,12 @@ describe("articles (source: database)", () => {
     ).toISOString();
 
     await repo.upsert({
-      user_id: "user-a",
       rss_feed_id: feed1.id,
       title: "User A Article",
       url: "https://example.com/article-a",
       pub_date: recentPubDate,
     });
     await repo.upsert({
-      user_id: "user-b",
       rss_feed_id: feed2.id,
       title: "User B Article",
       url: "https://example.com/article-b",

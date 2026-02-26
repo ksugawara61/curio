@@ -1,7 +1,8 @@
 import { createId } from "@paralleldrive/cuid2";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import type { ContextRepository } from "../../shared/context";
 import type { DrizzleDb } from "../../shared/drizzle";
+import { rssFeeds } from "../rss-feed/schema";
 import type { GetRecentArticlesInput, UpsertArticleInput } from "./interface";
 import type { PersistedArticle } from "./model";
 import { articles } from "./schema";
@@ -23,15 +24,26 @@ export class ArticlePersistenceRepository {
     const userId = this.contextRepository.getUserId();
 
     const result = await this.db
-      .select()
+      .select({
+        id: articles.id,
+        rss_feed_id: articles.rss_feed_id,
+        title: articles.title,
+        url: articles.url,
+        description: articles.description,
+        thumbnail_url: articles.thumbnail_url,
+        pub_date: articles.pub_date,
+        read_at: articles.read_at,
+        created_at: articles.created_at,
+        updated_at: articles.updated_at,
+      })
       .from(articles)
-      .where(eq(articles.user_id, userId))
+      .innerJoin(rssFeeds, eq(articles.rss_feed_id, rssFeeds.id))
+      .where(eq(rssFeeds.user_id, userId))
       .orderBy(sql`${articles.pub_date} desc`);
 
     return result
       .map((row) => ({
         id: row.id,
-        user_id: row.user_id,
         rss_feed_id: row.rss_feed_id,
         title: row.title,
         url: row.url,
@@ -56,7 +68,6 @@ export class ArticlePersistenceRepository {
       .insert(articles)
       .values({
         id: createId(),
-        user_id: input.user_id,
         rss_feed_id: input.rss_feed_id,
         title: input.title,
         url: input.url,
@@ -79,17 +90,22 @@ export class ArticlePersistenceRepository {
   async markAsRead(id: string): Promise<PersistedArticle> {
     const userId = this.contextRepository.getUserId();
     const now = new Date().toISOString();
+    const validFeedIds = this.db
+      .select({ id: rssFeeds.id })
+      .from(rssFeeds)
+      .where(eq(rssFeeds.user_id, userId));
     const [updated] = await this.db
       .update(articles)
       .set({ read_at: now, updated_at: now })
-      .where(and(eq(articles.id, id), eq(articles.user_id, userId)))
+      .where(
+        and(eq(articles.id, id), inArray(articles.rss_feed_id, validFeedIds)),
+      )
       .returning();
     if (!updated) {
       throw new Error("No record was found");
     }
     return {
       id: updated.id,
-      user_id: updated.user_id,
       rss_feed_id: updated.rss_feed_id,
       title: updated.title,
       url: updated.url,

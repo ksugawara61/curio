@@ -23,7 +23,6 @@ const setupFeedAndArticle = async (userId: string) => {
     DrizzleRepository.create().getDb(),
   );
   await repo.upsert({
-    user_id: userId,
     rss_feed_id: feed.id,
     title: "Test Article",
     url: "https://example.com/article",

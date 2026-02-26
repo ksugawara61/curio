@@ -24,7 +24,6 @@ describe("ArticlePersistenceRepository", () => {
         DrizzleRepository.create().getDb(),
       );
       await repo.upsert({
-        user_id: "test-user",
         rss_feed_id: feed.id,
         title: "Test Article",
         url: "https://example.com/article-1",
@@ -43,7 +42,6 @@ describe("ArticlePersistenceRepository", () => {
       expect(rows[0].description).toBe("A test article");
       expect(rows[0].thumbnail_url).toBe("https://example.com/img.jpg");
       expect(rows[0].pub_date).toBe("Mon, 01 Jan 2024 00:00:00 GMT");
-      expect(rows[0].user_id).toBe("test-user");
       expect(rows[0].rss_feed_id).toBe(feed.id);
     });
 
@@ -55,7 +53,6 @@ describe("ArticlePersistenceRepository", () => {
         DrizzleRepository.create().getDb(),
       );
       await repo.upsert({
-        user_id: "test-user",
         rss_feed_id: feed.id,
         title: "Minimal Article",
         url: "https://example.com/minimal",
@@ -81,7 +78,6 @@ describe("ArticlePersistenceRepository", () => {
         DrizzleRepository.create().getDb(),
       );
       await repo.upsert({
-        user_id: "test-user",
         rss_feed_id: feed.id,
         title: "Original Title",
         url: articleUrl,
@@ -89,7 +85,6 @@ describe("ArticlePersistenceRepository", () => {
       });
 
       await repo.upsert({
-        user_id: "test-user",
         rss_feed_id: feed.id,
         title: "Updated Title",
         url: articleUrl,
@@ -117,13 +112,11 @@ describe("ArticlePersistenceRepository", () => {
         DrizzleRepository.create().getDb(),
       );
       await repo.upsert({
-        user_id: "user-a",
         rss_feed_id: feed1.id,
         title: "Article from Feed 1",
         url: articleUrl,
       });
       await repo.upsert({
-        user_id: "user-b",
         rss_feed_id: feed2.id,
         title: "Article from Feed 2",
         url: articleUrl,

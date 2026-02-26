@@ -29,7 +29,6 @@ const syncAllRssFeedsUseCase = async ({
         if (!article.link) continue;
 
         await articleRepository.upsert({
-          user_id: feed.user_id,
           rss_feed_id: feed.id,
           title: article.title,
           url: article.link,

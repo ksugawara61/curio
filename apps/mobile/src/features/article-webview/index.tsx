@@ -1,12 +1,43 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import type { FC } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { useRef, useState } from "react";
+import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 
 export const ArticleWebView: FC = () => {
   const { url } = useLocalSearchParams<{ url: string }>();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const progressAnim = useRef(new Animated.Value(0)).current;
+
+  const handleLoadProgress = ({
+    nativeEvent,
+  }: {
+    nativeEvent: { progress: number };
+  }) => {
+    Animated.timing(progressAnim, {
+      toValue: nativeEvent.progress,
+      duration: 100,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const handleLoadEnd = () => {
+    Animated.timing(progressAnim, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: false,
+    }).start(() => {
+      setIsLoading(false);
+      progressAnim.setValue(0);
+    });
+  };
+
+  const progressWidth = progressAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0%", "100%"],
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -18,7 +49,20 @@ export const ArticleWebView: FC = () => {
           <View style={styles.backArrow} />
         </TouchableOpacity>
       </View>
-      <WebView source={{ uri: url }} style={styles.webview} />
+      {isLoading && (
+        <View style={styles.progressBarTrack}>
+          <Animated.View
+            style={[styles.progressBarFill, { width: progressWidth }]}
+          />
+        </View>
+      )}
+      <WebView
+        source={{ uri: url }}
+        style={styles.webview}
+        onLoadProgress={handleLoadProgress}
+        onLoadEnd={handleLoadEnd}
+        onLoadStart={() => setIsLoading(true)}
+      />
     </SafeAreaView>
   );
 };
@@ -51,5 +95,13 @@ const styles = StyleSheet.create({
   },
   webview: {
     flex: 1,
+  },
+  progressBarTrack: {
+    height: 3,
+    backgroundColor: "#e5e5e5",
+  },
+  progressBarFill: {
+    height: 3,
+    backgroundColor: "#0066cc",
   },
 });

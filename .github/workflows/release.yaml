@@ -11,9 +11,20 @@ env:
 jobs:
   call-migration-deploy:
     uses: ./.github/workflows/migration-deploy.yaml
+    secrets:
+      TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+      TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
   call-graphql-deploy:
     needs: call-migration-deploy
     uses: ./.github/workflows/graphql-deploy.yaml
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
   call-web-deploy:
     needs: call-graphql-deploy
     uses: ./.github/workflows/web-deploy.yaml
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      VITE_GRAPHQL_URI: ${{ secrets.VITE_GRAPHQL_URI }}
+      VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}

@@ -2,6 +2,11 @@ name: Migration Deploy
 on:
   workflow_dispatch:
   workflow_call:
+    secrets:
+      TURSO_DATABASE_URL:
+        required: true
+      TURSO_AUTH_TOKEN:
+        required: true
 
 jobs:
   migrate:

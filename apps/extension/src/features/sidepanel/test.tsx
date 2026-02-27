@@ -33,7 +33,7 @@ describe("SidePanel", () => {
   });
 
   it("shows Current Page tab by default", async () => {
-    server.use(BookmarkQueryMocks.NotFound);
+    server.use(BookmarkQueryMocks.NotFound, BookmarksListQueryMocks.Empty);
 
     await renderSidePanel();
 
@@ -87,7 +87,10 @@ describe("SidePanel", () => {
   });
 
   it("shows bookmark details when URL is already bookmarked", async () => {
-    server.use(BookmarkQueryMocks.WithMatchingUrl(defaultProps.initialUrl));
+    server.use(
+      BookmarkQueryMocks.WithMatchingUrl(defaultProps.initialUrl),
+      BookmarksListQueryMocks.Empty,
+    );
 
     await renderSidePanel();
 

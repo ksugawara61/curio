@@ -1,27 +1,11 @@
 import { createId } from "@paralleldrive/cuid2";
 import { and, eq } from "drizzle-orm";
-import { ContextRepository } from "../../shared/context";
-import {
-  type DrizzleDb,
-  DrizzleRepository,
-  type Transaction,
-} from "../../shared/drizzle";
+import { BasePersistenceRepository } from "../shared/base-persistence-repository";
 import type { CreateRssFeedInput } from "./interface";
 import type { RssFeed, RssFeedBatchItem } from "./model";
 import { rssFeeds } from "./schema";
 
-export class RssFeedRepository {
-  private db: DrizzleDb | Transaction;
-  private contextRepository: ContextRepository;
-
-  constructor(
-    contextRepository: ContextRepository,
-    dbOrTx: DrizzleDb | Transaction,
-  ) {
-    this.contextRepository = contextRepository;
-    this.db = dbOrTx;
-  }
-
+export class RssFeedRepository extends BasePersistenceRepository {
   async findAllForBatch(): Promise<RssFeedBatchItem[]> {
     return this.db
       .select({
@@ -134,19 +118,5 @@ export class RssFeedRepository {
     await this.db
       .delete(rssFeeds)
       .where(and(eq(rssFeeds.id, id), eq(rssFeeds.user_id, userId)));
-  }
-
-  static inTransaction(tx: Transaction): RssFeedRepository {
-    return new RssFeedRepository(ContextRepository.create(), tx);
-  }
-
-  // biome-ignore lint/suspicious/useAdjacentOverloadSignatures: static factory, not an overload of the instance create(input) method
-  static create(
-    env?: Parameters<(typeof DrizzleRepository)["create"]>[0],
-  ): RssFeedRepository {
-    return new RssFeedRepository(
-      ContextRepository.create(),
-      DrizzleRepository.create(env).getDb(),
-    );
   }
 }

@@ -1,27 +1,11 @@
 import { createId } from "@paralleldrive/cuid2";
 import { and, eq } from "drizzle-orm";
-import { ContextRepository } from "../../shared/context";
-import {
-  type DrizzleDb,
-  DrizzleRepository,
-  type Transaction,
-} from "../../shared/drizzle";
+import { BasePersistenceRepository } from "../shared/base-persistence-repository";
 import type { CreateTagInput, UpdateTagInput } from "./interface";
 import type { Tag } from "./model";
 import { tags } from "./schema";
 
-export class TagRepository {
-  private db: DrizzleDb | Transaction;
-  private contextRepository: ContextRepository;
-
-  constructor(
-    contextRepository: ContextRepository,
-    dbOrTx: DrizzleDb | Transaction,
-  ) {
-    this.contextRepository = contextRepository;
-    this.db = dbOrTx;
-  }
-
+export class TagRepository extends BasePersistenceRepository {
   async findAll(): Promise<Tag[]> {
     const userId = this.contextRepository.getUserId();
     const result = await this.db
@@ -126,17 +110,5 @@ export class TagRepository {
     await this.db
       .delete(tags)
       .where(and(eq(tags.id, id), eq(tags.user_id, userId)));
-  }
-
-  static inTransaction(tx: Transaction): TagRepository {
-    return new TagRepository(ContextRepository.create(), tx);
-  }
-
-  // biome-ignore lint/suspicious/useAdjacentOverloadSignatures: static factory, not an overload of the instance create(input) method
-  static create(): TagRepository {
-    return new TagRepository(
-      ContextRepository.create(),
-      DrizzleRepository.create().getDb(),
-    );
   }
 }

@@ -1,28 +1,12 @@
 import { createId } from "@paralleldrive/cuid2";
 import { and, eq, inArray, sql } from "drizzle-orm";
-import { ContextRepository } from "../../shared/context";
-import {
-  type DrizzleDb,
-  DrizzleRepository,
-  type Transaction,
-} from "../../shared/drizzle";
 import { rssFeeds } from "../rss-feed/schema";
+import { BasePersistenceRepository } from "../shared/base-persistence-repository";
 import type { GetRecentArticlesInput, UpsertArticleInput } from "./interface";
 import type { PersistedArticle } from "./model";
 import { articles } from "./schema";
 
-export class ArticlePersistenceRepository {
-  private contextRepository: ContextRepository;
-  private db: DrizzleDb | Transaction;
-
-  constructor(
-    contextRepository: ContextRepository,
-    db: DrizzleDb | Transaction,
-  ) {
-    this.contextRepository = contextRepository;
-    this.db = db;
-  }
-
+export class ArticlePersistenceRepository extends BasePersistenceRepository {
   async findManyWithinPeriod(
     input: GetRecentArticlesInput,
   ): Promise<PersistedArticle[]> {
@@ -123,18 +107,5 @@ export class ArticlePersistenceRepository {
       created_at: new Date(updated.created_at),
       updated_at: new Date(updated.updated_at),
     };
-  }
-
-  static inTransaction(tx: Transaction): ArticlePersistenceRepository {
-    return new ArticlePersistenceRepository(ContextRepository.create(), tx);
-  }
-
-  static create(
-    env?: Parameters<(typeof DrizzleRepository)["create"]>[0],
-  ): ArticlePersistenceRepository {
-    return new ArticlePersistenceRepository(
-      ContextRepository.create(),
-      DrizzleRepository.create(env).getDb(),
-    );
   }
 }

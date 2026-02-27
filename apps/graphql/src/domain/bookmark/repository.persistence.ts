@@ -1,11 +1,8 @@
 import { createId } from "@paralleldrive/cuid2";
 import { and, eq, isNotNull, isNull } from "drizzle-orm";
-import { ContextRepository } from "../../shared/context";
-import {
-  type DrizzleDb,
-  DrizzleRepository,
-  type Transaction,
-} from "../../shared/drizzle";
+import type { ContextRepository } from "../../shared/context";
+import type { DrizzleDb, Transaction } from "../../shared/drizzle";
+import { BasePersistenceRepository } from "../shared/base-persistence-repository";
 import { TagRepository } from "../tag/repository.persistence";
 import { tags } from "../tag/schema";
 import type { CreateBookmarkInput, UpdateBookmarkInput } from "./interface";
@@ -51,18 +48,12 @@ const rowToBookmark = (row: {
   tags: [],
 });
 
-export class BookmarkRepository {
-  private db: DrizzleDb | Transaction;
+export class BookmarkRepository extends BasePersistenceRepository {
   private tagRepository: TagRepository;
-  private contextRepository: ContextRepository;
 
-  constructor(
-    contextRepository: ContextRepository,
-    dbOrTx: DrizzleDb | Transaction,
-  ) {
-    this.contextRepository = contextRepository;
-    this.db = dbOrTx;
-    this.tagRepository = new TagRepository(contextRepository, this.db);
+  constructor(ctx: ContextRepository, db: DrizzleDb | Transaction) {
+    super(ctx, db);
+    this.tagRepository = new TagRepository(ctx, db);
   }
 
   async findMany(): Promise<Bookmark[]> {
@@ -366,18 +357,6 @@ export class BookmarkRepository {
     if (result.length === 0) {
       throw new Error("No record was found");
     }
-  }
-
-  static inTransaction(tx: Transaction): BookmarkRepository {
-    return new BookmarkRepository(ContextRepository.create(), tx);
-  }
-
-  // biome-ignore lint/suspicious/useAdjacentOverloadSignatures: static factory, not an overload of the instance create(input) method
-  static create(): BookmarkRepository {
-    return new BookmarkRepository(
-      ContextRepository.create(),
-      DrizzleRepository.create().getDb(),
-    );
   }
 
   private groupBookmarksWithTags(

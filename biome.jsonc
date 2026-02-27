@@ -17,6 +17,7 @@
       "**/manifest.json",
       "**/tests/vrt/**",
       "**/drizzle.config.ts",
+      "**/app.config.ts",
       "!**/*.css",
       "!package.json",
       "!**/src/**/generated/*",

@@ -2,6 +2,15 @@ name: Web Deploy
 on:
   workflow_dispatch:
   workflow_call:
+    secrets:
+      CLOUDFLARE_API_TOKEN:
+        required: true
+      CLOUDFLARE_ACCOUNT_ID:
+        required: true
+      VITE_GRAPHQL_URI:
+        required: true
+      VITE_CLERK_PUBLISHABLE_KEY:
+        required: true
 
 jobs:
   deploy:

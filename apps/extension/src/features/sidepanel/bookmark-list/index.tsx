@@ -193,19 +193,21 @@ export const BookmarkList: FC = () => {
             )}
             {bookmark.relatedBookmarks &&
               bookmark.relatedBookmarks.length > 0 && (
-                <div className="flex flex-wrap items-center gap-1">
+                <div className="flex flex-col gap-1">
                   <span className="text-xs text-base-content/50">Related:</span>
-                  {bookmark.relatedBookmarks.map((related) => (
-                    <a
-                      key={related.id}
-                      href={related.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="badge badge-outline badge-sm link link-hover"
-                    >
-                      {related.title}
-                    </a>
-                  ))}
+                  <div className="flex flex-wrap gap-1">
+                    {bookmark.relatedBookmarks.map((related) => (
+                      <a
+                        key={related.id}
+                        href={related.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="badge badge-outline badge-sm link link-hover"
+                      >
+                        {related.title}
+                      </a>
+                    ))}
+                  </div>
                 </div>
               )}
             <div className="flex items-center justify-between">

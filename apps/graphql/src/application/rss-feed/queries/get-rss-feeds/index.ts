@@ -2,8 +2,6 @@ import { ServiceError } from "@getcronit/pylon";
 import type { IRssFeedRepository } from "../../../../domain/rss-feed/interface";
 import type { RssFeed } from "../../../../domain/rss-feed/model";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
-import { ContextRepository } from "../../../../shared/context";
-import { DrizzleRepository } from "../../../../shared/drizzle";
 
 const getRssFeedsUseCase = async ({
   repository,
@@ -24,9 +22,6 @@ const getRssFeedsUseCase = async ({
 };
 
 export const rssFeeds = async (): Promise<RssFeed[]> => {
-  const repository = new RssFeedRepository(
-    ContextRepository.create(),
-    DrizzleRepository.create().getDb(),
-  );
+  const repository = RssFeedRepository.create();
   return getRssFeedsUseCase({ repository });
 };

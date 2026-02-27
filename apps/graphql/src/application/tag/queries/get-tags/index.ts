@@ -2,8 +2,6 @@ import { ServiceError } from "@getcronit/pylon";
 import type { ITagRepository } from "../../../../domain/tag/interface";
 import type { Tag } from "../../../../domain/tag/model";
 import { TagRepository } from "../../../../domain/tag/repository.persistence";
-import { ContextRepository } from "../../../../shared/context";
-import { DrizzleRepository } from "../../../../shared/drizzle";
 
 const getTagsUseCase = async ({
   repository,
@@ -24,9 +22,6 @@ const getTagsUseCase = async ({
 };
 
 export const tags = async (): Promise<Tag[]> => {
-  const repository = new TagRepository(
-    ContextRepository.create(),
-    DrizzleRepository.create().getDb(),
-  );
+  const repository = TagRepository.create();
   return getTagsUseCase({ repository });
 };

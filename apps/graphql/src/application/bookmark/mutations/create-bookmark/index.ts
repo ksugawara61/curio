@@ -2,8 +2,7 @@ import { ServiceError } from "@getcronit/pylon";
 import type { IBookmarkRepository } from "../../../../domain/bookmark/interface";
 import type { Bookmark } from "../../../../domain/bookmark/model";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
-import { ContextRepository } from "../../../../shared/context";
-import { DrizzleRepository } from "../../../../shared/drizzle";
+import { withTransaction } from "../../../../domain/shared/transaction";
 
 export type CreateBookmarkInput = {
   title: string;
@@ -34,8 +33,9 @@ const createBookmarkUseCase = async (
 export const createBookmark = async (
   input: CreateBookmarkInput,
 ): Promise<Bookmark> => {
-  return await DrizzleRepository.create().transaction(async (tx) => {
-    const repository = new BookmarkRepository(ContextRepository.create(), tx);
-    return createBookmarkUseCase(input, { repository });
-  });
+  return withTransaction(async (tx) =>
+    createBookmarkUseCase(input, {
+      repository: BookmarkRepository.inTransaction(tx),
+    }),
+  );
 };

@@ -1,8 +1,7 @@
 import { ServiceError } from "@getcronit/pylon";
 import type { IBookmarkRepository } from "../../../../domain/bookmark/interface";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
-import { ContextRepository } from "../../../../shared/context";
-import { DrizzleRepository } from "../../../../shared/drizzle";
+import { withTransaction } from "../../../../domain/shared/transaction";
 
 const deleteBookmarkUseCase = async (
   id: string,
@@ -32,8 +31,9 @@ const deleteBookmarkUseCase = async (
 };
 
 export const deleteBookmark = async (id: string): Promise<boolean> => {
-  return await DrizzleRepository.create().transaction(async (tx) => {
-    const repository = new BookmarkRepository(ContextRepository.create(), tx);
-    return deleteBookmarkUseCase(id, { repository });
-  });
+  return withTransaction(async (tx) =>
+    deleteBookmarkUseCase(id, {
+      repository: BookmarkRepository.inTransaction(tx),
+    }),
+  );
 };

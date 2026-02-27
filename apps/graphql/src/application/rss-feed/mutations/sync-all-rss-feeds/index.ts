@@ -7,8 +7,6 @@ import type {
 } from "../../../../domain/rss-feed/interface";
 import { RssFeedExternalRepository } from "../../../../domain/rss-feed/repository.external";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
-import { ContextRepository } from "../../../../shared/context";
-import { DrizzleRepository } from "../../../../shared/drizzle";
 
 const syncAllRssFeedsUseCase = async ({
   rssFeedRepository,
@@ -53,16 +51,9 @@ const syncAllRssFeedsUseCase = async ({
 export const syncAllRssFeeds = async (
   env?: ReturnType<typeof getEnv>,
 ): Promise<void> => {
-  const drizzle = DrizzleRepository.create(env);
-  const rssFeedRepository = new RssFeedRepository(
-    ContextRepository.create(),
-    drizzle.getDb(),
-  );
+  const rssFeedRepository = RssFeedRepository.create(env);
   const externalRepository = new RssFeedExternalRepository();
-  const articleRepository = new ArticlePersistenceRepository(
-    ContextRepository.create(),
-    drizzle.getDb(),
-  );
+  const articleRepository = ArticlePersistenceRepository.create(env);
   return syncAllRssFeedsUseCase({
     rssFeedRepository,
     externalRepository,

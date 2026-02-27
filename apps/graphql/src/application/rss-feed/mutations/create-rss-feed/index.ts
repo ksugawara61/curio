@@ -8,8 +8,7 @@ import type {
 import type { RssFeed } from "../../../../domain/rss-feed/model";
 import { RssFeedExternalRepository } from "../../../../domain/rss-feed/repository.external";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
-import { ContextRepository } from "../../../../shared/context";
-import { DrizzleRepository } from "../../../../shared/drizzle";
+import { withTransaction } from "../../../../domain/shared/transaction";
 import { fetchAndValidateRssFeed, rssFeedUrlSchema } from "./validate";
 
 const createRssFeedUseCase = async (
@@ -93,24 +92,19 @@ const syncRssFeedArticlesUseCase = async (
 };
 
 export const createRssFeed = async (url: string): Promise<RssFeed> => {
-  const drizzle = DrizzleRepository.create();
-  const contextRepository = ContextRepository.create();
-
   // Phase 1: フィード作成をトランザクション内で実行
-  const feed = await drizzle.transaction(async (tx) => {
-    const repository = new RssFeedRepository(contextRepository, tx);
-    return createRssFeedUseCase(url, { repository });
-  });
+  const feed = await withTransaction(async (tx) =>
+    createRssFeedUseCase(url, {
+      repository: RssFeedRepository.inTransaction(tx),
+    }),
+  );
 
   // Phase 2: 記事の初期同期はトランザクション外でベストエフォート実行
   // 失敗してもフィード作成自体は成功扱いにするため、意図的に分離している
   try {
     await syncRssFeedArticlesUseCase(feed, {
       externalRepository: new RssFeedExternalRepository(),
-      articleRepository: new ArticlePersistenceRepository(
-        contextRepository,
-        drizzle.getDb(),
-      ),
+      articleRepository: ArticlePersistenceRepository.create(),
     });
   } catch (error) {
     console.error(

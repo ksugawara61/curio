@@ -1,21 +1,12 @@
 import { createId } from "@paralleldrive/cuid2";
 import { and, eq, inArray, sql } from "drizzle-orm";
-import type { ContextRepository } from "../../shared/context";
-import type { DrizzleDb } from "../../shared/drizzle";
 import { rssFeeds } from "../rss-feed/schema";
+import { BasePersistenceRepository } from "../shared/base-persistence-repository";
 import type { GetRecentArticlesInput, UpsertArticleInput } from "./interface";
 import type { PersistedArticle } from "./model";
 import { articles } from "./schema";
 
-export class ArticlePersistenceRepository {
-  private contextRepository: ContextRepository;
-  private db: DrizzleDb;
-
-  constructor(contextRepository: ContextRepository, db: DrizzleDb) {
-    this.contextRepository = contextRepository;
-    this.db = db;
-  }
-
+export class ArticlePersistenceRepository extends BasePersistenceRepository {
   async findManyWithinPeriod(
     input: GetRecentArticlesInput,
   ): Promise<PersistedArticle[]> {

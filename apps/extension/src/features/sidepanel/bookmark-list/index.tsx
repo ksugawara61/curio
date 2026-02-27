@@ -202,7 +202,7 @@ export const BookmarkList: FC = () => {
                         href={related.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="badge badge-outline badge-sm link link-hover"
+                        className="badge badge-outline badge-sm link link-hover h-auto py-1"
                       >
                         {related.title}
                       </a>

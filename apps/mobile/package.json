@@ -8,7 +8,9 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "check": "expo-doctor"
+    "check": "expo-doctor",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@apollo/client": "catalog:",
@@ -30,9 +32,21 @@
     "react-native-webview": "catalog:"
   },
   "devDependencies": {
+    "@curio/testing-library": "workspace:*",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
+    "@types/node": "catalog:",
     "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
     "expo-doctor": "catalog:",
-    "typescript": "catalog:"
+    "jsdom": "catalog:",
+    "msw": "catalog:",
+    "react-error-boundary": "catalog:",
+    "swr": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   },
   "private": true
 }

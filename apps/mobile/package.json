@@ -11,17 +11,23 @@
     "check": "expo-doctor"
   },
   "dependencies": {
+    "@apollo/client": "catalog:",
+    "@clerk/clerk-expo": "catalog:",
+    "@curio/graphql-client": "workspace:*",
     "expo": "catalog:",
     "expo-constants": "catalog:",
     "expo-linking": "catalog:",
     "expo-router": "catalog:",
+    "expo-secure-store": "catalog:",
     "expo-status-bar": "catalog:",
+    "graphql": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-native": "catalog:",
     "react-native-safe-area-context": "catalog:",
     "react-native-screens": "catalog:",
-    "react-native-web": "catalog:"
+    "react-native-web": "catalog:",
+    "react-native-webview": "catalog:"
   },
   "devDependencies": {
     "@types/react": "catalog:",

@@ -11,6 +11,7 @@ export type UpdateBookmarkInput = {
   note?: string;
   thumbnail?: string;
   tagNames?: string[];
+  relatedBookmarkIds?: string[];
 };
 
 const updateBookmarkUseCase = async (

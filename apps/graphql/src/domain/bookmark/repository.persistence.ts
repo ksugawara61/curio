@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
-import { and, eq, isNotNull, isNull } from "drizzle-orm";
+import { and, eq, inArray, isNotNull, isNull } from "drizzle-orm";
 import type { ContextRepository } from "../../shared/context";
 import type { DrizzleDb, Transaction } from "../../shared/drizzle";
 import { BasePersistenceRepository } from "../shared/base-persistence-repository";
@@ -7,7 +7,7 @@ import { TagRepository } from "../tag/repository.persistence";
 import { tags } from "../tag/schema";
 import type { CreateBookmarkInput, UpdateBookmarkInput } from "./interface";
 import type { Bookmark } from "./model";
-import { bookmarks, bookmarkTags } from "./schema";
+import { bookmarkRelations, bookmarks, bookmarkTags } from "./schema";
 
 const bookmarkSelectFields = {
   id: bookmarks.id,
@@ -46,6 +46,7 @@ const rowToBookmark = (row: {
   created_at: new Date(row.created_at),
   updated_at: new Date(row.updated_at),
   tags: [],
+  relatedBookmarks: [],
 });
 
 export class BookmarkRepository extends BasePersistenceRepository {
@@ -66,7 +67,8 @@ export class BookmarkRepository extends BasePersistenceRepository {
       .where(and(eq(bookmarks.user_id, userId), isNull(bookmarks.archived_at)))
       .orderBy(bookmarks.created_at);
 
-    return this.groupBookmarksWithTags(result);
+    const bookmarkList = this.groupBookmarksWithTags(result);
+    return this.attachRelatedBookmarks(bookmarkList);
   }
 
   async findManyArchived(): Promise<Bookmark[]> {
@@ -81,7 +83,8 @@ export class BookmarkRepository extends BasePersistenceRepository {
       )
       .orderBy(bookmarks.created_at);
 
-    return this.groupBookmarksWithTags(result);
+    const bookmarkList = this.groupBookmarksWithTags(result);
+    return this.attachRelatedBookmarks(bookmarkList);
   }
 
   async findById(id: string): Promise<Bookmark | null> {
@@ -112,7 +115,8 @@ export class BookmarkRepository extends BasePersistenceRepository {
       }
     }
 
-    return bookmark;
+    const [bookmarkWithRelated] = await this.attachRelatedBookmarks([bookmark]);
+    return bookmarkWithRelated ?? null;
   }
 
   async findByUrl(url: string): Promise<Bookmark | null> {
@@ -143,7 +147,8 @@ export class BookmarkRepository extends BasePersistenceRepository {
       }
     }
 
-    return bookmark;
+    const [bookmarkWithRelated] = await this.attachRelatedBookmarks([bookmark]);
+    return bookmarkWithRelated ?? null;
   }
 
   async create(input: CreateBookmarkInput): Promise<Bookmark> {
@@ -189,6 +194,25 @@ export class BookmarkRepository extends BasePersistenceRepository {
       );
     }
 
+    // Insert related bookmark relationships (both directions for bidirectionality)
+    const uniqueRelatedIds = input.relatedBookmarkIds
+      ? [...new Set(input.relatedBookmarkIds)]
+      : [];
+
+    if (uniqueRelatedIds.length > 0) {
+      const relationRows = uniqueRelatedIds.flatMap((relatedId) => [
+        { source_bookmark_id: bookmark.id, related_bookmark_id: relatedId },
+        { source_bookmark_id: relatedId, related_bookmark_id: bookmark.id },
+      ]);
+      await this.db.insert(bookmarkRelations).values(relationRows);
+    }
+
+    // Fetch related bookmarks for the response
+    const relatedBookmarkList =
+      uniqueRelatedIds.length > 0
+        ? await this.fetchBookmarksWithTagsByIds(uniqueRelatedIds)
+        : [];
+
     return {
       id: bookmark.id,
       title: bookmark.title,
@@ -200,6 +224,7 @@ export class BookmarkRepository extends BasePersistenceRepository {
       created_at: new Date(bookmark.created_at),
       updated_at: new Date(bookmark.updated_at),
       tags: tagEntities,
+      relatedBookmarks: relatedBookmarkList,
     };
   }
 
@@ -281,6 +306,43 @@ export class BookmarkRepository extends BasePersistenceRepository {
       }));
     }
 
+    // Handle related bookmarks if provided
+    let relatedBookmarkList: Bookmark[] = [];
+    if (input.relatedBookmarkIds !== undefined) {
+      const uniqueRelatedIds = [...new Set(input.relatedBookmarkIds)];
+
+      // Remove all existing relations for this bookmark (both directions)
+      await this.db
+        .delete(bookmarkRelations)
+        .where(eq(bookmarkRelations.source_bookmark_id, id));
+      await this.db
+        .delete(bookmarkRelations)
+        .where(eq(bookmarkRelations.related_bookmark_id, id));
+
+      // Insert new relations (both directions)
+      if (uniqueRelatedIds.length > 0) {
+        const relationRows = uniqueRelatedIds.flatMap((relatedId) => [
+          { source_bookmark_id: id, related_bookmark_id: relatedId },
+          { source_bookmark_id: relatedId, related_bookmark_id: id },
+        ]);
+        await this.db.insert(bookmarkRelations).values(relationRows);
+        relatedBookmarkList =
+          await this.fetchBookmarksWithTagsByIds(uniqueRelatedIds);
+      }
+    } else {
+      // Fetch current related bookmarks
+      const currentRelations = await this.db
+        .select({ related_bookmark_id: bookmarkRelations.related_bookmark_id })
+        .from(bookmarkRelations)
+        .where(eq(bookmarkRelations.source_bookmark_id, id));
+
+      const relatedIds = currentRelations.map((r) => r.related_bookmark_id);
+      if (relatedIds.length > 0) {
+        relatedBookmarkList =
+          await this.fetchBookmarksWithTagsByIds(relatedIds);
+      }
+    }
+
     return {
       id: updatedBookmark.id,
       title: updatedBookmark.title,
@@ -294,6 +356,7 @@ export class BookmarkRepository extends BasePersistenceRepository {
       created_at: new Date(updatedBookmark.created_at),
       updated_at: new Date(updatedBookmark.updated_at),
       tags: tagEntities,
+      relatedBookmarks: relatedBookmarkList,
     };
   }
 
@@ -399,5 +462,70 @@ export class BookmarkRepository extends BasePersistenceRepository {
     }
 
     return Array.from(bookmarkMap.values()).reverse(); // Reverse for desc order
+  }
+
+  private async fetchBookmarksWithTagsByIds(
+    ids: string[],
+  ): Promise<Bookmark[]> {
+    if (ids.length === 0) return [];
+
+    const result = await this.db
+      .select(bookmarkSelectFields)
+      .from(bookmarks)
+      .leftJoin(bookmarkTags, eq(bookmarks.id, bookmarkTags.bookmark_id))
+      .leftJoin(tags, eq(bookmarkTags.tag_id, tags.id))
+      .where(inArray(bookmarks.id, ids));
+
+    return this.groupBookmarksWithTags(result);
+  }
+
+  private async attachRelatedBookmarks(
+    bookmarkList: Bookmark[],
+  ): Promise<Bookmark[]> {
+    if (bookmarkList.length === 0) return bookmarkList;
+
+    const ids = bookmarkList.map((b) => b.id);
+
+    // Fetch all relations where these bookmarks are the source
+    const relations = await this.db
+      .select({
+        source_bookmark_id: bookmarkRelations.source_bookmark_id,
+        related_bookmark_id: bookmarkRelations.related_bookmark_id,
+      })
+      .from(bookmarkRelations)
+      .where(inArray(bookmarkRelations.source_bookmark_id, ids));
+
+    // Collect unique related bookmark IDs
+    const uniqueRelatedIds = [
+      ...new Set(relations.map((r) => r.related_bookmark_id)),
+    ];
+
+    if (uniqueRelatedIds.length === 0) {
+      for (const bookmark of bookmarkList) {
+        bookmark.relatedBookmarks = [];
+      }
+      return bookmarkList;
+    }
+
+    // Fetch related bookmarks with their tags (no recursive related bookmark loading)
+    const relatedBookmarksMap = new Map<string, Bookmark>();
+    const relatedBookmarkRows =
+      await this.fetchBookmarksWithTagsByIds(uniqueRelatedIds);
+    for (const rb of relatedBookmarkRows) {
+      relatedBookmarksMap.set(rb.id, rb);
+    }
+
+    // Attach related bookmarks to each main bookmark
+    for (const bookmark of bookmarkList) {
+      const relatedIds = relations
+        .filter((r) => r.source_bookmark_id === bookmark.id)
+        .map((r) => r.related_bookmark_id);
+
+      bookmark.relatedBookmarks = relatedIds
+        .map((rid) => relatedBookmarksMap.get(rid))
+        .filter((rb): rb is Bookmark => rb !== undefined);
+    }
+
+    return bookmarkList;
   }
 }

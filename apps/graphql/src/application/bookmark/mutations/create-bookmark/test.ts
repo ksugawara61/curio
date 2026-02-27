@@ -35,6 +35,22 @@ describe("createBookmark", () => {
       expect(result).toHaveProperty("created_at");
       expect(result).toHaveProperty("updated_at");
     });
+
+    it("should create a bookmark with related bookmarks", async () => {
+      const bookmarkA = await createBookmark({
+        title: "Bookmark A",
+        url: `https://example.com/related-a-${Date.now()}`,
+      });
+
+      const bookmarkB = await createBookmark({
+        title: "Bookmark B",
+        url: `https://example.com/related-b-${Date.now()}`,
+        relatedBookmarkIds: [bookmarkA.id],
+      });
+
+      expect(bookmarkB.relatedBookmarks).toHaveLength(1);
+      expect(bookmarkB.relatedBookmarks?.[0].id).toBe(bookmarkA.id);
+    });
   });
 
   describe("異常系", () => {

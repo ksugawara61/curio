@@ -11,6 +11,7 @@ export type CreateBookmarkInput = {
   note?: string;
   thumbnail?: string;
   tagNames?: string[];
+  relatedBookmarkIds?: string[];
 };
 
 const createBookmarkUseCase = async (

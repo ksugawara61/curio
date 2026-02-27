@@ -12,6 +12,15 @@ catalogs:
     expo:
       specifier: ^55.0.3
       version: 55.0.3
+    expo-constants:
+      specifier: ^55.0.7
+      version: 55.0.7
+    expo-doctor:
+      specifier: ^1.18.9
+      version: 1.18.9
+    expo-linking:
+      specifier: ^55.0.7
+      version: 55.0.7
     expo-router:
       specifier: ^55.0.3
       version: 55.0.3
@@ -24,6 +33,12 @@ catalogs:
     react-native:
       specifier: ^0.83.2
       version: 0.83.2
+    react-native-safe-area-context:
+      specifier: ^5.7.0
+      version: 5.7.0
+    react-native-screens:
+      specifier: ^4.24.0
+      version: 4.24.0
     typescript:
       specifier: ^5.9.3
       version: 5.9.3
@@ -38,6 +53,12 @@ importers:
       expo:
         specifier: 'catalog:'
         version: 55.0.3(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@55.0.3)(react-dom@19.2.4(react@19.2.4))(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
+      expo-constants:
+        specifier: 'catalog:'
+        version: 55.0.7(expo@55.0.3)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(typescript@5.9.3)
+      expo-linking:
+        specifier: 'catalog:'
+        version: 55.0.7(expo@55.0.3)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
       expo-router:
         specifier: 'catalog:'
         version: 55.0.3(@expo/log-box@55.0.7)(@expo/metro-runtime@55.0.6)(@types/react@19.2.14)(expo-constants@55.0.7)(expo-font@55.0.4)(expo-linking@55.0.7)(expo@55.0.3)(react-dom@19.2.4(react@19.2.4))(react-native-safe-area-context@5.7.0(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(react-native-screens@4.24.0(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4))(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
@@ -50,10 +71,19 @@ importers:
       react-native:
         specifier: 'catalog:'
         version: 0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4)
+      react-native-safe-area-context:
+        specifier: 'catalog:'
+        version: 5.7.0(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
+      react-native-screens:
+        specifier: 'catalog:'
+        version: 4.24.0(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
     devDependencies:
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.14
+      expo-doctor:
+        specifier: 'catalog:'
+        version: 1.18.9
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -1601,6 +1631,10 @@ packages:
     peerDependencies:
       expo: '*'
       react-native: '*'
+
+  expo-doctor@1.18.9:
+    resolution: {integrity: sha512-jvIP33ZUv6uJtSCJT2Ses43mcS/uqIGfSWRD66cHaoGix29F842bawrVGv5WXSHV86KoaTMpH4iWK3rhSu+j9A==}
+    hasBin: true
 
   expo-file-system@55.0.10:
     resolution: {integrity: sha512-ysFdVdUgtfj2ApY0Cn+pBg+yK4xp+SNwcaH8j2B91JJQ4OXJmnyCSmrNZYz7J4mdYVuv2GzxIP+N/IGlHQG3Yw==}
@@ -4902,6 +4936,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
+
+  expo-doctor@1.18.9: {}
 
   expo-file-system@55.0.10(expo@55.0.3)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.4)):
     dependencies:

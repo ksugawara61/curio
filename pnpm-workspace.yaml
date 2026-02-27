@@ -51,6 +51,9 @@ catalog:
   eslint-plugin-react-hooks: ^7.0.1
   eslint-plugin-testing-library: ^7.15.4
   expo: ^55.0.3
+  expo-constants: ^55.0.7
+  expo-doctor: ^1.18.9
+  expo-linking: ^55.0.7
   expo-router: ^55.0.3
   expo-status-bar: ^55.0.4
   express: ^5.2.1
@@ -70,6 +73,8 @@ catalog:
   react-hook-form: ^7.58.1
   react-markdown: ^10.1.0
   react-native: ^0.83.2
+  react-native-safe-area-context: ^5.7.0
+  react-native-screens: ^4.24.0
   remark-gfm: ^4.0.1
   scaffdog: ^4.1.0
   storybook: 10.2.8

@@ -10,7 +10,12 @@
     "ios": "expo start --ios",
     "check": "expo-doctor",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "storybook": "storybook dev -p 6007",
+    "vrt": "playwright install chromium && playwright test",
+    "vrt:dry-run": "playwright install chromium && playwright test --ignore-snapshots",
+    "vrt:html": "playwright install chromium && playwright test --reporter=html",
+    "vrt:approve": "playwright install chromium && playwright test --update-snapshots all"
   },
   "dependencies": {
     "@apollo/client": "catalog:",
@@ -33,6 +38,9 @@
   },
   "devDependencies": {
     "@curio/testing-library": "workspace:*",
+    "@playwright/test": "catalog:",
+    "@storybook/react": "catalog:",
+    "@storybook/react-vite": "catalog:",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@testing-library/user-event": "catalog:",
@@ -43,10 +51,17 @@
     "expo-doctor": "catalog:",
     "jsdom": "catalog:",
     "msw": "catalog:",
+    "msw-storybook-addon": "catalog:",
     "react-error-boundary": "catalog:",
+    "storybook": "catalog:",
     "swr": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   },
   "private": true
 }

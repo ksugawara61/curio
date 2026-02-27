@@ -1,0 +1,10 @@
+/* モバイル画面全体に広がるようにルート要素を設定 */
+html,
+body,
+#storybook-root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}

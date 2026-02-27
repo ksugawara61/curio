@@ -1,6 +1,7 @@
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import { Stack } from "expo-router";
+import { AppProvider } from "../shared/app-provider";
 
 const NavigationLayout = () => {
   const { isSignedIn = false } = useAuth();
@@ -18,12 +19,10 @@ const NavigationLayout = () => {
   );
 };
 
-const PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "";
-
 export default function RootLayout() {
   return (
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY} tokenCache={tokenCache}>
+    <AppProvider>
       <NavigationLayout />
-    </ClerkProvider>
+    </AppProvider>
   );
 }

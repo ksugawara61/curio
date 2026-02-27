@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "PYLON_TELEMETRY_DISABLED=1 pylon dev -c \"wrangler dev --port 3000\" --client --client-port 3000 --client-path src/generated/gqty/index.ts",
     "build": "PYLON_TELEMETRY_DISABLED=1 pylon build",
-    "deploy": "pnpm build && wrangler deploy",
+    "release": "pnpm build && wrangler deploy",
     "test": "vitest",
     "test:changed": "vitest --changed main",
     "db:local": "turso dev -f .dev/dev.db",

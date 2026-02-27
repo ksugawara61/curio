@@ -11,6 +11,11 @@ import { bookmarks } from "./application/bookmark/queries/get-bookmarks";
 import { createRssFeed } from "./application/rss-feed/mutations/create-rss-feed";
 import { deleteRssFeed } from "./application/rss-feed/mutations/delete-rss-feed";
 import { rssFeeds } from "./application/rss-feed/queries/get-rss-feeds";
+import { createScrap } from "./application/scrap/mutations/create-scrap";
+import { deleteScrap } from "./application/scrap/mutations/delete-scrap";
+import { updateScrap } from "./application/scrap/mutations/update-scrap";
+import { scrap } from "./application/scrap/queries/get-scrap";
+import { scraps } from "./application/scrap/queries/get-scraps";
 import { createTag } from "./application/tag/mutations/create-tag";
 import { tags } from "./application/tag/queries/get-tags";
 import { fetchUrlMetadata } from "./application/url-metadata/queries/fetch-url-metadata";
@@ -24,6 +29,8 @@ export const server = {
     bookmark: withAuth(bookmark),
     tags: withAuth(tags),
     rssFeeds: withAuth(rssFeeds),
+    scraps: withAuth(scraps),
+    scrap: withAuth(scrap),
     fetchUrlMetadata: withAuth(fetchUrlMetadata),
   },
   Mutation: {
@@ -36,5 +43,8 @@ export const server = {
     createTag: withAuth(createTag),
     createRssFeed: withAuth(createRssFeed),
     deleteRssFeed: withAuth(deleteRssFeed),
+    createScrap: withAuth(createScrap),
+    updateScrap: withAuth(updateScrap),
+    deleteScrap: withAuth(deleteScrap),
   },
 };

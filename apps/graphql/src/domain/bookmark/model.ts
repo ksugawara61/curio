@@ -11,4 +11,5 @@ export type Bookmark = {
   created_at: Date;
   updated_at: Date;
   tags?: Tag[];
+  relatedBookmarks?: Bookmark[];
 };

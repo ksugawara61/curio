@@ -7,6 +7,7 @@ export type CreateBookmarkInput = {
   note?: string;
   thumbnail?: string;
   tagNames?: string[];
+  relatedBookmarkIds?: string[];
 };
 
 export type UpdateBookmarkInput = {
@@ -16,6 +17,7 @@ export type UpdateBookmarkInput = {
   note?: string;
   thumbnail?: string;
   tagNames?: string[];
+  relatedBookmarkIds?: string[];
 };
 
 export type IBookmarkRepository = {

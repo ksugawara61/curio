@@ -32,7 +32,27 @@ export const bookmarkTags = sqliteTable(
   (table) => [primaryKey({ columns: [table.bookmark_id, table.tag_id] })],
 );
 
+export const bookmarkRelations = sqliteTable(
+  "bookmark_relations",
+  {
+    source_bookmark_id: text("source_bookmark_id")
+      .notNull()
+      .references(() => bookmarks.id, { onDelete: "cascade" }),
+    related_bookmark_id: text("related_bookmark_id")
+      .notNull()
+      .references(() => bookmarks.id, { onDelete: "cascade" }),
+    created_at: text("created_at").default(sql`(datetime('now'))`).notNull(),
+  },
+  (table) => [
+    primaryKey({
+      columns: [table.source_bookmark_id, table.related_bookmark_id],
+    }),
+  ],
+);
+
 export type InsertBookmark = typeof bookmarks.$inferInsert;
 export type SelectBookmark = typeof bookmarks.$inferSelect;
 export type InsertBookmarkTag = typeof bookmarkTags.$inferInsert;
 export type SelectBookmarkTag = typeof bookmarkTags.$inferSelect;
+export type InsertBookmarkRelation = typeof bookmarkRelations.$inferInsert;
+export type SelectBookmarkRelation = typeof bookmarkRelations.$inferSelect;

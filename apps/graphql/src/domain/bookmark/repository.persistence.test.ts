@@ -521,4 +521,219 @@ describe("BookmarkRepository", () => {
       ]);
     });
   });
+
+  describe("related bookmarks", () => {
+    it("should create a bookmark with related bookmarks", async () => {
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
+
+      const bookmarkA = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).create({ title: "Bookmark A", url: "https://example-a.com" });
+        },
+      );
+
+      const bookmarkB = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).create({
+            title: "Bookmark B",
+            url: "https://example-b.com",
+            relatedBookmarkIds: [bookmarkA.id],
+          });
+        },
+      );
+
+      expect(bookmarkB.relatedBookmarks).toHaveLength(1);
+      expect(bookmarkB.relatedBookmarks?.[0].id).toBe(bookmarkA.id);
+
+      // Verify bidirectionality: A should also have B as related
+      const fetchedA = await repository.findById(bookmarkA.id);
+      expect(fetchedA?.relatedBookmarks).toHaveLength(1);
+      expect(fetchedA?.relatedBookmarks?.[0].id).toBe(bookmarkB.id);
+    });
+
+    it("should update related bookmarks and maintain bidirectionality", async () => {
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
+
+      const bookmarkA = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).create({ title: "Bookmark A", url: "https://example-rel-a.com" });
+        },
+      );
+      const bookmarkB = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).create({ title: "Bookmark B", url: "https://example-rel-b.com" });
+        },
+      );
+      const bookmarkC = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).create({
+            title: "Bookmark C",
+            url: "https://example-rel-c.com",
+            relatedBookmarkIds: [bookmarkA.id],
+          });
+        },
+      );
+
+      // C relates to A → now update C to relate to B instead
+      const updatedC = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).update(bookmarkC.id, { relatedBookmarkIds: [bookmarkB.id] });
+        },
+      );
+
+      expect(updatedC.relatedBookmarks).toHaveLength(1);
+      expect(updatedC.relatedBookmarks?.[0].id).toBe(bookmarkB.id);
+
+      // A should no longer have C as related
+      const fetchedA = await repository.findById(bookmarkA.id);
+      expect(fetchedA?.relatedBookmarks).toHaveLength(0);
+
+      // B should now have C as related
+      const fetchedB = await repository.findById(bookmarkB.id);
+      expect(fetchedB?.relatedBookmarks).toHaveLength(1);
+      expect(fetchedB?.relatedBookmarks?.[0].id).toBe(bookmarkC.id);
+    });
+
+    it("should clear related bookmarks when updated with empty array", async () => {
+      const bookmarkA = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).create({ title: "Bookmark A", url: "https://example-clr-a.com" });
+        },
+      );
+      const bookmarkB = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).create({
+            title: "Bookmark B",
+            url: "https://example-clr-b.com",
+            relatedBookmarkIds: [bookmarkA.id],
+          });
+        },
+      );
+
+      const updatedB = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).update(bookmarkB.id, { relatedBookmarkIds: [] });
+        },
+      );
+
+      expect(updatedB.relatedBookmarks).toHaveLength(0);
+
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
+      const fetchedA = await repository.findById(bookmarkA.id);
+      expect(fetchedA?.relatedBookmarks).toHaveLength(0);
+    });
+
+    it("should remove related bookmark relations when bookmark is deleted", async () => {
+      const bookmarkA = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).create({ title: "Bookmark A", url: "https://example-del-a.com" });
+        },
+      );
+      const bookmarkB = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).create({
+            title: "Bookmark B",
+            url: "https://example-del-b.com",
+            relatedBookmarkIds: [bookmarkA.id],
+          });
+        },
+      );
+
+      // Delete bookmark A
+      await DrizzleRepository.create().transaction(async (tx) => {
+        return await new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        ).deleteBookmark(bookmarkA.id);
+      });
+
+      // B should have no related bookmarks
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
+      const fetchedB = await repository.findById(bookmarkB.id);
+      expect(fetchedB?.relatedBookmarks).toHaveLength(0);
+    });
+
+    it("findMany should include related bookmarks", async () => {
+      const bookmarkA = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).create({
+            title: "Bookmark A",
+            url: "https://example-many-a.com",
+          });
+        },
+      );
+      await DrizzleRepository.create().transaction(async (tx) => {
+        return await new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        ).create({
+          title: "Bookmark B",
+          url: "https://example-many-b.com",
+          relatedBookmarkIds: [bookmarkA.id],
+        });
+      });
+
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
+      const all = await repository.findMany();
+
+      const b = all.find((bm) => bm.url === "https://example-many-b.com");
+      const a = all.find((bm) => bm.url === "https://example-many-a.com");
+
+      expect(b?.relatedBookmarks).toHaveLength(1);
+      expect(b?.relatedBookmarks?.[0].id).toBe(bookmarkA.id);
+      expect(a?.relatedBookmarks).toHaveLength(1);
+      expect(a?.relatedBookmarks?.[0].id).toBe(b?.id);
+    });
+  });
 });

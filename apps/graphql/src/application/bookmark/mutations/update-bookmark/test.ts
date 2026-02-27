@@ -91,6 +91,38 @@ describe("updateBookmark", () => {
       expect(result.url).toBe(url);
       expect(result.title).toBe(updateInput.title);
     });
+
+    it("should update related bookmarks", async () => {
+      const bookmarkA = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).create({
+            title: "Bookmark A",
+            url: `https://example.com/upd-related-a-${Date.now()}`,
+          });
+        },
+      );
+      const bookmarkB = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).create({
+            title: "Bookmark B",
+            url: `https://example.com/upd-related-b-${Date.now()}`,
+          });
+        },
+      );
+
+      const updated = await updateBookmark(bookmarkB.id, {
+        relatedBookmarkIds: [bookmarkA.id],
+      });
+
+      expect(updated.relatedBookmarks).toHaveLength(1);
+      expect(updated.relatedBookmarks?.[0].id).toBe(bookmarkA.id);
+    });
   });
 
   describe("異常系", () => {

@@ -191,6 +191,23 @@ export const BookmarkList: FC = () => {
                 ))}
               </div>
             )}
+            {bookmark.relatedBookmarks &&
+              bookmark.relatedBookmarks.length > 0 && (
+                <div className="flex flex-wrap items-center gap-1">
+                  <span className="text-xs text-base-content/50">Related:</span>
+                  {bookmark.relatedBookmarks.map((related) => (
+                    <a
+                      key={related.id}
+                      href={related.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="badge badge-outline badge-sm link link-hover"
+                    >
+                      {related.title}
+                    </a>
+                  ))}
+                </div>
+              )}
             <div className="flex items-center justify-between">
               <div className="text-xs text-base-content/50">
                 {new Date(bookmark.created_at).toLocaleDateString()}

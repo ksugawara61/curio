@@ -1,10 +1,11 @@
 import { renderSuspense, screen, waitFor } from "@curio/testing-library";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { server } from "../../../libs/test/msw/server";
 import { BlockedDomainsMocks } from "../../../shared/hooks/useBlockedDomains.mocks";
 import { BookmarkQueryMocks } from "../../shared/graphql/BookmarkQuery.mocks";
 import { CreateBookmarkMutationMocks } from "../../shared/graphql/CreateBookmarkMutation.mocks";
+import { BookmarksListQueryMocks } from "../bookmark-list/BookmarksQuery.mocks";
 import { BookmarkCheck } from ".";
 import { UpdateBookmarkMutationMocks } from "./UpdateBookmarkMutation.mocks";
 
@@ -14,6 +15,9 @@ const defaultProps = {
 };
 
 describe("BookmarkCheck", () => {
+  beforeEach(() => {
+    server.use(BookmarksListQueryMocks.Empty);
+  });
   it("displays loading state initially", async () => {
     server.use(BookmarkQueryMocks.Loading);
 

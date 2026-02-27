@@ -17,6 +17,7 @@ const mockBookmark = {
     { id: "1", name: "Tech" },
     { id: "2", name: "Tutorial" },
   ],
+  relatedBookmarks: null,
 };
 
 export const BookmarkQueryMocks = {
@@ -47,6 +48,7 @@ export const BookmarkQueryMocks = {
             created_at: "2024-01-01T00:00:00Z",
             updated_at: "2024-01-01T00:00:00Z",
             tags: [{ id: "1", name: "Matched" }],
+            relatedBookmarks: null,
           },
         },
       });

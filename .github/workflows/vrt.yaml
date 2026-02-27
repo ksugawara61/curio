@@ -24,7 +24,9 @@ jobs:
           cache-dependency-path: '**/pnpm-lock.yaml'
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-      - name: Visual Regression Test
+      - name: Visual Regression Test (Extension)
         run: |
           pnpm build
           pnpm --filter @curio/extension vrt
+      - name: Visual Regression Test (Mobile)
+        run: pnpm --filter @curio/mobile vrt

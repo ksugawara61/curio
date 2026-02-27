@@ -26,10 +26,12 @@ jobs:
           cache-dependency-path: '**/pnpm-lock.yaml'
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
-      - name: VRT Approve
+      - name: VRT Approve (Extension)
         run: |
           pnpm build
           pnpm --filter @curio/extension vrt:approve
+      - name: VRT Approve (Mobile)
+        run: pnpm --filter @curio/mobile vrt:approve
       - name: Get GitHub App User ID
         id: get-user-id
         run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"

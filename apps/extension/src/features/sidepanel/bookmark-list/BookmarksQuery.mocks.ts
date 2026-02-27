@@ -18,6 +18,7 @@ const mockBookmarks = [
       { id: "1", name: "React" },
       { id: "2", name: "Documentation" },
     ],
+    relatedBookmarks: null,
   },
   {
     __typename: "Bookmark" as const,
@@ -35,6 +36,7 @@ const mockBookmarks = [
       { id: "3", name: "TypeScript" },
       { id: "4", name: "Tutorial" },
     ],
+    relatedBookmarks: null,
   },
   {
     __typename: "Bookmark" as const,
@@ -48,6 +50,7 @@ const mockBookmarks = [
     created_at: "2024-01-03T00:00:00Z",
     updated_at: "2024-01-03T00:00:00Z",
     tags: [],
+    relatedBookmarks: null,
   },
 ];
 

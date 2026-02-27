@@ -1,7 +1,8 @@
-import { useMutation } from "@curio/graphql-client";
+import { useMutation, useSuspenseQuery } from "@curio/graphql-client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type FC, useEffect } from "react";
+import { type FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { BookmarksQuery } from "../bookmark-list/BookmarksQuery";
 import { ArchiveBookmarkMutation } from "./ArchiveBookmarkMutation";
 import { type BookmarkFormValues, bookmarkFormSchema } from "./schema";
 import { UnarchiveBookmarkMutation } from "./UnarchiveBookmarkMutation";
@@ -17,6 +18,7 @@ type Bookmark = {
   archived_at: string | null;
   created_at: string;
   tags: Array<{ id: string; name: string }> | null;
+  relatedBookmarks?: Array<{ id: string; title: string; url: string }> | null;
 };
 
 type Props = {
@@ -62,6 +64,14 @@ export const BookmarkEditForm: FC<Props> = ({ bookmark, onSuccess }) => {
     },
   );
 
+  const { data: bookmarksData } = useSuspenseQuery(BookmarksQuery);
+  const allBookmarks = (bookmarksData?.bookmarks ?? []).filter(
+    (b) => b.id !== bookmark.id,
+  );
+
+  const [relatedBookmarkIds, setRelatedBookmarkIds] = useState<string[]>([]);
+  const [relatedSearch, setRelatedSearch] = useState("");
+
   useEffect(() => {
     reset({
       description: bookmark.description ?? "",
@@ -69,7 +79,22 @@ export const BookmarkEditForm: FC<Props> = ({ bookmark, onSuccess }) => {
       thumbnail: bookmark.thumbnail ?? "",
       tagInput: bookmark.tags?.map((tag) => tag.name).join(", ") ?? "",
     });
+    setRelatedBookmarkIds(bookmark.relatedBookmarks?.map((b) => b.id) ?? []);
   }, [bookmark, reset]);
+
+  const filteredBookmarks = allBookmarks.filter((b) =>
+    b.title.toLowerCase().includes(relatedSearch.toLowerCase()),
+  );
+
+  const toggleRelated = (id: string) => {
+    setRelatedBookmarkIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  };
+
+  const selectedBookmarks = allBookmarks.filter((b) =>
+    relatedBookmarkIds.includes(b.id),
+  );
 
   const onSubmit = (data: BookmarkFormValues) => {
     const tagNames = data.tagInput
@@ -87,6 +112,8 @@ export const BookmarkEditForm: FC<Props> = ({ bookmark, onSuccess }) => {
           note: data.note || undefined,
           thumbnail: data.thumbnail || undefined,
           tagNames: tagNames.length > 0 ? tagNames : undefined,
+          relatedBookmarkIds:
+            relatedBookmarkIds.length > 0 ? relatedBookmarkIds : [],
         },
       },
     });
@@ -161,6 +188,64 @@ export const BookmarkEditForm: FC<Props> = ({ bookmark, onSuccess }) => {
             placeholder="e.g., tech, tutorial, react"
             {...register("tagInput")}
           />
+        </div>
+
+        <div className="form-control">
+          <div className="label">
+            <span className="label-text">Related Bookmarks</span>
+          </div>
+          {selectedBookmarks.length > 0 && (
+            <div className="mb-2 flex flex-wrap gap-1">
+              {selectedBookmarks.map((b) => (
+                <button
+                  key={b.id}
+                  type="button"
+                  className="badge badge-primary badge-sm gap-1 cursor-pointer"
+                  onClick={() => toggleRelated(b.id)}
+                >
+                  {b.title}
+                  <span aria-hidden="true">×</span>
+                </button>
+              ))}
+            </div>
+          )}
+          {allBookmarks.length === 0 ? (
+            <p className="text-xs text-base-content/50">
+              No bookmarks to relate to
+            </p>
+          ) : (
+            <>
+              <input
+                type="text"
+                className="input input-bordered input-sm mb-1"
+                placeholder="Search bookmarks..."
+                value={relatedSearch}
+                onChange={(e) => setRelatedSearch(e.target.value)}
+              />
+              <div className="max-h-32 overflow-y-auto rounded border border-base-300 bg-base-100 p-1">
+                {filteredBookmarks.length === 0 ? (
+                  <p className="py-2 text-center text-xs text-base-content/50">
+                    No matching bookmarks
+                  </p>
+                ) : (
+                  filteredBookmarks.map((b) => (
+                    <label
+                      key={b.id}
+                      className="flex cursor-pointer items-center gap-2 rounded p-1 hover:bg-base-200"
+                    >
+                      <input
+                        type="checkbox"
+                        className="checkbox checkbox-xs"
+                        checked={relatedBookmarkIds.includes(b.id)}
+                        onChange={() => toggleRelated(b.id)}
+                      />
+                      <span className="truncate text-xs">{b.title}</span>
+                    </label>
+                  ))
+                )}
+              </div>
+            </>
+          )}
         </div>
 
         <div className="mt-2 text-xs text-base-content/50">

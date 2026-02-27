@@ -40,6 +40,7 @@ export const UpdateBookmarkMutationMocks = {
               id: `tag-${index}`,
               name,
             })) ?? [],
+          relatedBookmarks: null,
         },
       },
     });

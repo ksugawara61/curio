@@ -9,6 +9,11 @@ export const CreateBookmarkMutation = graphql(`
       description
       id
       note
+      relatedBookmarks {
+        id
+        title
+        url
+      }
       tags {
         id
         name

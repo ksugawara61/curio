@@ -9,6 +9,11 @@ export const BookmarkQuery = graphql(`
       description
       id
       note
+      relatedBookmarks {
+        id
+        title
+        url
+      }
       tags {
         id
         name

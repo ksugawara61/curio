@@ -13,6 +13,7 @@ const NavigationLayout = () => {
       </Stack.Protected>
       <Stack.Protected guard={isSignedIn}>
         <Stack.Screen name="(home)/index" />
+        <Stack.Screen name="article-webview" />
       </Stack.Protected>
     </Stack>
   );

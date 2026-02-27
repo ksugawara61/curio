@@ -1,10 +1,9 @@
 import { useClerk, useUser } from "@clerk/clerk-expo";
 import { useQuery } from "@curio/graphql-client";
-import * as Linking from "expo-linking";
+import { useRouter } from "expo-router";
 import type { FC } from "react";
 import {
   ActivityIndicator,
-  Button,
   FlatList,
   Image,
   StyleSheet,
@@ -29,46 +28,67 @@ const SignOutButton = () => {
   const handleSignOut = async () => {
     try {
       await signOut();
-      Linking.openURL(Linking.createURL("/"));
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
     }
   };
-  return <Button title="Sign out" onPress={handleSignOut} />;
+  return (
+    <TouchableOpacity style={signOutStyles.button} onPress={handleSignOut}>
+      <Text style={signOutStyles.text}>Sign out</Text>
+    </TouchableOpacity>
+  );
 };
 
-const ArticleItem: FC<{ item: Article }> = ({ item }) => (
-  <TouchableOpacity
-    style={styles.articleCard}
-    onPress={() => Linking.openURL(item.url)}
-    activeOpacity={0.7}
-  >
-    {item.thumbnail_url ? (
-      <Image
-        source={{ uri: item.thumbnail_url }}
-        style={styles.thumbnail}
-        resizeMode="cover"
-      />
-    ) : (
-      <View style={styles.thumbnailPlaceholder} />
-    )}
-    <View style={styles.articleContent}>
-      <Text style={styles.articleTitle} numberOfLines={2}>
-        {item.title}
-      </Text>
-      {item.description ? (
-        <Text style={styles.articleDescription} numberOfLines={2}>
-          {item.description}
+const signOutStyles = StyleSheet.create({
+  button: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: "#f0f0f0",
+    borderRadius: 6,
+  },
+  text: {
+    fontSize: 14,
+    color: "#333333",
+  },
+});
+
+const ArticleItem: FC<{ item: Article }> = ({ item }) => {
+  const router = useRouter();
+  return (
+    <TouchableOpacity
+      style={styles.articleCard}
+      onPress={() =>
+        router.push({ pathname: "/article-webview", params: { url: item.url } })
+      }
+      activeOpacity={0.7}
+    >
+      {item.thumbnail_url ? (
+        <Image
+          source={{ uri: item.thumbnail_url }}
+          style={styles.thumbnail}
+          resizeMode="cover"
+        />
+      ) : (
+        <View style={styles.thumbnailPlaceholder} />
+      )}
+      <View style={styles.articleContent}>
+        <Text style={styles.articleTitle} numberOfLines={2}>
+          {item.title}
         </Text>
-      ) : null}
-      {item.pub_date ? (
-        <Text style={styles.articleDate}>
-          {new Date(item.pub_date).toLocaleDateString("ja-JP")}
-        </Text>
-      ) : null}
-    </View>
-  </TouchableOpacity>
-);
+        {item.description ? (
+          <Text style={styles.articleDescription} numberOfLines={2}>
+            {item.description}
+          </Text>
+        ) : null}
+        {item.pub_date ? (
+          <Text style={styles.articleDate}>
+            {new Date(item.pub_date).toLocaleDateString("ja-JP")}
+          </Text>
+        ) : null}
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 export const RecentArticleList: FC = () => {
   const { user } = useUser();

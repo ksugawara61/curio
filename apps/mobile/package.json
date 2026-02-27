@@ -26,7 +26,8 @@
     "react-native": "catalog:",
     "react-native-safe-area-context": "catalog:",
     "react-native-screens": "catalog:",
-    "react-native-web": "catalog:"
+    "react-native-web": "catalog:",
+    "react-native-webview": "catalog:"
   },
   "devDependencies": {
     "@types/react": "catalog:",

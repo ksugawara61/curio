@@ -16,7 +16,7 @@
     "vrt:dry-run": "playwright install chromium && playwright test --ignore-snapshots",
     "vrt:html": "playwright install chromium && playwright test --reporter=html",
     "vrt:approve": "playwright install chromium && playwright test --update-snapshots all",
-    "release": "wrangler pages deploy ./dist --branch main --commit-dirty=true"
+    "release": "wrangler pages deploy ./dist --branch main --commit-dirty=true --project-name curio-web"
   },
   "dependencies": {
     "@apollo/client": "catalog:",

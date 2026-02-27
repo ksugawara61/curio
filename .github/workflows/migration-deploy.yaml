@@ -1,6 +1,7 @@
 name: Migration Deploy
 on:
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   migrate:

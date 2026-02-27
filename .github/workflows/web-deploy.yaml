@@ -1,4 +1,4 @@
-name: GraphQL Deploy
+name: Web Deploy
 on:
   workflow_dispatch:
   workflow_call:
@@ -23,8 +23,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build Project
         run: pnpm build
-      - name: Deploy GraphQL to Cloudflare Workers
-        run: pnpm --filter @curio/graphql release
+      - name: Deploy Web to Cloudflare Pages
+        run: pnpm --filter @curio/web release
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

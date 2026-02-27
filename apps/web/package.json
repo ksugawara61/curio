@@ -16,7 +16,7 @@
     "vrt:dry-run": "playwright install chromium && playwright test --ignore-snapshots",
     "vrt:html": "playwright install chromium && playwright test --reporter=html",
     "vrt:approve": "playwright install chromium && playwright test --update-snapshots all",
-    "release": "pnpm build && wrangler pages deploy dist"
+    "release": "wrangler pages deploy ./dist --branch main --commit-dirty=true"
   },
   "dependencies": {
     "@apollo/client": "catalog:",

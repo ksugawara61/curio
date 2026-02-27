@@ -14,3 +14,6 @@ jobs:
   call-graphql-deploy:
     needs: call-migration-deploy
     uses: ./.github/workflows/graphql-deploy.yaml
+  call-web-deploy:
+    needs: call-graphql-deploy
+    uses: ./.github/workflows/web-deploy.yaml

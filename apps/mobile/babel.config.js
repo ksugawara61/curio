@@ -8,8 +8,12 @@ module.exports = function (api) {
     presets: [
       [
         "babel-preset-expo",
-        isStorybook ? {} : { jsxImportSource: "nativewind" },
+        // Storybook/ネイティブ共通で nativewind の JSX ランタイムを使用する
+        // これにより className prop が react-native-web で正しく処理される
+        { jsxImportSource: "nativewind" },
       ],
+      // nativewind/babel はネイティブ専用の追加変換（reanimated 等）を含むため
+      // Storybook では不要
       ...(isStorybook ? [] : ["nativewind/babel"]),
     ],
   };

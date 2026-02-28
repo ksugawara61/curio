@@ -88,7 +88,6 @@ describe("RecentArticleList", () => {
       push: mockRouterPush,
       replace: vi.fn(),
       back: vi.fn(),
-      // biome-ignore lint: allow mock incomplete interface
     } as never);
 
     render(<RecentArticleList />);

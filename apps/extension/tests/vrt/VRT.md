@@ -81,7 +81,7 @@ export const Default: Story = {};
 
 デフォルトで以下のビューポートでテストを実行します:
 
-- SidePanel: 400x768
+- SidePanel: 500x900
 
 ビューポートを追加・変更する場合は、`tests/vrt/storybook.spec.ts` を編集してください。
 

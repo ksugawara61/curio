@@ -20,7 +20,7 @@ test.beforeAll(async () => {
   );
 });
 
-const viewport = { name: "sidepanel", width: 400, height: 768 };
+const viewport = { name: "sidepanel", width: 500, height: 900 };
 
 // 各ストーリーに対して VRT テストを実行
 test.describe("Visual Regression Tests", () => {

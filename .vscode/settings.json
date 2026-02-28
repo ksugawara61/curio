@@ -25,6 +25,10 @@
   "eslint.workingDirectories": [{ "pattern": "./apps/*/*"}, { "pattern": "./packages/*/" }],
   "eslint.format.enable": true,
   "chat.tools.terminal.autoApprove": {
-    "pnpm": true
+    "pnpm": true,
+    "/^node scripts/check-storybook-coverage\\.mjs apps/mobile/src/features$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
   }
 }

@@ -12,6 +12,9 @@ catalogs:
     '@clerk/clerk-expo':
       specifier: ^2.19.26
       version: 2.19.26
+    '@clerk/clerk-react':
+      specifier: ^5.61.1
+      version: 5.61.1
     '@playwright/test':
       specifier: ^1.57.0
       version: 1.58.2
@@ -141,6 +144,9 @@ importers:
       '@clerk/clerk-expo':
         specifier: 'catalog:'
         version: 2.19.26(@solana/web3.js@1.98.4(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10))(@types/react@19.2.14)(bs58@5.0.0)(bufferutil@4.1.0)(expo-auth-session@55.0.6(expo@55.0.3)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(bufferutil@4.1.0)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(typescript@5.9.3))(expo-crypto@55.0.8(expo@55.0.3))(expo-secure-store@55.0.8(expo@55.0.3))(expo-web-browser@55.0.9(expo@55.0.3)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(bufferutil@4.1.0)(react@19.2.0)(utf-8-validate@5.0.10)))(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@19.2.0(react@19.2.0))(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(bufferutil@4.1.0)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(typescript@5.9.3)(use-sync-external-store@1.6.0(react@19.2.0))(utf-8-validate@5.0.10)(zod@3.25.76)
+      '@clerk/clerk-react':
+        specifier: 'catalog:'
+        version: 5.61.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@curio/graphql-client':
         specifier: workspace:*
         version: link:../../packages/graphql-client

@@ -11,7 +11,7 @@ catalog:
   '@clerk/backend': ^2.30.0
   '@clerk/chrome-extension': ^2.9.0
   '@clerk/clerk-expo': ^2.19.26
-  '@clerk/clerk-react': ^5.60.0
+  '@clerk/clerk-react': ^5.61.1
   '@cloudflare/workers-types': ^4.20251011.0
   '@getcronit/pylon': ^2.9.5
   '@getcronit/pylon-dev': ^1.0.5

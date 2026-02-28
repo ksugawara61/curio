@@ -27,6 +27,7 @@ catalogs:
 
 overrides:
   ws: 8.18.3
+  msw: 2.12.10
 
 importers:
 

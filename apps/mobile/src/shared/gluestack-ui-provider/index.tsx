@@ -13,7 +13,8 @@ export const GluestackUIProvider: FC<GluestackUIProviderProps> = ({
   children,
 }) => {
   const colorScheme = useColorScheme();
-  const resolvedMode = mode === "system" ? (colorScheme ?? "light") : mode;
+  const resolvedMode =
+    mode === "system" ? (colorScheme === "dark" ? "dark" : "light") : mode;
 
   return <View style={[config[resolvedMode], { flex: 1 }]}>{children}</View>;
 };

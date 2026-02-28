@@ -8,7 +8,6 @@ import {
   Image,
   Platform,
   Pressable,
-  StyleSheet,
   Text,
   View,
 } from "react-native";
@@ -132,7 +131,7 @@ export const BookmarkList: FC = () => {
         />
       )}
       <Pressable
-        style={styles.fab}
+        className="absolute bottom-6 right-5 w-14 h-14 rounded-full bg-primary-500 items-center justify-center shadow-md"
         onPress={() => router.push("/bookmark-add")}
         accessibilityLabel="ブックマークを追加"
       >
@@ -141,22 +140,3 @@ export const BookmarkList: FC = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  fab: {
-    position: "absolute",
-    bottom: 24,
-    right: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: "#6366f1",
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-});

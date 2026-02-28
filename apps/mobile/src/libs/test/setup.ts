@@ -30,6 +30,7 @@ vi.mock("expo-router", () => ({
     replace: vi.fn(),
     back: vi.fn(),
   }),
+  useLocalSearchParams: () => ({}),
   Link: ({ children }: { children: React.ReactNode }) => children,
 }));
 
@@ -38,6 +39,11 @@ vi.mock("react-native-safe-area-context", () => ({
   SafeAreaView: ({ children }: { children: React.ReactNode }) => children,
   SafeAreaProvider: ({ children }: { children: React.ReactNode }) => children,
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
+}));
+
+// @expo/vector-icons をモック（createIconSet.js の JSX パースエラーを回避）
+vi.mock("@expo/vector-icons/Ionicons", () => ({
+  default: () => null,
 }));
 
 // MSW サーバーのセットアップ

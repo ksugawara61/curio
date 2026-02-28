@@ -20,5 +20,7 @@ jobs:
           node-version-file: .node-version
           cache: 'pnpm'
           cache-dependency-path: '**/pnpm-lock.yaml'
-      - name: Storybook Coverage Check (Mobile)
-        run: node scripts/check-storybook-coverage.mjs apps/mobile/src/features
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Storybook Coverage Check
+        run: pnpm turbo storybook-coverage --affected

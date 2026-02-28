@@ -34,14 +34,13 @@ export const FetchError: Story = {
   },
 };
 
-// ローディング状態は networkidle を待たず VRT をスキップ
+// ローディング状態は networkidle を待てないため VRT をスキップ
+// index.json には parameters が含まれないため tags で制御する
 export const Loading: Story = {
+  tags: ["no-vrt"],
   parameters: {
     msw: {
       handlers: [RecentArticlesQueryMocks.Loading],
-    },
-    playwright: {
-      skip: true,
     },
   },
 };

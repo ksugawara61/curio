@@ -1,6 +1,16 @@
 name: VRT Approve
 on:
   workflow_dispatch:
+    inputs:
+      target:
+        description: 'VRT approve target'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - extension
+          - mobile
 
 jobs:
   approve:
@@ -28,11 +38,13 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Install Japanese and emoji fonts
         run: sudo apt-get install -y fonts-noto-cjk fonts-noto-color-emoji
+      - name: Build
+        run: pnpm build
       - name: VRT Approve (Extension)
-        run: |
-          pnpm build
-          pnpm --filter @curio/extension vrt:approve
+        if: inputs.target == 'all' || inputs.target == 'extension'
+        run: pnpm --filter @curio/extension vrt:approve
       - name: VRT Approve (Mobile)
+        if: inputs.target == 'all' || inputs.target == 'mobile'
         run: pnpm --filter @curio/mobile vrt:approve
       - name: Get GitHub App User ID
         id: get-user-id

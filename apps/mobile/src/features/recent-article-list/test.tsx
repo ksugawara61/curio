@@ -60,6 +60,10 @@ describe("RecentArticleList", () => {
   it("記事アイテムを押すと記事ページに遷移する", async () => {
     server.use(RecentArticlesQueryMocks.Success);
 
+    vi.spyOn(await import("react-native"), "Platform", "get").mockReturnValue(
+      "ios" as never,
+    );
+
     const mockRouterPush = vi.fn();
     vi.spyOn(await import("expo-router"), "useRouter").mockReturnValue({
       push: mockRouterPush,

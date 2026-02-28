@@ -29,6 +29,10 @@ const config: StorybookConfig = {
         import.meta.dirname,
         "../src/libs/storybook/safe-area-mock.tsx",
       ),
+      "react-native-webview": resolve(
+        import.meta.dirname,
+        "../src/libs/storybook/webview-mock.tsx",
+      ),
     };
     // nativewind と関連パッケージを事前バンドルに含めて
     // 504 (Outdated Optimize Dep) エラーを防止する

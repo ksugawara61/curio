@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
@@ -89,6 +89,26 @@ describe("archiveBookmark", () => {
           message: "Bookmark not found",
         }),
       );
+    });
+
+    it("should throw ServiceError when repository throws an unexpected Error", async () => {
+      vi.spyOn(BookmarkRepository.prototype, "archive").mockRejectedValue(
+        new Error("Unexpected DB error"),
+      );
+      await expect(archiveBookmark("some-id")).rejects.toThrow(
+        "Failed to archive bookmark: Unexpected DB error",
+      );
+      vi.restoreAllMocks();
+    });
+
+    it("should throw ServiceError with Unknown error when repository throws a non-Error", async () => {
+      vi.spyOn(BookmarkRepository.prototype, "archive").mockRejectedValue(
+        "non-error string",
+      );
+      await expect(archiveBookmark("some-id")).rejects.toThrow(
+        "Failed to archive bookmark: Unknown error",
+      );
+      vi.restoreAllMocks();
     });
   });
 });

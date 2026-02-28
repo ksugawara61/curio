@@ -147,6 +147,38 @@ describe("articles (source: database)", () => {
     expect(result).toHaveLength(1);
     expect(result[0].title).toBe("User A Article");
   });
+
+  it("should include read_at when article has been marked as read", async () => {
+    const feed = await setupFeed("test-user", "https://example.com/feed.xml");
+    const repo = new ArticlePersistenceRepository(
+      ContextRepository.create(),
+      DrizzleRepository.create().getDb(),
+    );
+
+    const recentPubDate = new Date(
+      Date.now() - 24 * 60 * 60 * 1000,
+    ).toISOString();
+
+    await repo.upsert({
+      rss_feed_id: feed.id,
+      title: "Read Article",
+      url: `https://example.com/read-article-${Date.now()}`,
+      pub_date: recentPubDate,
+    });
+
+    const allArticles = await articles({ source: "database", hours: 48 });
+    const readArticle = allArticles.find((a) => a.title === "Read Article");
+    expect(readArticle).toBeDefined();
+
+    if (readArticle?.id) {
+      await repo.markAsRead(readArticle.id);
+    }
+
+    const result = await articles({ source: "database", hours: 48 });
+    const markedArticle = result.find((a) => a.title === "Read Article");
+    expect(markedArticle).toBeDefined();
+    expect(markedArticle?.read_at).not.toBeNull();
+  });
 });
 
 // ---- rss source ----

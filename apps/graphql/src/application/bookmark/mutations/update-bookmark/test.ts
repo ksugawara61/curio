@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
@@ -174,6 +174,16 @@ describe("updateBookmark", () => {
       await expect(
         updateBookmark(secondBookmark.id, { url: existingUrl }),
       ).rejects.toThrowError(/Bookmark with this URL already exists/);
+    });
+
+    it("should throw ServiceError with Unknown error when repository throws a non-Error", async () => {
+      vi.spyOn(BookmarkRepository.prototype, "update").mockRejectedValue(
+        "non-error string",
+      );
+      await expect(
+        updateBookmark("some-id", { title: "Test" }),
+      ).rejects.toThrow("Failed to update bookmark: Unknown error");
+      vi.restoreAllMocks();
     });
   });
 });

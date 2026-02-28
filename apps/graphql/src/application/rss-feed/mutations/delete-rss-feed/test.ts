@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
@@ -29,6 +29,26 @@ describe("deleteRssFeed", () => {
       await expect(deleteRssFeed("nonexistent-id")).rejects.toThrow(
         "RSS feed not found",
       );
+    });
+
+    it("should throw ServiceError when repository throws an unexpected Error", async () => {
+      vi.spyOn(RssFeedRepository.prototype, "remove").mockRejectedValue(
+        new Error("Unexpected DB error"),
+      );
+      await expect(deleteRssFeed("some-id")).rejects.toThrow(
+        "Failed to delete RSS feed: Unexpected DB error",
+      );
+      vi.restoreAllMocks();
+    });
+
+    it("should throw ServiceError with Unknown error when repository throws a non-Error", async () => {
+      vi.spyOn(RssFeedRepository.prototype, "remove").mockRejectedValue(
+        "non-error string",
+      );
+      await expect(deleteRssFeed("some-id")).rejects.toThrow(
+        "Failed to delete RSS feed: Unknown error",
+      );
+      vi.restoreAllMocks();
     });
   });
 });

@@ -736,4 +736,126 @@ describe("BookmarkRepository", () => {
       expect(a?.relatedBookmarks?.[0].id).toBe(b?.id);
     });
   });
+
+  describe("findMany with tags", () => {
+    it("should return bookmarks with tags via findMany", async () => {
+      await DrizzleRepository.create().transaction(async (tx) => {
+        return await new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        ).create({
+          title: "Tagged Bookmark",
+          url: "https://example-tagged-many.com",
+          tagNames: ["tagA", "tagB"],
+        });
+      });
+
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
+      const result = await repository.findMany();
+
+      const found = result.find(
+        (bm) => bm.url === "https://example-tagged-many.com",
+      );
+      expect(found).toBeDefined();
+      expect(found?.tags).toHaveLength(2);
+      expect(found?.tags?.map((t) => t.name).sort()).toEqual(["tagA", "tagB"]);
+    });
+
+    it("should return archived bookmarks with tags via findManyArchived", async () => {
+      const bookmark = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).create({
+            title: "Archived Tagged Bookmark",
+            url: "https://example-archived-tagged.com",
+            tagNames: ["archiveTag"],
+          });
+        },
+      );
+
+      await DrizzleRepository.create().transaction(async (tx) => {
+        return await new BookmarkRepository(
+          ContextRepository.create(),
+          tx,
+        ).archive(bookmark.id);
+      });
+
+      const repository = new BookmarkRepository(
+        ContextRepository.create(),
+        DrizzleRepository.create().getDb(),
+      );
+      const result = await repository.findManyArchived();
+
+      const found = result.find(
+        (bm) => bm.url === "https://example-archived-tagged.com",
+      );
+      expect(found).toBeDefined();
+      expect(found?.archived_at).not.toBeNull();
+      expect(found?.tags).toHaveLength(1);
+      expect(found?.tags?.[0].name).toBe("archiveTag");
+    });
+  });
+
+  describe("update with optional fields", () => {
+    it("should update bookmark with note and thumbnail", async () => {
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).create({
+            title: "Bookmark to Update",
+            url: "https://example-note-thumb.com",
+          });
+        },
+      );
+
+      const updated = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).update(created.id, {
+            note: "My note",
+            thumbnail: "https://example.com/thumb.png",
+          });
+        },
+      );
+
+      expect(updated.note).toBe("My note");
+      expect(updated.thumbnail).toBe("https://example.com/thumb.png");
+    });
+
+    it("should update bookmark url when not conflicting", async () => {
+      const created = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).create({
+            title: "Bookmark to Update URL",
+            url: "https://example-old-url.com",
+          });
+        },
+      );
+
+      const updated = await DrizzleRepository.create().transaction(
+        async (tx) => {
+          return await new BookmarkRepository(
+            ContextRepository.create(),
+            tx,
+          ).update(created.id, {
+            url: "https://example-new-url.com",
+          });
+        },
+      );
+
+      expect(updated.url).toBe("https://example-new-url.com");
+    });
+  });
 });

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
@@ -32,6 +32,28 @@ describe("rssFeeds", () => {
       expect(result).toHaveLength(2);
       expect(result[0].title).toBe("Feed 1");
       expect(result[1].title).toBe("Feed 2");
+    });
+  });
+
+  describe("異常系", () => {
+    it("should throw ServiceError when repository throws an Error", async () => {
+      vi.spyOn(RssFeedRepository, "create").mockReturnValue({
+        findAll: vi.fn().mockRejectedValue(new Error("DB connection failed")),
+      } as never);
+      await expect(rssFeeds()).rejects.toThrow(
+        "Failed to fetch RSS feeds: DB connection failed",
+      );
+      vi.restoreAllMocks();
+    });
+
+    it("should throw ServiceError with Unknown error when repository throws a non-Error", async () => {
+      vi.spyOn(RssFeedRepository, "create").mockReturnValue({
+        findAll: vi.fn().mockRejectedValue("non-error string"),
+      } as never);
+      await expect(rssFeeds()).rejects.toThrow(
+        "Failed to fetch RSS feeds: Unknown error",
+      );
+      vi.restoreAllMocks();
     });
   });
 });

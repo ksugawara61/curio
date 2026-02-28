@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
@@ -77,6 +77,26 @@ describe("bookmark", () => {
       await expect(bookmark()).rejects.toThrow(
         "Either id or uri must be provided",
       );
+    });
+
+    it("should throw ServiceError when repository throws an Error", async () => {
+      vi.spyOn(BookmarkRepository, "create").mockReturnValue({
+        findById: vi.fn().mockRejectedValue(new Error("DB connection failed")),
+      } as never);
+      await expect(bookmark("some-id")).rejects.toThrow(
+        "Failed to fetch bookmark: DB connection failed",
+      );
+      vi.restoreAllMocks();
+    });
+
+    it("should throw ServiceError with Unknown error when repository throws a non-Error", async () => {
+      vi.spyOn(BookmarkRepository, "create").mockReturnValue({
+        findById: vi.fn().mockRejectedValue("non-error string"),
+      } as never);
+      await expect(bookmark("some-id")).rejects.toThrow(
+        "Failed to fetch bookmark: Unknown error",
+      );
+      vi.restoreAllMocks();
     });
   });
 });

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { ScrapRepository } from "../../../../domain/scrap/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
@@ -36,6 +36,26 @@ describe("deleteScrap", () => {
           message: "Scrap not found",
         }),
       );
+    });
+
+    it("should throw ServiceError when repository throws an unexpected Error", async () => {
+      vi.spyOn(ScrapRepository.prototype, "deleteScrap").mockRejectedValue(
+        new Error("Unexpected DB error"),
+      );
+      await expect(deleteScrap("some-id")).rejects.toThrow(
+        "Failed to delete scrap: Unexpected DB error",
+      );
+      vi.restoreAllMocks();
+    });
+
+    it("should throw ServiceError with Unknown error when repository throws a non-Error", async () => {
+      vi.spyOn(ScrapRepository.prototype, "deleteScrap").mockRejectedValue(
+        "non-error string",
+      );
+      await expect(deleteScrap("some-id")).rejects.toThrow(
+        "Failed to delete scrap: Unknown error",
+      );
+      vi.restoreAllMocks();
     });
   });
 });

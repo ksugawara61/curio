@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
+import { ScrapRepository } from "../../../../domain/scrap/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
 import { createScrap } from ".";
@@ -87,6 +88,28 @@ describe("createScrap", () => {
       const ids = result.bookmarks?.map((b) => b.id);
       expect(ids).toContain(bookmarkA.id);
       expect(ids).toContain(bookmarkB.id);
+    });
+  });
+
+  describe("異常系", () => {
+    it("should throw ServiceError when repository throws an Error", async () => {
+      vi.spyOn(ScrapRepository.prototype, "create").mockRejectedValue(
+        new Error("DB connection failed"),
+      );
+      await expect(
+        createScrap({ title: "Test", content: "Content" }),
+      ).rejects.toThrow("Failed to create scrap: DB connection failed");
+      vi.restoreAllMocks();
+    });
+
+    it("should throw ServiceError with Unknown error when repository throws a non-Error", async () => {
+      vi.spyOn(ScrapRepository.prototype, "create").mockRejectedValue(
+        "non-error string",
+      );
+      await expect(
+        createScrap({ title: "Test", content: "Content" }),
+      ).rejects.toThrow("Failed to create scrap: Unknown error");
+      vi.restoreAllMocks();
     });
   });
 });

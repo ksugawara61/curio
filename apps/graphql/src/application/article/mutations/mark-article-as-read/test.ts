@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { ArticlePersistenceRepository } from "../../../../domain/article/repository.persistence";
 import { RssFeedRepository } from "../../../../domain/rss-feed/repository.persistence";
 import { mockAuthContext } from "../../../../libs/test/authHelper";
@@ -67,5 +67,27 @@ describe("markArticleAsRead", () => {
     await expect(markArticleAsRead(article.id)).rejects.toThrow(
       "Article not found",
     );
+  });
+
+  it("should throw ServiceError when repository throws an unexpected Error", async () => {
+    vi.spyOn(
+      ArticlePersistenceRepository.prototype,
+      "markAsRead",
+    ).mockRejectedValue(new Error("Unexpected DB error"));
+    await expect(markArticleAsRead("some-id")).rejects.toThrow(
+      "Failed to mark article as read: Unexpected DB error",
+    );
+    vi.restoreAllMocks();
+  });
+
+  it("should throw ServiceError with Unknown error when repository throws a non-Error", async () => {
+    vi.spyOn(
+      ArticlePersistenceRepository.prototype,
+      "markAsRead",
+    ).mockRejectedValue("non-error string");
+    await expect(markArticleAsRead("some-id")).rejects.toThrow(
+      "Failed to mark article as read: Unknown error",
+    );
+    vi.restoreAllMocks();
   });
 });

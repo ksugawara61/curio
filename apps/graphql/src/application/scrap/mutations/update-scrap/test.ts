@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { ScrapRepository } from "../../../../domain/scrap/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
@@ -157,6 +157,26 @@ describe("updateScrap", () => {
           message: "Scrap not found",
         }),
       );
+    });
+
+    it("should throw ServiceError when repository throws an unexpected Error", async () => {
+      vi.spyOn(ScrapRepository.prototype, "update").mockRejectedValue(
+        new Error("Unexpected DB error"),
+      );
+      await expect(
+        updateScrap("some-id", { title: "Updated" }),
+      ).rejects.toThrow("Failed to update scrap: Unexpected DB error");
+      vi.restoreAllMocks();
+    });
+
+    it("should throw ServiceError with Unknown error when repository throws a non-Error", async () => {
+      vi.spyOn(ScrapRepository.prototype, "update").mockRejectedValue(
+        "non-error string",
+      );
+      await expect(
+        updateScrap("some-id", { title: "Updated" }),
+      ).rejects.toThrow("Failed to update scrap: Unknown error");
+      vi.restoreAllMocks();
     });
   });
 });

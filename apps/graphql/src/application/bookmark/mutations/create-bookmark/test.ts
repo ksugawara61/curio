@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { createBookmark } from ".";
 
 describe("createBookmark", () => {
@@ -68,6 +69,16 @@ describe("createBookmark", () => {
           url,
         }),
       ).rejects.toThrowError(/Bookmark with this URL already exists/);
+    });
+
+    it("should throw ServiceError with Unknown error when repository throws a non-Error", async () => {
+      vi.spyOn(BookmarkRepository.prototype, "create").mockRejectedValue(
+        "non-error string",
+      );
+      await expect(
+        createBookmark({ title: "Test", url: "https://example.com" }),
+      ).rejects.toThrow("Failed to create bookmark: Unknown error");
+      vi.restoreAllMocks();
     });
   });
 });

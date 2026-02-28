@@ -1,15 +1,57 @@
+import { useMutation, useQuery } from "@curio/graphql-client";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import type { FC } from "react";
 import { useRef, useState } from "react";
 import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
+import { BookmarkCheckQuery } from "./BookmarkCheckQuery";
+import { CreateBookmarkMutation } from "./CreateBookmarkMutation";
+import { DeleteBookmarkMutation } from "./DeleteBookmarkMutation";
 
 export const ArticleWebView: FC = () => {
-  const { url } = useLocalSearchParams<{ url: string }>();
+  const { url, title } = useLocalSearchParams<{
+    url: string;
+    title?: string;
+  }>();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const progressAnim = useRef(new Animated.Value(0)).current;
+
+  const { data: bookmarkData, refetch } = useQuery(BookmarkCheckQuery, {
+    variables: { uri: url },
+    skip: !url,
+  });
+
+  const [createBookmark, { loading: creating }] = useMutation(
+    CreateBookmarkMutation,
+  );
+  const [deleteBookmark, { loading: deleting }] = useMutation(
+    DeleteBookmarkMutation,
+  );
+
+  const bookmark = bookmarkData?.bookmark;
+  const isBookmarked = !!bookmark;
+  const isToggling = creating || deleting;
+
+  const handleToggleBookmark = async () => {
+    if (isToggling) return;
+
+    if (isBookmarked && bookmark) {
+      await deleteBookmark({ variables: { id: bookmark.id } });
+    } else {
+      await createBookmark({
+        variables: {
+          input: {
+            url,
+            title: title ?? url,
+          },
+        },
+      });
+    }
+    await refetch();
+  };
 
   const handleLoadProgress = ({
     nativeEvent,
@@ -48,6 +90,18 @@ export const ArticleWebView: FC = () => {
         >
           <View style={styles.backArrow} />
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.bookmarkButton}
+          onPress={handleToggleBookmark}
+          disabled={isToggling}
+          testID="bookmark-button"
+        >
+          <Ionicons
+            name={isBookmarked ? "bookmark" : "bookmark-outline"}
+            size={22}
+            color={isBookmarked ? "#6366f1" : "#666666"}
+          />
+        </TouchableOpacity>
       </View>
       {isLoading && (
         <View style={styles.progressBarTrack}>
@@ -76,6 +130,7 @@ const styles = StyleSheet.create({
     height: 44,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#e5e5e5",
@@ -92,6 +147,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderColor: "#0066cc",
     transform: [{ rotate: "45deg" }],
+  },
+  bookmarkButton: {
+    padding: 8,
+    justifyContent: "center",
+    alignItems: "center",
   },
   webview: {
     flex: 1,

@@ -81,7 +81,10 @@ describe("RecentArticleList", () => {
 
     expect(mockRouterPush).toHaveBeenCalledWith({
       pathname: "/article-webview",
-      params: { url: "https://example.com/article-1" },
+      params: {
+        url: "https://example.com/article-1",
+        title: "React Native Web で始めるクロスプラットフォーム開発",
+      },
     });
   });
 });

@@ -2,13 +2,6 @@ packages:
   - apps/**
   - packages/**
 
-catalogs:
-  mobile:
-    '@gluestack-ui/nativewind-utils': ^1.0.28
-    nativewind: ~4.1.23
-    react-native-reanimated: ~3.17.0
-    tailwindcss: ^3.4.17
-
 catalog:
   '@0no-co/graphqlsp': ^1.15.2
   '@apollo/client': ^4.1.1
@@ -49,6 +42,7 @@ catalog:
   '@types/react': ^19.2.8
   '@types/react-dom': ^19.2.3
   '@vitejs/plugin-react': ^5.1.2
+  '@vitest/coverage-v8': 4.0.18
   '@vitest/ui': ^4.0.17
   cors: ^2.8.5
   daisyui: ^5.5.14
@@ -105,6 +99,13 @@ catalog:
   zod: ^3.25.51
 
 catalogMode: strict
+
+catalogs:
+  mobile:
+    '@gluestack-ui/nativewind-utils': ^1.0.28
+    nativewind: ~4.1.23
+    react-native-reanimated: ~3.17.0
+    tailwindcss: ^3.4.17
 
 hoistWorkspacePackages: false
 

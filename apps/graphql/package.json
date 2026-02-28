@@ -36,6 +36,7 @@
     "@curio/eslint-config": "workspace:*",
     "@getcronit/pylon-dev": "catalog:",
     "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "@vitest/ui": "catalog:",
     "drizzle-kit": "catalog:",
     "eslint": "catalog:",

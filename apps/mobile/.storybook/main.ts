@@ -29,6 +29,13 @@ const config: StorybookConfig = {
         "../src/libs/storybook/safe-area-mock.tsx",
       ),
     };
+    // react と react-dom を単一インスタンスに強制する
+    // @curio/testing-library 経由で react-dom のバージョンが異なる場合の不一致を防ぐ
+    config.resolve.dedupe = [
+      ...(config.resolve.dedupe ?? []),
+      "react",
+      "react-dom",
+    ];
     return config;
   },
 };

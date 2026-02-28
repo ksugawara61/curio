@@ -10,7 +10,7 @@ catalogs:
       specifier: ^4.1.1
       version: 4.1.4
     '@clerk/clerk-react':
-      specifier: ^5.60.0
+      specifier: ^5.61.1
       version: 5.61.1
     '@hookform/resolvers':
       specifier: ^5.1.0

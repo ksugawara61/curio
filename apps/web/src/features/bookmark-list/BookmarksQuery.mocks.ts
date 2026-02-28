@@ -15,6 +15,7 @@ const mockBookmarks = [
     archived_at: null,
     created_at: "2024-01-01T00:00:00Z",
     updated_at: "2024-01-01T00:00:00Z",
+    relatedBookmarks: null,
     tags: [
       { id: "1", name: "React" },
       { id: "2", name: "Documentation" },
@@ -31,6 +32,7 @@ const mockBookmarks = [
     archived_at: null,
     created_at: "2024-01-02T00:00:00Z",
     updated_at: "2024-01-02T00:00:00Z",
+    relatedBookmarks: null,
     tags: [
       { id: "3", name: "TypeScript" },
       { id: "4", name: "Tutorial" },
@@ -47,6 +49,7 @@ const mockBookmarks = [
     archived_at: null,
     created_at: "2024-01-03T00:00:00Z",
     updated_at: "2024-01-03T00:00:00Z",
+    relatedBookmarks: null,
     tags: [],
   },
 ];
@@ -63,6 +66,7 @@ const mockArchivedBookmarks = [
     archived_at: "2024-02-01T00:00:00Z",
     created_at: "2024-01-04T00:00:00Z",
     updated_at: "2024-02-01T00:00:00Z",
+    relatedBookmarks: null,
     tags: [],
   },
 ];

@@ -3,6 +3,7 @@ import { fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { server } from "../../libs/test/msw/server";
 import { RecentArticleList } from ".";
+import { MarkArticleAsReadMutationMocks } from "./MarkArticleAsReadMutation.mocks";
 import { RecentArticlesQueryMocks } from "./RecentArticlesQuery.mocks";
 
 describe("RecentArticleList", () => {
@@ -12,6 +13,25 @@ describe("RecentArticleList", () => {
     render(<RecentArticleList />);
 
     expect(screen.getByText("読み込み中...")).toBeInTheDocument();
+  });
+
+  it("フィルタータブを表示する", async () => {
+    server.use(RecentArticlesQueryMocks.Success);
+
+    render(<RecentArticleList />);
+
+    expect(screen.getByText("未読")).toBeInTheDocument();
+    expect(screen.getByText("すべて")).toBeInTheDocument();
+  });
+
+  it("初期状態では未読フィルターが適用されている", async () => {
+    server.use(RecentArticlesQueryMocks.AllRead);
+
+    render(<RecentArticleList />);
+
+    await waitFor(() => {
+      expect(screen.getByText("未読記事はありません")).toBeInTheDocument();
+    });
   });
 
   it("記事一覧を正しく表示する", async () => {
@@ -35,10 +55,79 @@ describe("RecentArticleList", () => {
     ).toBeInTheDocument();
   });
 
-  it("記事がない場合は空状態メッセージを表示する", async () => {
+  it("未読記事のみを表示する（デフォルト）", async () => {
+    server.use(RecentArticlesQueryMocks.WithReadArticle);
+
+    render(<RecentArticleList />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Vitest で React Native をテストする"),
+      ).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText("React Native Web で始めるクロスプラットフォーム開発"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("すべてタブに切り替えると既読・未読すべての記事を表示する", async () => {
+    server.use(RecentArticlesQueryMocks.WithReadArticle);
+
+    render(<RecentArticleList />);
+
+    await waitFor(() => {
+      expect(screen.getByText("すべて")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText("すべて"));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("React Native Web で始めるクロスプラットフォーム開発"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("Vitest で React Native をテストする"),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("未読数バッジを表示する", async () => {
+    server.use(RecentArticlesQueryMocks.WithReadArticle);
+
+    render(<RecentArticleList />);
+
+    await waitFor(() => {
+      expect(screen.getByText("1")).toBeInTheDocument();
+    });
+  });
+
+  it("すべての記事が既読の場合、未読タブで空状態を表示する", async () => {
+    server.use(RecentArticlesQueryMocks.AllRead);
+
+    render(<RecentArticleList />);
+
+    await waitFor(() => {
+      expect(screen.getByText("未読記事はありません")).toBeInTheDocument();
+    });
+  });
+
+  it("記事がない場合は未読タブで空状態メッセージを表示する", async () => {
     server.use(RecentArticlesQueryMocks.Empty);
 
     render(<RecentArticleList />);
+
+    await waitFor(() => {
+      expect(screen.getByText("未読記事はありません")).toBeInTheDocument();
+    });
+  });
+
+  it("すべてタブで記事がない場合は空状態メッセージを表示する", async () => {
+    server.use(RecentArticlesQueryMocks.Empty);
+
+    render(<RecentArticleList />);
+
+    fireEvent.click(screen.getByText("すべて"));
 
     await waitFor(() => {
       expect(screen.getByText("記事がありません")).toBeInTheDocument();
@@ -58,7 +147,10 @@ describe("RecentArticleList", () => {
   });
 
   it("記事アイテムを押すと記事ページに遷移する", async () => {
-    server.use(RecentArticlesQueryMocks.Success);
+    server.use(
+      RecentArticlesQueryMocks.Success,
+      MarkArticleAsReadMutationMocks.Success,
+    );
 
     vi.spyOn(await import("react-native"), "Platform", "get").mockReturnValue(
       "ios" as never,
@@ -89,6 +181,42 @@ describe("RecentArticleList", () => {
         url: "https://example.com/article-1",
         title: "React Native Web で始めるクロスプラットフォーム開発",
       },
+    });
+  });
+
+  it("記事を押すと既読状態になり未読フィルターから除外される", async () => {
+    server.use(
+      RecentArticlesQueryMocks.Success,
+      MarkArticleAsReadMutationMocks.Success,
+    );
+
+    vi.spyOn(await import("react-native"), "Platform", "get").mockReturnValue(
+      "ios" as never,
+    );
+    vi.spyOn(await import("expo-router"), "useRouter").mockReturnValue({
+      push: vi.fn(),
+      replace: vi.fn(),
+      back: vi.fn(),
+    } as never);
+
+    render(<RecentArticleList />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("React Native Web で始めるクロスプラットフォーム開発"),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(
+      screen.getByText("React Native Web で始めるクロスプラットフォーム開発"),
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText(
+          "React Native Web で始めるクロスプラットフォーム開発",
+        ),
+      ).not.toBeInTheDocument();
     });
   });
 });

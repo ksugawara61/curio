@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { RecentArticleList } from ".";
+import { MarkArticleAsReadMutationMocks } from "./MarkArticleAsReadMutation.mocks";
 import { RecentArticlesQueryMocks } from "./RecentArticlesQuery.mocks";
 
 const meta = {
@@ -13,7 +14,32 @@ type Story = StoryObj<typeof meta>;
 export const Success: Story = {
   parameters: {
     msw: {
-      handlers: [RecentArticlesQueryMocks.Success],
+      handlers: [
+        RecentArticlesQueryMocks.Success,
+        MarkArticleAsReadMutationMocks.Success,
+      ],
+    },
+  },
+};
+
+export const WithReadArticle: Story = {
+  parameters: {
+    msw: {
+      handlers: [
+        RecentArticlesQueryMocks.WithReadArticle,
+        MarkArticleAsReadMutationMocks.Success,
+      ],
+    },
+  },
+};
+
+export const AllRead: Story = {
+  parameters: {
+    msw: {
+      handlers: [
+        RecentArticlesQueryMocks.AllRead,
+        MarkArticleAsReadMutationMocks.Success,
+      ],
     },
   },
 };

@@ -34,6 +34,26 @@ export const RecentArticlesQueryMocks = {
       },
     });
   }),
+  WithReadArticle: createMockQuery(RecentArticlesQuery, () => {
+    return HttpResponse.json({
+      data: {
+        articles: [
+          { ...mockArticle, read_at: "2024-01-15T12:00:00Z" },
+          mockArticleNoThumbnail,
+        ],
+      },
+    });
+  }),
+  AllRead: createMockQuery(RecentArticlesQuery, () => {
+    return HttpResponse.json({
+      data: {
+        articles: [
+          { ...mockArticle, read_at: "2024-01-15T12:00:00Z" },
+          { ...mockArticleNoThumbnail, read_at: "2024-01-20T12:00:00Z" },
+        ],
+      },
+    });
+  }),
   Empty: createMockQuery(RecentArticlesQuery, () => {
     return HttpResponse.json({
       data: {

@@ -19,3 +19,23 @@ export const useAuth = () => ({
   isSignedIn: true,
   isLoaded: true,
 });
+
+export const useSignIn = () => ({
+  signIn: {
+    create: () =>
+      Promise.resolve({ status: "complete", createdSessionId: "test-session" }),
+  },
+  setActive: () => Promise.resolve(),
+  isLoaded: true,
+});
+
+export const useSignUp = () => ({
+  signUp: {
+    create: () => Promise.resolve(),
+    prepareEmailAddressVerification: () => Promise.resolve(),
+    attemptEmailAddressVerification: () =>
+      Promise.resolve({ status: "complete", createdSessionId: "test-session" }),
+  },
+  setActive: () => Promise.resolve(),
+  isLoaded: true,
+});

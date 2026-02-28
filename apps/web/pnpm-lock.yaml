@@ -75,6 +75,9 @@ catalogs:
     jsdom:
       specifier: ^28.0.0
       version: 28.0.0
+    msw:
+      specifier: 2.12.10
+      version: 2.12.10
     msw-storybook-addon:
       specifier: ^2.0.6
       version: 2.0.6
@@ -123,7 +126,6 @@ catalogs:
 
 overrides:
   ws: 8.18.3
-  msw: 2.12.10
 
 importers:
 
@@ -239,7 +241,7 @@ importers:
         specifier: 'catalog:'
         version: 28.0.0
       msw:
-        specifier: 2.12.10
+        specifier: 'catalog:'
         version: 2.12.10(@types/node@25.2.0)(typescript@5.9.3)
       msw-storybook-addon:
         specifier: 'catalog:'
@@ -1577,7 +1579,7 @@ packages:
   '@vitest/mocker@4.0.18':
     resolution: {integrity: sha512-HhVd0MDnzzsgevnOWCBj5Otnzobjy5wLBe4EdeeFGv8luMsGcYqDuFRMcttKWZA5vVO8RFjexVovXvAM4JoJDQ==}
     peerDependencies:
-      msw: 2.12.10
+      msw: ^2.4.9
       vite: ^6.0.0 || ^7.0.0-0
     peerDependenciesMeta:
       msw:
@@ -2568,7 +2570,7 @@ packages:
   msw-storybook-addon@2.0.6:
     resolution: {integrity: sha512-ExCwDbcJoM2V3iQU+fZNp+axVfNc7DWMRh4lyTXebDO8IbpUNYKGFUrA8UqaeWiRGKVuS7+fU+KXEa9b0OP6uA==}
     peerDependencies:
-      msw: 2.12.10
+      msw: ^2.0.0
 
   msw@2.12.10:
     resolution: {integrity: sha512-G3VUymSE0/iegFnuipujpwyTM2GuZAKXNeerUSrG2+Eg391wW63xFs5ixWsK9MWzr1AGoSkYGmyAzNgbR3+urw==}

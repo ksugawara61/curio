@@ -64,7 +64,7 @@ catalog:
   graphql: ^16.12.0
   jsdom: ^28.0.0
   lefthook: 2.0.15
-  msw: ^2.12.7
+  msw: 2.12.10
   msw-storybook-addon: ^2.0.6
   npkill: 0.12.2
   openapi-fetch: ^0.14.0

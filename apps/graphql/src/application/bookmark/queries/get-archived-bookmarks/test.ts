@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { BookmarkRepository } from "../../../../domain/bookmark/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
@@ -50,6 +50,30 @@ describe("archivedBookmarks", () => {
       for (const b of result) {
         expect(b.archived_at).not.toBeNull();
       }
+    });
+  });
+
+  describe("異常系", () => {
+    it("should throw ServiceError when repository throws an Error", async () => {
+      vi.spyOn(BookmarkRepository, "create").mockReturnValue({
+        findManyArchived: vi
+          .fn()
+          .mockRejectedValue(new Error("DB connection failed")),
+      } as never);
+      await expect(archivedBookmarks()).rejects.toThrow(
+        "Failed to fetch archived bookmarks: DB connection failed",
+      );
+      vi.restoreAllMocks();
+    });
+
+    it("should throw ServiceError with Unknown error when repository throws a non-Error", async () => {
+      vi.spyOn(BookmarkRepository, "create").mockReturnValue({
+        findManyArchived: vi.fn().mockRejectedValue("non-error string"),
+      } as never);
+      await expect(archivedBookmarks()).rejects.toThrow(
+        "Failed to fetch archived bookmarks: Unknown error",
+      );
+      vi.restoreAllMocks();
     });
   });
 });

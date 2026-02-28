@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { TagRepository } from "../../../../domain/tag/repository.persistence";
 import { createTag } from ".";
 
 describe("createTag", () => {
@@ -26,6 +27,18 @@ describe("createTag", () => {
 
       // Attempt to create second tag with same name should throw error
       await expect(createTag(input)).rejects.toThrow();
+    });
+  });
+
+  describe("異常系", () => {
+    it("should throw ServiceError with Unknown error when repository throws a non-Error", async () => {
+      vi.spyOn(TagRepository.prototype, "create").mockRejectedValue(
+        "non-error string",
+      );
+      await expect(createTag({ name: "Test" })).rejects.toThrow(
+        "Failed to create tag: Unknown error",
+      );
+      vi.restoreAllMocks();
     });
   });
 });

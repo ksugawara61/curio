@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { ScrapRepository } from "../../../../domain/scrap/repository.persistence";
 import { ContextRepository } from "../../../../shared/context";
 import { DrizzleRepository } from "../../../../shared/drizzle";
@@ -32,6 +32,28 @@ describe("scrap", () => {
       const result = await scrap("non-existent-id");
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe("異常系", () => {
+    it("should throw ServiceError when repository throws an Error", async () => {
+      vi.spyOn(ScrapRepository, "create").mockReturnValue({
+        findById: vi.fn().mockRejectedValue(new Error("DB connection failed")),
+      } as never);
+      await expect(scrap("some-id")).rejects.toThrow(
+        "Failed to fetch scrap: DB connection failed",
+      );
+      vi.restoreAllMocks();
+    });
+
+    it("should throw ServiceError with Unknown error when repository throws a non-Error", async () => {
+      vi.spyOn(ScrapRepository, "create").mockReturnValue({
+        findById: vi.fn().mockRejectedValue("non-error string"),
+      } as never);
+      await expect(scrap("some-id")).rejects.toThrow(
+        "Failed to fetch scrap: Unknown error",
+      );
+      vi.restoreAllMocks();
     });
   });
 });

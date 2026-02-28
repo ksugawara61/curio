@@ -13,7 +13,7 @@ type WebViewProps = {
   onLoadStart?: () => void;
 };
 
-const WebView: FC<WebViewProps> = ({
+export const WebView: FC<WebViewProps> = ({
   style,
   source,
   onLoadProgress,

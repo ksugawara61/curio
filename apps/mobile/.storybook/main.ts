@@ -1,5 +1,6 @@
 import { resolve } from "node:path";
 import type { StorybookConfig } from "@storybook/react-vite";
+import react from "@vitejs/plugin-react";
 
 const config: StorybookConfig = {
   stories: ["../src/**/stories.@(js|jsx|mjs|ts|tsx)"],
@@ -36,6 +37,10 @@ const config: StorybookConfig = {
       "react",
       "react-dom",
     ];
+    // @storybook/react-vite v10 は @vitejs/plugin-react を自動追加しないため明示的に追加する
+    // これにより JSX の自動変換（react/jsx-runtime）が有効になり、
+    // 各ファイルで import React from "react" が不要になる
+    config.plugins = [react(), ...(config.plugins ?? [])];
     return config;
   },
 };

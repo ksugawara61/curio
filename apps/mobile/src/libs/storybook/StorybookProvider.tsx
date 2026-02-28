@@ -3,6 +3,7 @@ import type { FC, PropsWithChildren } from "react";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { GluestackUIProvider } from "../../shared/gluestack-ui-provider";
 
 const ErrorFallback = () => (
   <View style={styles.errorContainer}>
@@ -35,14 +36,16 @@ const styles = StyleSheet.create({
 
 export const StorybookProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <ApolloProvider
-      client={createGraphQLClient({
-        uri: "http://localhost:4000/graphql",
-      })}
-    >
-      <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <Suspense fallback={<Loading />}>{children}</Suspense>
-      </ErrorBoundary>
-    </ApolloProvider>
+    <GluestackUIProvider mode="light">
+      <ApolloProvider
+        client={createGraphQLClient({
+          uri: "http://localhost:4000/graphql",
+        })}
+      >
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+          <Suspense fallback={<Loading />}>{children}</Suspense>
+        </ErrorBoundary>
+      </ApolloProvider>
+    </GluestackUIProvider>
   );
 };

@@ -1,3 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* gluestack-ui v3 color tokens — must be defined here so Tailwind's
+   rgb(var(--color-*)) references resolve in the browser (Storybook/web) context.
+   GluestackUIProvider sets these via nativewind vars() which only works in native. */
+:root {
+  /* Primary (indigo) */
+  --color-primary-0: 0 0 0;
+  --color-primary-50: 238 242 255;
+  --color-primary-100: 224 231 255;
+  --color-primary-200: 199 210 254;
+  --color-primary-300: 165 180 252;
+  --color-primary-400: 129 140 248;
+  --color-primary-500: 99 102 241;
+  --color-primary-600: 79 70 229;
+  --color-primary-700: 67 56 202;
+  --color-primary-800: 55 48 163;
+  --color-primary-900: 49 46 129;
+  --color-primary-950: 30 27 75;
+
+  /* Background */
+  --color-background-0: 255 255 255;
+  --color-background-50: 249 250 251;
+  --color-background-100: 243 244 246;
+  --color-background-200: 229 231 235;
+  --color-background-300: 209 213 219;
+  --color-background-400: 156 163 175;
+  --color-background-500: 107 114 128;
+  --color-background-600: 75 85 99;
+  --color-background-700: 55 65 81;
+  --color-background-800: 31 41 55;
+  --color-background-900: 17 24 39;
+  --color-background-950: 3 7 18;
+
+  /* Typography */
+  --color-typography-0: 255 255 255;
+  --color-typography-50: 249 250 251;
+  --color-typography-100: 243 244 246;
+  --color-typography-200: 229 231 235;
+  --color-typography-300: 209 213 219;
+  --color-typography-400: 156 163 175;
+  --color-typography-500: 107 114 128;
+  --color-typography-600: 75 85 99;
+  --color-typography-700: 55 65 81;
+  --color-typography-800: 31 41 55;
+  --color-typography-900: 17 24 39;
+  --color-typography-950: 3 7 18;
+
+  /* Error (red) */
+  --color-error-0: 255 247 247;
+  --color-error-50: 254 226 226;
+  --color-error-100: 254 202 202;
+  --color-error-200: 252 165 165;
+  --color-error-300: 248 113 113;
+  --color-error-400: 239 68 68;
+  --color-error-500: 239 68 68;
+  --color-error-600: 220 38 38;
+  --color-error-700: 185 28 28;
+  --color-error-800: 153 27 27;
+  --color-error-900: 127 29 29;
+  --color-error-950: 69 10 10;
+
+  /* Success (green) */
+  --color-success-0: 240 253 244;
+  --color-success-50: 220 252 231;
+  --color-success-100: 187 247 208;
+  --color-success-200: 134 239 172;
+  --color-success-300: 74 222 128;
+  --color-success-400: 34 197 94;
+  --color-success-500: 34 197 94;
+  --color-success-600: 22 163 74;
+  --color-success-700: 21 128 61;
+  --color-success-800: 22 101 52;
+  --color-success-900: 20 83 45;
+  --color-success-950: 5 46 22;
+}
+
 /* モバイル画面全体に広がるようにルート要素を設定 */
 html,
 body,

@@ -70,6 +70,10 @@ describe("BookmarkList", () => {
   it("ブックマークアイテムを押すと記事ページに遷移する", async () => {
     server.use(BookmarksQueryMocks.Success);
 
+    vi.spyOn(await import("react-native"), "Platform", "get").mockReturnValue(
+      "ios" as never,
+    );
+
     const mockRouterPush = vi.fn();
     vi.spyOn(await import("expo-router"), "useRouter").mockReturnValue({
       push: mockRouterPush,

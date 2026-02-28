@@ -1,10 +1,18 @@
-name: VRT
+name: VRT (Mobile)
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    paths:
+      - 'apps/mobile/**'
+      - 'packages/**'
+      - '.github/workflows/vrt-mobile.yaml'
   push:
     branches:
       - main
+    paths:
+      - 'apps/mobile/**'
+      - 'packages/**'
+      - '.github/workflows/vrt-mobile.yaml'
   workflow_dispatch:
 
 jobs:
@@ -26,9 +34,5 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Install Japanese and emoji fonts
         run: sudo apt-get install -y fonts-noto-cjk fonts-noto-color-emoji
-      - name: Visual Regression Test (Extension)
-        run: |
-          pnpm build
-          pnpm --filter @curio/extension vrt
       - name: Visual Regression Test (Mobile)
         run: pnpm --filter @curio/mobile vrt

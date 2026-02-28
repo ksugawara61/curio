@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  Platform,
   Pressable,
   Text,
   View,
@@ -28,15 +29,21 @@ type Bookmark = {
 
 const BookmarkItem: FC<{ item: Bookmark }> = ({ item }) => {
   const router = useRouter();
+  const handlePress = () => {
+    if (Platform.OS === "web") {
+      window.open(item.url, "_blank", "noopener,noreferrer");
+      return;
+    }
+    router.push({
+      pathname: "/article-webview",
+      params: { url: item.url, title: item.title },
+    });
+  };
+
   return (
     <Pressable
       className="flex-row bg-background-0 px-4 py-3 gap-3 active:opacity-70"
-      onPress={() =>
-        router.push({
-          pathname: "/article-webview",
-          params: { url: item.url, title: item.title },
-        })
-      }
+      onPress={handlePress}
     >
       {item.thumbnail ? (
         <Image

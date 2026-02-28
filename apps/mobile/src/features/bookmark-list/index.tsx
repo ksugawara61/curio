@@ -32,7 +32,10 @@ const BookmarkItem: FC<{ item: Bookmark }> = ({ item }) => {
     <Pressable
       className="flex-row bg-background-0 px-4 py-3 gap-3 active:opacity-70"
       onPress={() =>
-        router.push({ pathname: "/article-webview", params: { url: item.url } })
+        router.push({
+          pathname: "/article-webview",
+          params: { url: item.url, title: item.title },
+        })
       }
     >
       {item.thumbnail ? (

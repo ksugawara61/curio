@@ -1,6 +1,11 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@curio/testing-library";
+import { fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import { server } from "../../libs/test/msw/server";
 import { ArticleWebView } from ".";
+import { BookmarkCheckQueryMocks } from "./BookmarkCheckQuery.mocks";
+import { CreateBookmarkMutationMocks } from "./CreateBookmarkMutation.mocks";
+import { DeleteBookmarkMutationMocks } from "./DeleteBookmarkMutation.mocks";
 
 const { mockRouterBack } = vi.hoisted(() => ({
   mockRouterBack: vi.fn(),
@@ -12,7 +17,10 @@ vi.mock("expo-router", () => ({
     replace: vi.fn(),
     back: mockRouterBack,
   }),
-  useLocalSearchParams: () => ({ url: "https://example.com/article" }),
+  useLocalSearchParams: () => ({
+    url: "https://example.com/article",
+    title: "Example Article",
+  }),
   Link: ({ children }: { children: React.ReactNode }) => children,
 }));
 
@@ -49,8 +57,16 @@ vi.mock("react-native-webview", () => ({
   ),
 }));
 
+vi.mock("@expo/vector-icons/Ionicons", () => ({
+  default: ({ name }: { name: string }) => (
+    <span data-testid="ionicons" data-icon={name} />
+  ),
+}));
+
 describe("ArticleWebView", () => {
   it("URL を渡した WebView をレンダリングする", () => {
+    server.use(BookmarkCheckQueryMocks.NotBookmarked);
+
     render(<ArticleWebView />);
 
     const webview = screen.getByTestId("webview");
@@ -59,13 +75,16 @@ describe("ArticleWebView", () => {
   });
 
   it("初期状態でプログレスバーを表示する", () => {
+    server.use(BookmarkCheckQueryMocks.NotBookmarked);
+
     render(<ArticleWebView />);
 
-    // isLoading is initially true, so the progress bar should be rendered
     expect(screen.getByTestId("webview")).toBeInTheDocument();
   });
 
   it("戻るボタンを押すと router.back が呼ばれる", () => {
+    server.use(BookmarkCheckQueryMocks.NotBookmarked);
+
     const { container } = render(<ArticleWebView />);
 
     // TouchableOpacity renders as a div with tabindex="0" in react-native-web
@@ -77,15 +96,18 @@ describe("ArticleWebView", () => {
   });
 
   it("onLoadStart イベントを処理する", () => {
+    server.use(BookmarkCheckQueryMocks.NotBookmarked);
+
     render(<ArticleWebView />);
 
     fireEvent.click(screen.getByTestId("trigger-load-start"));
 
-    // isLoading が true になっている（初期状態から変化なし）
     expect(screen.getByTestId("webview")).toBeInTheDocument();
   });
 
   it("onLoadProgress イベントを処理する", () => {
+    server.use(BookmarkCheckQueryMocks.NotBookmarked);
+
     render(<ArticleWebView />);
 
     fireEvent.click(screen.getByTestId("trigger-load-progress"));
@@ -94,10 +116,79 @@ describe("ArticleWebView", () => {
   });
 
   it("onLoadEnd イベントを処理する", () => {
+    server.use(BookmarkCheckQueryMocks.NotBookmarked);
+
     render(<ArticleWebView />);
 
     fireEvent.click(screen.getByTestId("trigger-load-end"));
 
     expect(screen.getByTestId("webview")).toBeInTheDocument();
+  });
+
+  it("ブックマーク未登録の場合は bookmark-outline アイコンを表示する", async () => {
+    server.use(BookmarkCheckQueryMocks.NotBookmarked);
+
+    render(<ArticleWebView />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("ionicons")).toHaveAttribute(
+        "data-icon",
+        "bookmark-outline",
+      );
+    });
+  });
+
+  it("ブックマーク登録済みの場合は bookmark アイコンを表示する", async () => {
+    server.use(BookmarkCheckQueryMocks.Bookmarked);
+
+    render(<ArticleWebView />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("ionicons")).toHaveAttribute(
+        "data-icon",
+        "bookmark",
+      );
+    });
+  });
+
+  it("未登録の状態でブックマークボタンを押すとブックマークを作成する", async () => {
+    server.use(
+      BookmarkCheckQueryMocks.NotBookmarked,
+      CreateBookmarkMutationMocks.Success,
+    );
+
+    render(<ArticleWebView />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("bookmark-button")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId("bookmark-button"));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("ionicons")).toBeInTheDocument();
+    });
+  });
+
+  it("登録済みの状態でブックマークボタンを押すとブックマークを削除する", async () => {
+    server.use(
+      BookmarkCheckQueryMocks.Bookmarked,
+      DeleteBookmarkMutationMocks.Success,
+    );
+
+    render(<ArticleWebView />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("ionicons")).toHaveAttribute(
+        "data-icon",
+        "bookmark",
+      );
+    });
+
+    fireEvent.click(screen.getByTestId("bookmark-button"));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("ionicons")).toBeInTheDocument();
+    });
   });
 });

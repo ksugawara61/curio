@@ -16,7 +16,7 @@
     "vrt:dry-run": "playwright install chromium && playwright test --ignore-snapshots",
     "vrt:html": "playwright install chromium && playwright test --reporter=html",
     "vrt:approve": "playwright install chromium && playwright test --update-snapshots all",
-    "storybook:coverage": "node ../../scripts/check-storybook-coverage.mjs apps/mobile/src/features"
+    "storybook-coverage": "node ../../scripts/check-storybook-coverage.mjs ./src/features"
   },
   "dependencies": {
     "@apollo/client": "catalog:",

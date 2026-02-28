@@ -33,3 +33,7 @@ pre-commit:
           exit 1
         fi
         echo "{staged_files}" | sed 's|apps/extension/||g' | xargs pnpm --filter @curio/extension lint --fix
+    storybook-coverage:
+      glob: "apps/{mobile,extension}/src/features/**/index.tsx"
+      run: |
+        echo "{staged_files}" | sed 's|/index\.tsx||g' | xargs node scripts/check-storybook-coverage.mjs

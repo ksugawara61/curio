@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* モバイル画面全体に広がるようにルート要素を設定 */
 html,
 body,

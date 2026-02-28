@@ -6,9 +6,8 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
-  StyleSheet,
+  Pressable,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -33,60 +32,55 @@ const SignOutButton = () => {
     }
   };
   return (
-    <TouchableOpacity style={signOutStyles.button} onPress={handleSignOut}>
-      <Text style={signOutStyles.text}>Sign out</Text>
-    </TouchableOpacity>
+    <Pressable
+      className="px-3 py-1.5 bg-background-100 rounded-lg active:opacity-70"
+      onPress={handleSignOut}
+    >
+      <Text className="text-sm text-typography-700">Sign out</Text>
+    </Pressable>
   );
 };
-
-const signOutStyles = StyleSheet.create({
-  button: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 6,
-  },
-  text: {
-    fontSize: 14,
-    color: "#333333",
-  },
-});
 
 const ArticleItem: FC<{ item: Article }> = ({ item }) => {
   const router = useRouter();
   return (
-    <TouchableOpacity
-      style={styles.articleCard}
+    <Pressable
+      className="flex-row bg-background-0 px-4 py-3 gap-3 active:opacity-70"
       onPress={() =>
         router.push({ pathname: "/article-webview", params: { url: item.url } })
       }
-      activeOpacity={0.7}
     >
       {item.thumbnail_url ? (
         <Image
           source={{ uri: item.thumbnail_url }}
-          style={styles.thumbnail}
+          className="w-16 h-16 rounded-lg"
           resizeMode="cover"
         />
       ) : (
-        <View style={styles.thumbnailPlaceholder} />
+        <View className="w-16 h-16 rounded-lg bg-background-200" />
       )}
-      <View style={styles.articleContent}>
-        <Text style={styles.articleTitle} numberOfLines={2}>
+      <View className="flex-1 gap-1">
+        <Text
+          className="text-[15px] font-semibold text-typography-900 leading-5"
+          numberOfLines={2}
+        >
           {item.title}
         </Text>
         {item.description ? (
-          <Text style={styles.articleDescription} numberOfLines={2}>
+          <Text
+            className="text-sm text-typography-500 leading-[18px]"
+            numberOfLines={2}
+          >
             {item.description}
           </Text>
         ) : null}
         {item.pub_date ? (
-          <Text style={styles.articleDate}>
+          <Text className="text-xs text-typography-400 mt-0.5">
             {new Date(item.pub_date).toLocaleDateString("ja-JP")}
           </Text>
         ) : null}
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -97,29 +91,33 @@ export const RecentArticleList: FC = () => {
   const articles = (data?.articles ?? []) as Article[];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerInfo}>
-          <Text style={styles.title}>Welcome!!</Text>
-          <Text style={styles.email}>
+    <SafeAreaView className="flex-1 bg-background-50">
+      <View className="flex-row items-center justify-between bg-background-0 px-4 py-3 border-b border-background-200">
+        <View className="flex-1 gap-0.5">
+          <Text className="text-lg font-bold text-typography-900">
+            Welcome!!
+          </Text>
+          <Text className="text-[13px] text-typography-500">
             {user?.emailAddresses[0].emailAddress}
           </Text>
         </View>
-        <View style={styles.buttonContainer}>
+        <View className="ml-3">
           <SignOutButton />
         </View>
       </View>
 
       {loading ? (
-        <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color="#0066cc" />
-          <Text style={styles.loadingText}>読み込み中...</Text>
+        <View className="flex-1 justify-center items-center p-8 gap-3">
+          <ActivityIndicator size="large" color="#6366f1" />
+          <Text className="text-sm text-typography-500">読み込み中...</Text>
         </View>
       ) : error ? (
-        <View style={styles.centerContainer}>
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorTitle}>エラーが発生しました</Text>
-            <Text style={styles.errorText}>{error.message}</Text>
+        <View className="flex-1 justify-center items-center p-8">
+          <View className="bg-error-0 p-4 rounded-xl border border-error-200 gap-2 w-full">
+            <Text className="text-base font-semibold text-error-700">
+              エラーが発生しました
+            </Text>
+            <Text className="text-sm text-error-700">{error.message}</Text>
           </View>
         </View>
       ) : (
@@ -127,11 +125,15 @@ export const RecentArticleList: FC = () => {
           data={articles}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <ArticleItem item={item} />}
-          contentContainerStyle={styles.listContent}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          contentContainerStyle={{ paddingVertical: 8 }}
+          ItemSeparatorComponent={() => (
+            <View className="h-px bg-background-200 ml-[92px]" />
+          )}
           ListEmptyComponent={
-            <View style={styles.centerContainer}>
-              <Text style={styles.emptyText}>記事がありません</Text>
+            <View className="flex-1 justify-center items-center p-8">
+              <Text className="text-base text-typography-400">
+                記事がありません
+              </Text>
             </View>
           }
         />
@@ -139,117 +141,3 @@ export const RecentArticleList: FC = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f7",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#ffffff",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e5e5e5",
-  },
-  headerInfo: {
-    flex: 1,
-    gap: 2,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#1a1a1a",
-  },
-  email: {
-    fontSize: 13,
-    color: "#666666",
-  },
-  buttonContainer: {
-    marginLeft: 12,
-  },
-  listContent: {
-    paddingVertical: 8,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: "#e5e5e5",
-    marginLeft: 92,
-  },
-  articleCard: {
-    flexDirection: "row",
-    backgroundColor: "#ffffff",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    gap: 12,
-  },
-  thumbnail: {
-    width: 64,
-    height: 64,
-    borderRadius: 8,
-    flexShrink: 0,
-  },
-  thumbnailPlaceholder: {
-    width: 64,
-    height: 64,
-    borderRadius: 8,
-    backgroundColor: "#e5e5e5",
-    flexShrink: 0,
-  },
-  articleContent: {
-    flex: 1,
-    gap: 4,
-  },
-  articleTitle: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#1a1a1a",
-    lineHeight: 20,
-  },
-  articleDescription: {
-    fontSize: 13,
-    color: "#666666",
-    lineHeight: 18,
-  },
-  articleDate: {
-    fontSize: 12,
-    color: "#999999",
-    marginTop: 2,
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 32,
-    gap: 12,
-  },
-  loadingText: {
-    color: "#666666",
-    fontSize: 14,
-  },
-  errorContainer: {
-    backgroundColor: "#fff5f5",
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#feb2b2",
-    gap: 8,
-    width: "100%",
-  },
-  errorTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#c53030",
-  },
-  errorText: {
-    color: "#c53030",
-    fontSize: 14,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: "#999999",
-  },
-});

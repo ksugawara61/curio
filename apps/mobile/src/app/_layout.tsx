@@ -2,7 +2,6 @@ import { useAuth } from "@clerk/clerk-expo";
 import { Stack } from "expo-router";
 import "../../global.css";
 import { AppProvider } from "../shared/app-provider";
-import { GluestackUIProvider } from "../shared/gluestack-ui-provider";
 
 const NavigationLayout = () => {
   const { isSignedIn = false } = useAuth();
@@ -24,10 +23,8 @@ const NavigationLayout = () => {
 
 export default function RootLayout() {
   return (
-    <GluestackUIProvider mode="light">
-      <AppProvider>
-        <NavigationLayout />
-      </AppProvider>
-    </GluestackUIProvider>
+    <AppProvider>
+      <NavigationLayout />
+    </AppProvider>
   );
 }

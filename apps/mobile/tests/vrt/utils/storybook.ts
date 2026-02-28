@@ -8,12 +8,6 @@ export type StoryEntry = {
   name: string;
   importPath: string;
   tags?: string[];
-  parameters?: {
-    playwright?: {
-      skip?: boolean;
-    };
-    [key: string]: unknown;
-  };
 };
 
 export type StorybookIndex = {
@@ -39,13 +33,14 @@ export async function getStories(baseURL: string): Promise<StoryEntry[]> {
  */
 export function filterTestableStories(stories: StoryEntry[]): StoryEntry[] {
   return stories.filter((story) => {
-    // parameters.playwright.skip が true の場合はスキップ
-    if (story.parameters?.playwright?.skip === true) {
+    // docs タグが付いているストーリーはスキップ
+    if (story.tags?.includes("docs")) {
       return false;
     }
 
-    // docs タグが付いているストーリーはスキップ
-    if (story.tags?.includes("docs")) {
+    // no-vrt タグが付いているストーリーはスキップ
+    // ※ index.json には parameters は含まれないため tags で制御する
+    if (story.tags?.includes("no-vrt")) {
       return false;
     }
 

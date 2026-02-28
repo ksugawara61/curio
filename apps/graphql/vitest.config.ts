@@ -8,6 +8,11 @@ export default defineConfig({
     silent: false,
     watch: false,
     pool: "forks",
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
     sequence: {
       concurrent: false,
     },

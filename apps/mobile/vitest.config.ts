@@ -34,5 +34,25 @@ export default defineConfig({
         inline: ["@curio/testing-library"],
       },
     },
+    coverage: {
+      provider: "v8",
+      include: ["src/features/**"],
+      exclude: [
+        "**/*.test.{ts,tsx}",
+        "**/test.{ts,tsx}",
+        "**/*.mocks.{ts,tsx}",
+        "**/mocks.{ts,tsx}",
+        "**/*.d.ts",
+        "**/*.stories.{ts,tsx}",
+        "**/stories.{ts,tsx}",
+      ],
+      thresholds: {
+        lines: 85,
+        branches: 85,
+        functions: 85,
+        statements: 85,
+      },
+      reporter: ["text", "json-summary"],
+    },
   },
 });

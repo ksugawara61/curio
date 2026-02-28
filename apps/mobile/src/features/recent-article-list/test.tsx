@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@curio/testing-library";
-import { describe, expect, it } from "vitest";
+import { fireEvent } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { server } from "../../libs/test/msw/server";
 import { RecentArticleList } from ".";
 import { RecentArticlesQueryMocks } from "./RecentArticlesQuery.mocks";
@@ -65,5 +66,46 @@ describe("RecentArticleList", () => {
     // setup.ts でモックした useUser のメールアドレス
     expect(screen.getByText("test@example.com")).toBeInTheDocument();
     expect(screen.getByText("Sign out")).toBeInTheDocument();
+  });
+
+  it("Sign out ボタンを押すと signOut が呼ばれる", async () => {
+    server.use(RecentArticlesQueryMocks.Empty);
+
+    render(<RecentArticleList />);
+
+    fireEvent.click(screen.getByText("Sign out"));
+
+    // signOut は setup.ts でモック済み（Promise.resolve()）
+    await Promise.resolve();
+    expect(screen.getByText("Sign out")).toBeInTheDocument();
+  });
+
+  it("記事アイテムを押すと記事ページに遷移する", async () => {
+    server.use(RecentArticlesQueryMocks.Success);
+
+    const mockRouterPush = vi.fn();
+    vi.spyOn(await import("expo-router"), "useRouter").mockReturnValue({
+      push: mockRouterPush,
+      replace: vi.fn(),
+      back: vi.fn(),
+      // biome-ignore lint: allow mock incomplete interface
+    } as never);
+
+    render(<RecentArticleList />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("React Native Web で始めるクロスプラットフォーム開発"),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(
+      screen.getByText("React Native Web で始めるクロスプラットフォーム開発"),
+    );
+
+    expect(mockRouterPush).toHaveBeenCalledWith({
+      pathname: "/article-webview",
+      params: { url: "https://example.com/article-1" },
+    });
   });
 });

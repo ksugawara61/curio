@@ -10,6 +10,7 @@
     "ios": "expo start --ios",
     "check": "expo-doctor",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "storybook": "IS_STORYBOOK=true storybook dev -p 6007",
     "vrt": "playwright install chromium && playwright test",
@@ -61,6 +62,7 @@
     "swr": "catalog:",
     "tailwindcss": "catalog:mobile",
     "typescript": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "vitest": "catalog:"
   },
   "msw": {

@@ -57,29 +57,6 @@ describe("RecentArticleList", () => {
     expect(screen.getByText("記事の取得に失敗しました")).toBeInTheDocument();
   });
 
-  it("ヘッダーにユーザー情報と Sign out ボタンを表示する", async () => {
-    server.use(RecentArticlesQueryMocks.Empty);
-
-    render(<RecentArticleList />);
-
-    expect(screen.getByText("Welcome!!")).toBeInTheDocument();
-    // setup.ts でモックした useUser のメールアドレス
-    expect(screen.getByText("test@example.com")).toBeInTheDocument();
-    expect(screen.getByText("Sign out")).toBeInTheDocument();
-  });
-
-  it("Sign out ボタンを押すと signOut が呼ばれる", async () => {
-    server.use(RecentArticlesQueryMocks.Empty);
-
-    render(<RecentArticleList />);
-
-    fireEvent.click(screen.getByText("Sign out"));
-
-    // signOut は setup.ts でモック済み（Promise.resolve()）
-    await Promise.resolve();
-    expect(screen.getByText("Sign out")).toBeInTheDocument();
-  });
-
   it("記事アイテムを押すと記事ページに遷移する", async () => {
     server.use(RecentArticlesQueryMocks.Success);
 

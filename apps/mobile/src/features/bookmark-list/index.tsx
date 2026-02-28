@@ -9,18 +9,24 @@ import {
   Text,
   View,
 } from "react-native";
-import { RecentArticlesQuery } from "./RecentArticlesQuery";
+import { BookmarksQuery } from "./BookmarksQuery";
 
-type Article = {
+type Tag = {
   id: string;
-  title: string;
-  description: string | null | undefined;
-  url: string;
-  thumbnail_url: string | null | undefined;
-  pub_date: string | null | undefined;
+  name: string;
 };
 
-const ArticleItem: FC<{ item: Article }> = ({ item }) => {
+type Bookmark = {
+  id: string;
+  title: string;
+  url: string;
+  description: string | null | undefined;
+  thumbnail: string | null | undefined;
+  tags: Tag[] | null | undefined;
+  created_at: string;
+};
+
+const BookmarkItem: FC<{ item: Bookmark }> = ({ item }) => {
   const router = useRouter();
   return (
     <Pressable
@@ -29,9 +35,9 @@ const ArticleItem: FC<{ item: Article }> = ({ item }) => {
         router.push({ pathname: "/article-webview", params: { url: item.url } })
       }
     >
-      {item.thumbnail_url ? (
+      {item.thumbnail ? (
         <Image
-          source={{ uri: item.thumbnail_url }}
+          source={{ uri: item.thumbnail }}
           className="w-16 h-16 rounded-lg"
           resizeMode="cover"
         />
@@ -53,20 +59,30 @@ const ArticleItem: FC<{ item: Article }> = ({ item }) => {
             {item.description}
           </Text>
         ) : null}
-        {item.pub_date ? (
-          <Text className="text-xs text-typography-400 mt-0.5">
-            {new Date(item.pub_date).toLocaleDateString("ja-JP")}
-          </Text>
+        {item.tags && item.tags.length > 0 ? (
+          <View className="flex-row flex-wrap gap-1 mt-0.5">
+            {item.tags.map((tag) => (
+              <View
+                key={tag.id}
+                className="bg-background-100 rounded px-1.5 py-0.5"
+              >
+                <Text className="text-xs text-typography-600">{tag.name}</Text>
+              </View>
+            ))}
+          </View>
         ) : null}
+        <Text className="text-xs text-typography-400 mt-0.5">
+          {new Date(item.created_at).toLocaleDateString("ja-JP")}
+        </Text>
       </View>
     </Pressable>
   );
 };
 
-export const RecentArticleList: FC = () => {
-  const { data, error, loading } = useQuery(RecentArticlesQuery);
+export const BookmarkList: FC = () => {
+  const { data, error, loading } = useQuery(BookmarksQuery);
 
-  const articles = (data?.articles ?? []) as Article[];
+  const bookmarks = (data?.bookmarks ?? []) as Bookmark[];
 
   return (
     <View className="flex-1 bg-background-50">
@@ -86,9 +102,9 @@ export const RecentArticleList: FC = () => {
         </View>
       ) : (
         <FlatList
-          data={articles}
+          data={bookmarks}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <ArticleItem item={item} />}
+          renderItem={({ item }) => <BookmarkItem item={item} />}
           contentContainerStyle={{ paddingVertical: 8 }}
           ItemSeparatorComponent={() => (
             <View className="h-px bg-background-200 ml-[92px]" />
@@ -96,7 +112,7 @@ export const RecentArticleList: FC = () => {
           ListEmptyComponent={
             <View className="flex-1 justify-center items-center p-8">
               <Text className="text-base text-typography-400">
-                記事がありません
+                ブックマークがありません
               </Text>
             </View>
           }

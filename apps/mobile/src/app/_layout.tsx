@@ -16,6 +16,7 @@ const NavigationLayout = () => {
         <Stack.Screen name="(home)/index" />
         <Stack.Screen name="(home)/bookmark-list" />
         <Stack.Screen name="article-webview" />
+        <Stack.Screen name="bookmark-add" />
       </Stack.Protected>
     </Stack>
   );

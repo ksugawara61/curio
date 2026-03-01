@@ -1,4 +1,5 @@
 import { useQuery } from "@curio/graphql-client";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 import type { FC } from "react";
 import {
@@ -91,6 +92,7 @@ const BookmarkItem: FC<{ item: Bookmark }> = ({ item }) => {
 
 export const BookmarkList: FC = () => {
   const { data, error, loading } = useQuery(BookmarksQuery);
+  const router = useRouter();
 
   const bookmarks = (data?.bookmarks ?? []) as Bookmark[];
 
@@ -128,6 +130,13 @@ export const BookmarkList: FC = () => {
           }
         />
       )}
+      <Pressable
+        className="absolute bottom-6 right-5 w-14 h-14 rounded-full bg-primary-500 items-center justify-center shadow-md"
+        onPress={() => router.push("/bookmark-add")}
+        accessibilityLabel="ブックマークを追加"
+      >
+        <Ionicons name="add" size={28} color="#ffffff" />
+      </Pressable>
     </View>
   );
 };

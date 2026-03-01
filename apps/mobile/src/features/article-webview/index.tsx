@@ -100,6 +100,7 @@ export const ArticleWebView: FC = () => {
             name={isBookmarked ? "bookmark" : "bookmark-outline"}
             size={22}
             color={isBookmarked ? "#6366f1" : "#666666"}
+            testID="bookmark-icon"
           />
         </TouchableOpacity>
       </View>

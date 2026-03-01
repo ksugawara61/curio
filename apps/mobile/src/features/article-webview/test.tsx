@@ -57,11 +57,11 @@ vi.mock("react-native-webview", () => ({
   ),
 }));
 
-vi.mock("@expo/vector-icons/Ionicons", () => ({
-  default: ({ name }: { name: string }) => (
-    <span data-testid="ionicons" data-icon={name} />
-  ),
-}));
+// Ionicons のグリフ文字（実際のコンポーネントがレンダリングする Unicode 文字）
+const IONICON_GLYPHS = {
+  bookmark: String.fromCodePoint(61864),
+  "bookmark-outline": String.fromCodePoint(61865),
+} as const;
 
 describe("ArticleWebView", () => {
   it("URL を渡した WebView をレンダリングする", () => {
@@ -131,9 +131,8 @@ describe("ArticleWebView", () => {
     render(<ArticleWebView />);
 
     await waitFor(() => {
-      expect(screen.getByTestId("ionicons")).toHaveAttribute(
-        "data-icon",
-        "bookmark-outline",
+      expect(screen.getByTestId("bookmark-icon")).toHaveTextContent(
+        IONICON_GLYPHS["bookmark-outline"],
       );
     });
   });
@@ -144,9 +143,8 @@ describe("ArticleWebView", () => {
     render(<ArticleWebView />);
 
     await waitFor(() => {
-      expect(screen.getByTestId("ionicons")).toHaveAttribute(
-        "data-icon",
-        "bookmark",
+      expect(screen.getByTestId("bookmark-icon")).toHaveTextContent(
+        IONICON_GLYPHS.bookmark,
       );
     });
   });
@@ -166,7 +164,7 @@ describe("ArticleWebView", () => {
     fireEvent.click(screen.getByTestId("bookmark-button"));
 
     await waitFor(() => {
-      expect(screen.getByTestId("ionicons")).toBeInTheDocument();
+      expect(screen.getByTestId("bookmark-icon")).toBeInTheDocument();
     });
   });
 
@@ -179,16 +177,15 @@ describe("ArticleWebView", () => {
     render(<ArticleWebView />);
 
     await waitFor(() => {
-      expect(screen.getByTestId("ionicons")).toHaveAttribute(
-        "data-icon",
-        "bookmark",
+      expect(screen.getByTestId("bookmark-icon")).toHaveTextContent(
+        IONICON_GLYPHS.bookmark,
       );
     });
 
     fireEvent.click(screen.getByTestId("bookmark-button"));
 
     await waitFor(() => {
-      expect(screen.getByTestId("ionicons")).toBeInTheDocument();
+      expect(screen.getByTestId("bookmark-icon")).toBeInTheDocument();
     });
   });
 });

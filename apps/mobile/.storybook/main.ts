@@ -33,20 +33,24 @@ const config: StorybookConfig = {
         import.meta.dirname,
         "../src/libs/storybook/webview-mock.tsx",
       ),
-      "@expo/vector-icons/Ionicons": resolve(
-        import.meta.dirname,
-        "../src/libs/storybook/ionicons-mock.tsx",
-      ),
+    };
+    // @expo/vector-icons 内部で __DEV__ グローバル変数を参照しているため定義が必要
+    config.define = {
+      ...config.define,
+      __DEV__: true,
     };
     // nativewind と関連パッケージを事前バンドルに含めて
     // 504 (Outdated Optimize Dep) エラーを防止する
+    // @expo/vector-icons は createIconSet.js 等に JSX を含む .js ファイルがあるため
+    // esbuild プリバンドルで jsx ローダーによる変換が必要
     config.optimizeDeps = config.optimizeDeps ?? {};
     config.optimizeDeps.include = [
       ...(config.optimizeDeps.include ?? []),
       "nativewind",
       "react-native-css-interop",
+      "@expo/vector-icons/Ionicons",
     ];
-    // react-native-css-interop の .js ファイルに JSX が含まれるため
+    // react-native-css-interop / @expo/vector-icons の .js ファイルに JSX が含まれるため
     // esbuild プリバンドル時に jsx ローダーを使用する
     config.optimizeDeps.esbuildOptions = {
       ...(config.optimizeDeps.esbuildOptions ?? {}),

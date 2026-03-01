@@ -41,9 +41,12 @@ vi.mock("react-native-safe-area-context", () => ({
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
 }));
 
-// @expo/vector-icons をモック（createIconSet.js の JSX パースエラーを回避）
-vi.mock("@expo/vector-icons/Ionicons", () => ({
-  default: () => null,
+// expo-font をモック（jsdom ではフォント読み込みが動作しないため）
+// @expo/vector-icons 自体はモック不要: react-native-web 対応済みで、
+// JSX パースは vitest.config.ts の expoVectorIconsJsx プラグインで解決
+vi.mock("expo-font", () => ({
+  isLoaded: () => true,
+  loadAsync: () => Promise.resolve(),
 }));
 
 // MSW サーバーのセットアップ

@@ -17,7 +17,8 @@
     "vrt:html": "playwright install chromium && playwright test --reporter=html",
     "vrt:approve": "playwright install chromium && playwright test --update-snapshots all",
     "storybook-coverage": "node ../../scripts/check-storybook-coverage.mjs ./src/features",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "release": "wrangler pages deploy ./dist --branch main --commit-dirty=true --project-name curio-web"
   },
   "dependencies": {
     "@apollo/client": "catalog:",
@@ -64,7 +65,8 @@
     "swr": "catalog:",
     "tailwindcss": "catalog:mobile",
     "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "wrangler": "catalog:"
   },
   "msw": {
     "workerDirectory": [

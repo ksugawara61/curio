@@ -1,3 +1,5 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import "../../global.css";
 import { AppProvider } from "../shared/app-provider";
@@ -12,6 +14,10 @@ const NavigationLayout = () => {
 };
 
 export default function RootLayout() {
+  const [fontsLoaded, fontError] = useFonts(Ionicons.font);
+
+  if (!fontsLoaded && !fontError) return null;
+
   return (
     <AppProvider>
       <NavigationLayout />

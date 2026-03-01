@@ -27,7 +27,15 @@ export default {
     web: {
       favicon: "./assets/favicon.png",
     },
-    plugins: ["expo-router"],
+    plugins: [
+      "expo-router",
+      [
+        "expo-font",
+        {
+          fonts: ["./assets/fonts/Ionicons.ttf"],
+        },
+      ],
+    ],
     experiments: {
       typedRoutes: true,
       reactCompiler: true,

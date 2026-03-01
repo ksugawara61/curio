@@ -105,6 +105,7 @@ describe("BookmarkAdd", () => {
       push: vi.fn(),
       replace: vi.fn(),
       back: mockRouterBack,
+      canGoBack: vi.fn().mockReturnValue(true),
     } as never);
 
     render(<BookmarkAdd />);

@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
 import type { StorybookConfig } from "@storybook/react-vite";
 import react from "@vitejs/plugin-react";
+import { type Plugin, transformWithEsbuild } from "vite";
 
 const config: StorybookConfig = {
   stories: ["../src/**/stories.@(js|jsx|mjs|ts|tsx)"],
@@ -33,6 +34,12 @@ const config: StorybookConfig = {
         import.meta.dirname,
         "../src/libs/storybook/webview-mock.tsx",
       ),
+      // expo-font → expo-modules-core が TurboModuleRegistry を参照するが
+      // react-native-web には存在しないため、最小限のスタブに差し替える
+      "expo-font": resolve(
+        import.meta.dirname,
+        "../src/libs/storybook/expo-font-mock.ts",
+      ),
     };
     // @expo/vector-icons 内部で __DEV__ グローバル変数を参照しているため定義が必要
     config.define = {
@@ -41,16 +48,13 @@ const config: StorybookConfig = {
     };
     // nativewind と関連パッケージを事前バンドルに含めて
     // 504 (Outdated Optimize Dep) エラーを防止する
-    // @expo/vector-icons は createIconSet.js 等に JSX を含む .js ファイルがあるため
-    // esbuild プリバンドルで jsx ローダーによる変換が必要
     config.optimizeDeps = config.optimizeDeps ?? {};
     config.optimizeDeps.include = [
       ...(config.optimizeDeps.include ?? []),
       "nativewind",
       "react-native-css-interop",
-      "@expo/vector-icons/Ionicons",
     ];
-    // react-native-css-interop / @expo/vector-icons の .js ファイルに JSX が含まれるため
+    // react-native-css-interop の .js ファイルに JSX が含まれるため
     // esbuild プリバンドル時に jsx ローダーを使用する
     config.optimizeDeps.esbuildOptions = {
       ...(config.optimizeDeps.esbuildOptions ?? {}),
@@ -71,8 +75,20 @@ const config: StorybookConfig = {
     // 各ファイルで import React from "react" が不要になる
     // jsxImportSource: "nativewind" により nativewind の JSX ランタイムが使用され、
     // className prop が react-native-web で正しくスタイルに変換される
+    // @expo/vector-icons の .js ファイルに含まれる JSX を変換するプラグイン
+    // optimizeDeps.include ではなくプラグインで処理することで、
+    // expo-modules-core の TurboModuleRegistry 解決エラーを回避する
+    const expoVectorIconsJsx: Plugin = {
+      name: "expo-vector-icons-jsx",
+      async transform(code, id) {
+        if (id.includes("@expo/vector-icons") && id.endsWith(".js")) {
+          return transformWithEsbuild(code, id, { loader: "jsx" });
+        }
+      },
+    };
     config.plugins = [
       react({ jsxImportSource: "nativewind" }),
+      expoVectorIconsJsx,
       ...(config.plugins ?? []),
     ];
     return config;

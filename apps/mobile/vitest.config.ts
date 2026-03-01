@@ -4,6 +4,17 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   plugins: [react()],
   resolve: {
+    // .web.* 拡張子を優先的に解決し、Metro Web ビルドと同じモジュール解決を実現する
+    // 例: import './useAuth' → useAuth.web.ts が useAuth.ts より優先される
+    extensions: [
+      ".web.tsx",
+      ".web.ts",
+      ".web.js",
+      ".tsx",
+      ".ts",
+      ".js",
+      ".json",
+    ],
     alias: {
       // react-native を react-native-web にエイリアスして jsdom 環境で動かす
       "react-native": "react-native-web",

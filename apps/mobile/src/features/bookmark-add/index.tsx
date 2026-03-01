@@ -44,11 +44,19 @@ export const BookmarkAdd: FC = () => {
 
   const allBookmarks = bookmarksData?.bookmarks ?? [];
 
+  const navigateBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace("/");
+    }
+  };
+
   const [createBookmark, { loading: creating }] = useMutation(
     CreateBookmarkMutation,
     {
       onCompleted: () => {
-        router.back();
+        navigateBack();
       },
     },
   );
@@ -109,7 +117,7 @@ export const BookmarkAdd: FC = () => {
       <View className="h-11 flex-row items-center justify-between px-4 border-b border-background-200">
         <Pressable
           className="p-2 justify-center items-center"
-          onPress={() => router.back()}
+          onPress={() => navigateBack()}
         >
           <View
             className="w-2.5 h-2.5 border-l-2 border-b-2"

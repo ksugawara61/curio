@@ -2,7 +2,31 @@ import "@testing-library/jest-dom";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 import { server } from "./msw/server";
 
-// @clerk/clerk-expo をモック（webextension-polyfill や Native モジュールのエラーを回避）
+// @clerk/clerk-react をモック（.web ファイルが @clerk/clerk-react を使うため）
+vi.mock("@clerk/clerk-react", () => ({
+  ClerkProvider: ({ children }: { children: React.ReactNode }) => children,
+  SignedIn: ({ children }: { children: React.ReactNode }) => children,
+  SignedOut: () => null,
+  SignIn: () => null,
+  useClerk: () => ({
+    signOut: () => Promise.resolve(),
+  }),
+  useUser: () => ({
+    user: {
+      id: "test-user",
+      emailAddresses: [{ emailAddress: "test@example.com" }],
+    },
+    isSignedIn: true,
+    isLoaded: true,
+  }),
+  useAuth: () => ({
+    getToken: () => Promise.resolve("test-token"),
+    isSignedIn: true,
+    isLoaded: true,
+  }),
+}));
+
+// @clerk/clerk-expo をモック（.web ファイルがない sign-in, sign-up 等のネイティブ向け機能のため維持）
 vi.mock("@clerk/clerk-expo", () => ({
   ClerkProvider: ({ children }: { children: React.ReactNode }) => children,
   useClerk: () => ({

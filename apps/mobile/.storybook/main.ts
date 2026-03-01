@@ -12,11 +12,27 @@ const config: StorybookConfig = {
   staticDirs: ["../public"],
   viteFinal: (config) => {
     config.resolve = config.resolve ?? {};
+    // .web.* 拡張子を優先的に解決し、Metro Web ビルドと同じモジュール解決を実現する
+    // 例: import './useAuth' → useAuth.web.ts が useAuth.ts より優先される
+    config.resolve.extensions = [
+      ".web.tsx",
+      ".web.ts",
+      ".web.js",
+      ".tsx",
+      ".ts",
+      ".js",
+      ".json",
+    ];
     config.resolve.alias = {
       ...config.resolve.alias,
       // react-native を react-native-web にエイリアスしてブラウザで動かす
       "react-native": "react-native-web",
-      // Expo / Clerk のネイティブモジュールをモックに差し替える
+      // .web ファイルは @clerk/clerk-react を使うため、こちらもモックに差し替える
+      "@clerk/clerk-react": resolve(
+        import.meta.dirname,
+        "../src/libs/storybook/clerk-mock.tsx",
+      ),
+      // .web ファイルがない機能（sign-in, sign-up 等）は @clerk/clerk-expo を直接使うため維持
       "@clerk/clerk-expo": resolve(
         import.meta.dirname,
         "../src/libs/storybook/clerk-mock.tsx",

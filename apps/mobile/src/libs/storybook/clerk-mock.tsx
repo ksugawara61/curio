@@ -1,5 +1,20 @@
-// @clerk/clerk-expo のモック（Storybook 用）
-// ネイティブモジュールへの依存を回避するためブラウザ環境向けに差し替える
+// @clerk/clerk-expo と @clerk/clerk-react のモック（Storybook 用）
+// .web ファイルは @clerk/clerk-react を、ネイティブ向け機能は @clerk/clerk-expo を使うため
+// 両パッケージのエイリアス先としてこのファイルを利用する
+
+import type { FC, PropsWithChildren } from "react";
+
+export const ClerkProvider: FC<PropsWithChildren> = ({ children }) => (
+  <>{children}</>
+);
+
+export const SignedIn: FC<PropsWithChildren> = ({ children }) => (
+  <>{children}</>
+);
+
+export const SignedOut: FC<PropsWithChildren> = () => null;
+
+export const SignIn = () => null;
 
 export const useUser = () => ({
   user: {

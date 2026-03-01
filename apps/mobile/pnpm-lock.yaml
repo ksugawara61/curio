@@ -15,6 +15,9 @@ catalogs:
     '@clerk/clerk-react':
       specifier: ^5.61.1
       version: 5.61.1
+    '@hookform/resolvers':
+      specifier: ^5.1.0
+      version: 5.2.2
     '@playwright/test':
       specifier: ^1.57.0
       version: 1.58.2
@@ -90,6 +93,9 @@ catalogs:
     react-error-boundary:
       specifier: ^6.1.0
       version: 6.1.1
+    react-hook-form:
+      specifier: ^7.58.1
+      version: 7.71.2
     react-native:
       specifier: ^0.83.2
       version: 0.83.2
@@ -120,6 +126,9 @@ catalogs:
     wrangler:
       specifier: ^4.68.1
       version: 4.68.1
+    zod:
+      specifier: ^3.25.51
+      version: 3.25.76
   mobile:
     '@gluestack-ui/nativewind-utils':
       specifier: ^1.0.28
@@ -156,6 +165,9 @@ importers:
       '@gluestack-ui/nativewind-utils':
         specifier: catalog:mobile
         version: 1.0.28(nativewind@4.1.23(react-native-reanimated@3.17.5(@babel/core@7.29.0)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(bufferutil@4.1.0)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0))(react-native-safe-area-context@5.6.2(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(bufferutil@4.1.0)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0))(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(bufferutil@4.1.0)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(tailwindcss@3.4.19(yaml@2.8.2)))(react@19.2.0)(tailwindcss@3.4.19(yaml@2.8.2))
+      '@hookform/resolvers':
+        specifier: 'catalog:'
+        version: 5.2.2(react-hook-form@7.71.2(react@19.2.0))
       expo:
         specifier: 'catalog:'
         version: 55.0.3(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(bufferutil@4.1.0)(expo-router@55.0.3)(react-dom@19.2.0(react@19.2.0))(react-native-webview@13.16.0(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(bufferutil@4.1.0)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0))(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(bufferutil@4.1.0)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
@@ -186,6 +198,9 @@ importers:
       react-dom:
         specifier: 'catalog:'
         version: 19.2.0(react@19.2.0)
+      react-hook-form:
+        specifier: 'catalog:'
+        version: 7.71.2(react@19.2.0)
       react-native:
         specifier: 'catalog:'
         version: 0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(bufferutil@4.1.0)(react@19.2.0)(utf-8-validate@5.0.10)
@@ -204,6 +219,9 @@ importers:
       react-native-webview:
         specifier: 'catalog:'
         version: 13.16.0(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(bufferutil@4.1.0)(react@19.2.0)(utf-8-validate@5.0.10))(react@19.2.0)
+      zod:
+        specifier: 'catalog:'
+        version: 3.25.76
     devDependencies:
       '@curio/testing-library':
         specifier: workspace:*
@@ -1382,6 +1400,11 @@ packages:
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
+  '@hookform/resolvers@5.2.2':
+    resolution: {integrity: sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA==}
+    peerDependencies:
+      react-hook-form: ^7.55.0
+
   '@img/colour@1.0.0':
     resolution: {integrity: sha512-A5P/LfWGFSl6nsckYtjw9da+19jB8hkJ6ACTGcDfEJ0aE+l2n2El7dsVM7UVHZQ9s2lmYMWlrS21YLy2IR1LUw==}
     engines: {node: '>=18'}
@@ -2340,6 +2363,9 @@ packages:
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
+
+  '@standard-schema/utils@0.3.0':
+    resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
 
   '@storybook/builder-vite@10.2.8':
     resolution: {integrity: sha512-+6/Lwi7W0YIbzHDh798GPp0IHUYDwp0yv0Y1eVNK/StZD0tnv4/1C28NKyP+O7JOsFsuWI1qHiDhw8kNURugZw==}
@@ -4840,6 +4866,12 @@ packages:
     peerDependencies:
       react: '>=17.0.0'
 
+  react-hook-form@7.71.2:
+    resolution: {integrity: sha512-1CHvcDYzuRUNOflt4MOq3ZM46AronNJtQ1S7tnX6YN4y72qhgiUItpacZUAQ0TyWYci3yz1X+rXaSxiuEm86PA==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
+
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -7251,6 +7283,11 @@ snapshots:
     dependencies:
       graphql: 16.13.0
 
+  '@hookform/resolvers@5.2.2(react-hook-form@7.71.2(react@19.2.0))':
+    dependencies:
+      '@standard-schema/utils': 0.3.0
+      react-hook-form: 7.71.2(react@19.2.0)
+
   '@img/colour@1.0.0': {}
 
   '@img/sharp-darwin-arm64@0.34.5':
@@ -8265,6 +8302,8 @@ snapshots:
   '@speed-highlight/core@1.2.14': {}
 
   '@standard-schema/spec@1.1.0': {}
+
+  '@standard-schema/utils@0.3.0': {}
 
   '@storybook/builder-vite@10.2.8(esbuild@0.27.3)(rollup@4.59.0)(storybook@10.2.8(@testing-library/dom@10.4.1)(bufferutil@4.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(utf-8-validate@5.0.10))(vite@7.3.1(@types/node@25.2.0)(jiti@1.21.7)(lightningcss@1.31.1)(terser@5.46.0)(yaml@2.8.2))':
     dependencies:
@@ -11107,6 +11146,10 @@ snapshots:
   react-fast-compare@3.2.2: {}
 
   react-freeze@1.0.4(react@19.2.0):
+    dependencies:
+      react: 19.2.0
+
+  react-hook-form@7.71.2(react@19.2.0):
     dependencies:
       react: 19.2.0
 

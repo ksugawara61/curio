@@ -1,7 +1,9 @@
 import { useLazyQuery, useMutation, useQuery } from "@curio/graphql-client";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { type FC, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -16,6 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { BookmarksQuery } from "./BookmarksQuery";
 import { CreateBookmarkMutation } from "./CreateBookmarkMutation";
 import { FetchUrlMetadataQuery } from "./FetchUrlMetadataQuery";
+import { type BookmarkFormValues, bookmarkFormSchema } from "./schema";
 
 export const BookmarkAdd: FC = () => {
   const { url: paramUrl } = useLocalSearchParams<{ url?: string }>();
@@ -25,14 +28,24 @@ export const BookmarkAdd: FC = () => {
   const [submittedUrl, setSubmittedUrl] = useState("");
   const [showForm, setShowForm] = useState(false);
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [note, setNote] = useState("");
-  const [thumbnail, setThumbnail] = useState("");
-  const [tagInput, setTagInput] = useState("");
   const [relatedBookmarkIds, setRelatedBookmarkIds] = useState<string[]>([]);
   const [relatedSearch, setRelatedSearch] = useState("");
-  const [titleError, setTitleError] = useState("");
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<BookmarkFormValues>({
+    resolver: zodResolver(bookmarkFormSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      note: "",
+      thumbnail: "",
+      tagInput: "",
+    },
+  });
 
   const [fetchUrlMetadata, { loading: metadataLoading }] = useLazyQuery(
     FetchUrlMetadataQuery,
@@ -66,9 +79,13 @@ export const BookmarkAdd: FC = () => {
     setSubmittedUrl(url);
     const result = await fetchUrlMetadata({ variables: { url } });
     const metadata = result.data?.fetchUrlMetadata;
-    setTitle(metadata?.title ?? "");
-    setDescription(metadata?.description ?? "");
-    setThumbnail(metadata?.thumbnail ?? "");
+    reset({
+      title: metadata?.title ?? "",
+      description: metadata?.description ?? "",
+      note: "",
+      thumbnail: metadata?.thumbnail ?? "",
+      tagInput: "",
+    });
     setShowForm(true);
   };
 
@@ -82,15 +99,9 @@ export const BookmarkAdd: FC = () => {
     b.title.toLowerCase().includes(relatedSearch.toLowerCase()),
   );
 
-  const handleSubmit = () => {
-    if (!title.trim()) {
-      setTitleError("タイトルは必須です");
-      return;
-    }
-    setTitleError("");
-
-    const tagNames = tagInput
-      ? tagInput
+  const onSubmit = (data: BookmarkFormValues) => {
+    const tagNames = data.tagInput
+      ? data.tagInput
           .split(",")
           .map((tag) => tag.trim())
           .filter((tag) => tag.length > 0)
@@ -99,11 +110,11 @@ export const BookmarkAdd: FC = () => {
     createBookmark({
       variables: {
         input: {
-          title: title.trim(),
+          title: data.title,
           url: submittedUrl,
-          description: description.trim() || undefined,
-          note: note.trim() || undefined,
-          thumbnail: thumbnail.trim() || undefined,
+          description: data.description || undefined,
+          note: data.note || undefined,
+          thumbnail: data.thumbnail || undefined,
           tagNames: tagNames.length > 0 ? tagNames : undefined,
           relatedBookmarkIds:
             relatedBookmarkIds.length > 0 ? relatedBookmarkIds : undefined,
@@ -180,14 +191,22 @@ export const BookmarkAdd: FC = () => {
                 <Text className="text-sm font-medium text-typography-700">
                   タイトル <Text className="text-error-500">*</Text>
                 </Text>
-                <TextInput
-                  value={title}
-                  onChangeText={setTitle}
-                  placeholder="タイトルを入力..."
-                  className={`bg-background-50 rounded-[10px] p-3 text-[15px] border text-typography-900 ${titleError ? "border-error-500" : "border-background-200"}`}
+                <Controller
+                  control={control}
+                  name="title"
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      value={value}
+                      onChangeText={onChange}
+                      placeholder="タイトルを入力..."
+                      className={`bg-background-50 rounded-[10px] p-3 text-[15px] border text-typography-900 ${errors.title ? "border-error-500" : "border-background-200"}`}
+                    />
+                  )}
                 />
-                {titleError ? (
-                  <Text className="text-xs text-error-500">{titleError}</Text>
+                {errors.title ? (
+                  <Text className="text-xs text-error-500">
+                    {errors.title.message}
+                  </Text>
                 ) : null}
               </View>
 
@@ -195,14 +214,20 @@ export const BookmarkAdd: FC = () => {
                 <Text className="text-sm font-medium text-typography-700">
                   説明（任意）
                 </Text>
-                <TextInput
-                  value={description}
-                  onChangeText={setDescription}
-                  placeholder="説明を入力..."
-                  multiline
-                  numberOfLines={3}
-                  className="bg-background-50 rounded-[10px] p-3 text-[15px] border border-background-200 text-typography-900 min-h-[72px]"
-                  style={{ textAlignVertical: "top" }}
+                <Controller
+                  control={control}
+                  name="description"
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      value={value}
+                      onChangeText={onChange}
+                      placeholder="説明を入力..."
+                      multiline
+                      numberOfLines={3}
+                      className="bg-background-50 rounded-[10px] p-3 text-[15px] border border-background-200 text-typography-900 min-h-[72px]"
+                      style={{ textAlignVertical: "top" }}
+                    />
+                  )}
                 />
               </View>
 
@@ -210,14 +235,20 @@ export const BookmarkAdd: FC = () => {
                 <Text className="text-sm font-medium text-typography-700">
                   メモ（任意・Markdown対応）
                 </Text>
-                <TextInput
-                  value={note}
-                  onChangeText={setNote}
-                  placeholder="Markdown形式でメモを入力..."
-                  multiline
-                  numberOfLines={6}
-                  className="bg-background-50 rounded-[10px] p-3 text-[15px] border border-background-200 text-typography-900 min-h-[120px]"
-                  style={{ textAlignVertical: "top" }}
+                <Controller
+                  control={control}
+                  name="note"
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      value={value}
+                      onChangeText={onChange}
+                      placeholder="Markdown形式でメモを入力..."
+                      multiline
+                      numberOfLines={6}
+                      className="bg-background-50 rounded-[10px] p-3 text-[15px] border border-background-200 text-typography-900 min-h-[120px]"
+                      style={{ textAlignVertical: "top" }}
+                    />
+                  )}
                 />
               </View>
 
@@ -225,14 +256,20 @@ export const BookmarkAdd: FC = () => {
                 <Text className="text-sm font-medium text-typography-700">
                   サムネイルURL（任意）
                 </Text>
-                <TextInput
-                  value={thumbnail}
-                  onChangeText={setThumbnail}
-                  placeholder="https://example.com/image.jpg"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  keyboardType="url"
-                  className="bg-background-50 rounded-[10px] p-3 text-[15px] border border-background-200 text-typography-900"
+                <Controller
+                  control={control}
+                  name="thumbnail"
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      value={value}
+                      onChangeText={onChange}
+                      placeholder="https://example.com/image.jpg"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      keyboardType="url"
+                      className="bg-background-50 rounded-[10px] p-3 text-[15px] border border-background-200 text-typography-900"
+                    />
+                  )}
                 />
               </View>
 
@@ -240,11 +277,17 @@ export const BookmarkAdd: FC = () => {
                 <Text className="text-sm font-medium text-typography-700">
                   タグ（カンマ区切り）
                 </Text>
-                <TextInput
-                  value={tagInput}
-                  onChangeText={setTagInput}
-                  placeholder="例: tech, tutorial, react"
-                  className="bg-background-50 rounded-[10px] p-3 text-[15px] border border-background-200 text-typography-900"
+                <Controller
+                  control={control}
+                  name="tagInput"
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      value={value}
+                      onChangeText={onChange}
+                      placeholder="例: tech, tutorial, react"
+                      className="bg-background-50 rounded-[10px] p-3 text-[15px] border border-background-200 text-typography-900"
+                    />
+                  )}
                 />
               </View>
 
@@ -325,7 +368,7 @@ export const BookmarkAdd: FC = () => {
 
               <Pressable
                 className={`py-3.5 rounded-xl items-center mb-4 ${creating ? "bg-primary-300" : "bg-primary-500 active:opacity-70"}`}
-                onPress={handleSubmit}
+                onPress={handleSubmit(onSubmit)}
                 disabled={creating}
               >
                 {creating ? (

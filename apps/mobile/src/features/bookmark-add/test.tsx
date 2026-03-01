@@ -90,7 +90,9 @@ describe("BookmarkAdd", () => {
 
     fireEvent.click(screen.getByText("追加する"));
 
-    expect(screen.getByText("タイトルは必須です")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("タイトルは必須です")).toBeInTheDocument();
+    });
   });
 
   it("フォームを送信するとブックマークが作成され前の画面に戻る", async () => {
